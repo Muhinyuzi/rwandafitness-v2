@@ -1,0 +1,87 @@
+rwandafitness-v2/
+│
+├─ apps/
+│  ├─ web/                          # Frontend – Next.js (public + admin)
+│  │  ├─ src/
+│  │  │  ├─ app/                    # App Router (Next 13+)
+│  │  │  │  ├─ (public)/            # Pages publiques (marketing)
+│  │  │  │  │  ├─ page.tsx          # Home
+│  │  │  │  │  ├─ programs/         # Programs & plans
+│  │  │  │  │  ├─ blog/             # Articles / contenus
+│  │  │  │  │  └─ contact/
+│  │  │  │  │
+│  │  │  │  ├─ admin/               # Admin dashboard
+│  │  │  │  │  ├─ layout.tsx
+│  │  │  │  │  ├─ page.tsx
+│  │  │  │  │  ├─ users/            # Gestion utilisateurs
+│  │  │  │  │  ├─ programs/         # Gestion programmes
+│  │  │  │  │  └─ content/          # CMS léger
+│  │  │  │  │
+│  │  │  │  ├─ auth/                # Login / register / reset
+│  │  │  │  └─ api/                 # Route handlers (Next API proxy)
+│  │  │  │
+│  │  │  ├─ components/             # UI components réutilisables
+│  │  │  ├─ hooks/                  # Hooks personnalisés
+│  │  │  ├─ services/               # Appels API (Axios / fetch)
+│  │  │  ├─ store/                  # State management (Zustand / Redux)
+│  │  │  ├─ styles/                 # CSS / Tailwind / global styles
+│  │  │  └─ utils/                  # Helpers
+│  │  │
+│  │  ├─ public/                    # Images, fonts, icons
+│  │  ├─ next.config.js
+│  │  ├─ tsconfig.json
+│  │  ├─ package.json
+│  │  └─ Dockerfile
+│  │
+│  └─ api/                          # Backend – FastAPI
+│     ├─ app/
+│     │  ├─ main.py                 # Point d’entrée FastAPI
+│     │  │
+│     │  ├─ core/                   # Configuration globale
+│     │  │  ├─ config.py            # Settings (env)
+│     │  │  ├─ security.py          # JWT, hashing, permissions
+│     │  │  └─ logging.py
+│     │  │
+│     │  ├─ routers/                # Routes API
+│     │  │  ├─ auth.py              # Login / register / tokens
+│     │  │  ├─ users.py             # Utilisateurs
+│     │  │  ├─ programs.py          # Programmes fitness
+│     │  │  ├─ content.py           # Articles / CMS
+│     │  │  └─ health.py            # Healthcheck
+│     │  │
+│     │  ├─ models/                 # SQLAlchemy models
+│     │  ├─ schemas/                # Pydantic schemas
+│     │  ├─ services/               # Logique métier
+│     │  ├─ repositories/           # Accès base de données
+│     │  ├─ emails/                 # Templates & envoi emails
+│     │  └─ dependencies.py
+│     │
+│     ├─ alembic/                   # Migrations DB
+│     ├─ tests/                     # Tests Pytest
+│     ├─ requirements.txt
+│     └─ Dockerfile
+│
+├─ packages/                        # Shared (monorepo)
+│  ├─ ui/                           # Composants UI partagés
+│  ├─ types/                        # Types partagés API ↔ frontend
+│  └─ config/                       # ESLint / Prettier / TS config
+│
+├─ infra/                           # Infrastructure & DevOps
+│  ├─ nginx/
+│  │  └─ default.conf               # Reverse proxy
+│  │
+│  ├─ scripts/
+│  │  ├─ init_db.sh                 # Initialisation DB
+│  │  ├─ backup.sh
+│  │  └─ deploy.sh
+│
+├─ docs/                            # Documentation produit
+│  ├─ roadmap.md                    # Vision & étapes
+│  ├─ architecture.md               # Choix techniques
+│  └─ decisions/                    # ADR (Architecture Decisions)
+│
+├─ docker-compose.yml               # Orchestration complète
+├─ .env.example                     # Variables d’environnement
+├─ .gitignore
+├─ README.md
+└─ LICENSE
