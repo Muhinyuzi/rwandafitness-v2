@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 type CoachGalleryImage = {
   id: number;
@@ -88,7 +89,9 @@ export default function CoachDetailPage() {
 
       if (!res.ok) {
         setStatusMessage(
-          typeof data === "object" ? JSON.stringify(data) : "Failed to send request."
+          typeof data === "object"
+            ? JSON.stringify(data)
+            : "Failed to send request."
         );
         return;
       }
@@ -105,11 +108,23 @@ export default function CoachDetailPage() {
   };
 
   if (loading) {
-    return <div className="mx-auto max-w-5xl px-6 py-10">Loading...</div>;
+    return (
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-6 text-sm text-zinc-600 shadow-sm">
+          Loading coach details...
+        </div>
+      </div>
+    );
   }
 
   if (!coach) {
-    return <div className="mx-auto max-w-5xl px-6 py-10">Coach not found.</div>;
+    return (
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-6 text-sm text-zinc-600 shadow-sm">
+          Coach not found.
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -122,6 +137,8 @@ export default function CoachDetailPage() {
 
       <div className="grid gap-8 lg:grid-cols-[1.4fr_0.8fr]">
         <div className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
+          <div className="mb-4 h-1.5 w-16 rounded-full bg-primary" />
+
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
             {coach.photo_url ? (
               <img
@@ -130,7 +147,7 @@ export default function CoachDetailPage() {
                 className="h-24 w-24 rounded-full object-cover"
               />
             ) : (
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-black text-3xl font-bold text-white">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-3xl font-bold text-white">
                 {coach.full_name.charAt(0).toUpperCase()}
               </div>
             )}
@@ -149,7 +166,7 @@ export default function CoachDetailPage() {
               </div>
 
               <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-zinc-600">
-                <span className="rounded-full bg-zinc-100 px-3 py-1 text-zinc-700">
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">
                   {coach.specialty}
                 </span>
                 <span>📍 {coach.city}</span>
@@ -162,9 +179,12 @@ export default function CoachDetailPage() {
                 <p className="mt-3 text-sm text-zinc-600">
                   Works at{" "}
                   {coach.gym_slug ? (
-                    <a href={`/gyms/${coach.gym_slug}`} className="font-medium underline">
+                    <Link
+                      href={`/gyms/${coach.gym_slug}`}
+                      className="font-medium underline"
+                    >
                       {coach.gym_name}
-                    </a>
+                    </Link>
                   ) : (
                     <span className="font-medium">{coach.gym_name}</span>
                   )}
@@ -174,7 +194,9 @@ export default function CoachDetailPage() {
           </div>
 
           <div className="mt-8">
-            <h2 className="text-lg font-semibold text-zinc-900">About this coach</h2>
+            <h2 className="text-lg font-semibold text-zinc-900">
+              About this coach
+            </h2>
             <p className="mt-3 leading-8 text-zinc-600">
               {coach.bio || "No description provided."}
             </p>
@@ -182,18 +204,28 @@ export default function CoachDetailPage() {
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl bg-zinc-50 p-5">
-              <h3 className="text-sm font-semibold text-zinc-900">Coaching format</h3>
+              <h3 className="text-sm font-semibold text-zinc-900">
+                Coaching format
+              </h3>
               <div className="mt-3 space-y-2 text-sm text-zinc-600">
-                <p>{coach.available_online ? "✅ Online coaching available" : "❌ No online coaching"}</p>
-                <p>{coach.available_in_person ? "✅ In-person coaching available" : "❌ No in-person coaching"}</p>
+                <p>
+                  {coach.available_online
+                    ? "✅ Online coaching available"
+                    : "❌ No online coaching"}
+                </p>
+                <p>
+                  {coach.available_in_person
+                    ? "✅ In-person coaching available"
+                    : "❌ No in-person coaching"}
+                </p>
               </div>
             </div>
 
             <div className="rounded-2xl bg-zinc-50 p-5">
               <h3 className="text-sm font-semibold text-zinc-900">Specialty</h3>
               <p className="mt-3 text-sm leading-7 text-zinc-600">
-                This coach specializes in <strong>{coach.specialty}</strong> and can help
-                clients with personalized support based on their goals.
+                This coach specializes in <strong>{coach.specialty}</strong> and
+                can help clients with personalized support based on their goals.
               </p>
             </div>
           </div>
@@ -216,7 +248,9 @@ export default function CoachDetailPage() {
                       />
                     )}
                     {item.caption && (
-                      <div className="p-3 text-sm text-zinc-600">{item.caption}</div>
+                      <div className="p-3 text-sm text-zinc-600">
+                        {item.caption}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -235,8 +269,9 @@ export default function CoachDetailPage() {
           <p className="mt-1 text-sm text-zinc-500">per session</p>
 
           <button
+            type="button"
             onClick={() => setShowRequestBox((prev) => !prev)}
-            className="mt-6 w-full rounded-xl bg-zinc-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700"
+            className="mt-6 w-full rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
           >
             {showRequestBox ? "Close Request Form" : "Request Coaching"}
           </button>
@@ -261,7 +296,7 @@ export default function CoachDetailPage() {
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
                 placeholder="Weight loss, muscle gain, home fitness..."
-                className="mt-2 w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-black"
+                className="mt-2 w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-primary"
               />
 
               <label className="mt-4 block text-sm font-medium text-zinc-700">
@@ -272,13 +307,14 @@ export default function CoachDetailPage() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Write a short message for the coach..."
                 rows={5}
-                className="mt-2 w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-black"
+                className="mt-2 w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-primary"
               />
 
               <button
+                type="button"
                 onClick={handleSendRequest}
                 disabled={submitting}
-                className="mt-4 w-full rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:opacity-70"
+                className="mt-4 w-full rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-70"
               >
                 {submitting ? "Sending..." : "Send Request"}
               </button>

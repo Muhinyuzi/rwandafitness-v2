@@ -92,8 +92,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-zinc-50 px-4 py-10">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm">
+    <div className="flex flex-1 items-center justify-center bg-zinc-50 px-4 py-12">
+      <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+        {/* SIGNATURE RWANDAFITNESS */}
+        <div className="mb-4 h-1.5 w-14 rounded-full bg-primary" />
+
         <h1 className="mb-2 text-2xl font-semibold text-zinc-900">
           Create your account
         </h1>
@@ -103,7 +106,7 @@ export default function RegisterPage() {
         </p>
 
         {error && (
-          <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
             {error}
           </div>
         )}
@@ -115,7 +118,7 @@ export default function RegisterPage() {
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-black"
+            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
           />
 
           <input
@@ -124,7 +127,7 @@ export default function RegisterPage() {
             placeholder="Username"
             value={form.username}
             onChange={handleChange}
-            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-black"
+            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
           />
 
           <input
@@ -133,7 +136,7 @@ export default function RegisterPage() {
             placeholder="Full name"
             value={form.full_name}
             onChange={handleChange}
-            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-black"
+            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
           />
 
           <input
@@ -142,14 +145,14 @@ export default function RegisterPage() {
             placeholder="Phone"
             value={form.phone}
             onChange={handleChange}
-            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-black"
+            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
           />
 
           <select
             name="role"
             value={form.role}
             onChange={handleChange}
-            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-black"
+            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
           >
             <option value="client">Client</option>
             <option value="coach">Coach</option>
@@ -161,7 +164,7 @@ export default function RegisterPage() {
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-black"
+            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
           />
 
           <input
@@ -170,13 +173,14 @@ export default function RegisterPage() {
             placeholder="Confirm password"
             value={form.password_confirm}
             onChange={handleChange}
-            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-black"
+            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
           />
 
           <button
+            type="button"
             onClick={handleRegister}
             disabled={loading}
-            className="rounded-lg bg-zinc-900 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:opacity-70"
+            className="rounded-lg bg-primary py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-70"
           >
             {loading ? "Creating account..." : "Register"}
           </button>
@@ -184,7 +188,10 @@ export default function RegisterPage() {
 
         <p className="mt-6 text-center text-sm text-zinc-600">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-zinc-900 hover:underline">
+          <Link
+            href="/login"
+            className="font-medium text-primary transition hover:underline"
+          >
             Login
           </Link>
         </p>

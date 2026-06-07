@@ -24,12 +24,16 @@ export default function MyRequestsPage() {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
 
+  const handleAuthError = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
   const fetchData = async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setError("You must be logged in.");
-      setLoading(false);
+      window.location.href = "/login";
       return;
     }
 
@@ -44,6 +48,11 @@ export default function MyRequestsPage() {
           headers: { Authorization: `Token ${token}` },
         }),
       ]);
+
+      if (userRes.status === 401 || reqRes.status === 401) {
+        handleAuthError();
+        return;
+      }
 
       if (!userRes.ok || !reqRes.ok) {
         throw new Error("Failed to load data.");
@@ -69,7 +78,7 @@ export default function MyRequestsPage() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setError("You must be logged in.");
+      handleAuthError();
       return;
     }
 
@@ -84,6 +93,11 @@ export default function MyRequestsPage() {
         },
         body: JSON.stringify({ status }),
       });
+
+      if (res.status === 401) {
+        handleAuthError();
+        return;
+      }
 
       if (!res.ok) {
         throw new Error("Failed to update request.");
@@ -108,6 +122,12 @@ export default function MyRequestsPage() {
       return "bg-red-100 text-red-700";
     }
     return "bg-amber-100 text-amber-700";
+  };
+
+  const formatStatus = (status: string) => {
+    if (status === "accepted") return "Accepted";
+    if (status === "rejected") return "Rejected";
+    return "Pending";
   };
 
   return (
@@ -173,7 +193,7 @@ export default function MyRequestsPage() {
                     req.status
                   )}`}
                 >
-                  {req.status}
+                  {formatStatus(req.status)}
                 </span>
               </div>
 

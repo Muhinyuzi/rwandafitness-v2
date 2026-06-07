@@ -1,5 +1,9 @@
 from rest_framework import generics, permissions
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
 from .models import CoachingRequest
 from .serializers import (
     CoachingRequestSerializer,
@@ -73,3 +77,23 @@ class CoachingRequestStatusUpdateAPIView(generics.UpdateAPIView):
             raise PermissionDenied("Only the assigned coach or an admin can update status.")
 
         serializer.save()
+
+
+
+class RequestsStatsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        if user.role == "coach":
+            qs = CoachingRequest.objects.filter(coach__user=user)
+        else:
+            qs = CoachingRequest.objects.filter(client=user)
+
+        return Response({
+            "total": qs.count(),
+            "pending": qs.filter(status="pending").count(),
+            "accepted": qs.filter(status="accepted").count(),
+            "rejected": qs.filter(status="rejected").count(),
+        })        

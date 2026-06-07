@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import CoachProfile, CoachGalleryImage
+from gyms.models import Gym
 
 
 class CoachGalleryImageSerializer(serializers.ModelSerializer):
@@ -17,10 +18,8 @@ class CoachGalleryImageSerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         request = self.context.get("request")
-
         if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
-
         return None
 
 
@@ -65,8 +64,29 @@ class CoachProfileSerializer(serializers.ModelSerializer):
 
     def get_photo_url(self, obj):
         request = self.context.get("request")
-
         if obj.photo and request:
             return request.build_absolute_uri(obj.photo.url)
-
         return None
+
+
+class CoachProfileUpdateSerializer(serializers.ModelSerializer):
+    gym = serializers.PrimaryKeyRelatedField(
+        queryset=Gym.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+
+    class Meta:
+        model = CoachProfile
+        fields = [
+            "bio",
+            "specialty",
+            "years_experience",
+            "city",
+            "price_per_session",
+            "available_online",
+            "available_in_person",
+            "instagram",
+            "gym",
+            "photo",
+        ]

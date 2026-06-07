@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 type GymGalleryImage = {
   id: number;
@@ -64,8 +65,10 @@ export default function GymDetailPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-6xl px-6 py-10 text-sm text-zinc-600">
-        Loading gym...
+      <div className="mx-auto max-w-6xl px-6 py-10">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-6 text-sm text-zinc-600 shadow-sm">
+          Loading gym...
+        </div>
       </div>
     );
   }
@@ -96,6 +99,8 @@ export default function GymDetailPage() {
         )}
 
         <div className="p-8">
+          <div className="mb-4 h-1.5 w-16 rounded-full bg-primary" />
+
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
               {gym.name}
@@ -112,14 +117,18 @@ export default function GymDetailPage() {
 
           <div className="mt-6 grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
             <div>
-              <h2 className="text-lg font-semibold text-zinc-900">About this gym</h2>
+              <h2 className="text-lg font-semibold text-zinc-900">
+                About this gym
+              </h2>
               <p className="mt-3 leading-8 text-zinc-600">
                 {gym.description || "No description provided."}
               </p>
 
               {gym.gallery_images?.length > 0 && (
                 <div className="mt-10">
-                  <h2 className="text-lg font-semibold text-zinc-900">Gallery</h2>
+                  <h2 className="text-lg font-semibold text-zinc-900">
+                    Gallery
+                  </h2>
 
                   <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {gym.gallery_images.map((item) => (
@@ -158,10 +167,10 @@ export default function GymDetailPage() {
 
                   <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {gym.coaches.map((coach) => (
-                      <a
+                      <Link
                         key={coach.id}
                         href={`/coaches/${coach.id}`}
-                        className="rounded-2xl border border-zinc-200 bg-white p-4 transition hover:-translate-y-1 hover:shadow-md"
+                        className="rounded-2xl border border-zinc-200 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md"
                       >
                         <div className="flex items-center gap-3">
                           {coach.photo_url ? (
@@ -171,7 +180,7 @@ export default function GymDetailPage() {
                               className="h-14 w-14 rounded-full object-cover"
                             />
                           ) : (
-                            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-black text-lg font-bold text-white">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-lg font-bold text-white">
                               {coach.full_name.charAt(0).toUpperCase()}
                             </div>
                           )}
@@ -189,7 +198,9 @@ export default function GymDetailPage() {
                               )}
                             </div>
 
-                            <p className="text-xs text-zinc-500">{coach.specialty}</p>
+                            <p className="text-xs text-zinc-500">
+                              {coach.specialty}
+                            </p>
                             <p className="mt-1 text-xs text-zinc-600">
                               {coach.price_per_session
                                 ? `${coach.price_per_session} $ / session`
@@ -197,14 +208,14 @@ export default function GymDetailPage() {
                             </p>
                           </div>
                         </div>
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
               )}
             </div>
 
-            <aside className="h-fit rounded-2xl bg-zinc-50 p-5">
+            <aside className="h-fit rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
               <h2 className="text-base font-semibold text-zinc-900">
                 Gym information
               </h2>
@@ -238,7 +249,7 @@ export default function GymDetailPage() {
                       href={gym.website}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-zinc-900 underline"
+                      className="text-primary underline"
                     >
                       Visit website
                     </a>
@@ -247,19 +258,23 @@ export default function GymDetailPage() {
 
                 {gym.opening_hours && (
                   <p>
-                    <span className="font-medium text-zinc-900">Opening hours:</span>{" "}
+                    <span className="font-medium text-zinc-900">
+                      Opening hours:
+                    </span>{" "}
                     {gym.opening_hours}
                   </p>
                 )}
 
                 {gym.instagram && (
                   <p>
-                    <span className="font-medium text-zinc-900">Instagram:</span>{" "}
+                    <span className="font-medium text-zinc-900">
+                      Instagram:
+                    </span>{" "}
                     <a
                       href={gym.instagram}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-zinc-900 underline"
+                      className="text-primary underline"
                     >
                       View profile
                     </a>
@@ -273,7 +288,7 @@ export default function GymDetailPage() {
                       href={gym.facebook}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-zinc-900 underline"
+                      className="text-primary underline"
                     >
                       View page
                     </a>
@@ -282,7 +297,9 @@ export default function GymDetailPage() {
 
                 {gym.latitude && gym.longitude && (
                   <p>
-                    <span className="font-medium text-zinc-900">Coordinates:</span>{" "}
+                    <span className="font-medium text-zinc-900">
+                      Coordinates:
+                    </span>{" "}
                     {gym.latitude}, {gym.longitude}
                   </p>
                 )}
