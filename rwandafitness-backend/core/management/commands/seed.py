@@ -4,6 +4,7 @@ import random
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
+from articles.models import Article
 from coaches.models import CoachProfile, CoachGalleryImage
 from gyms.models import Gym, GymGalleryImage
 from requests_app.models import CoachingRequest
@@ -18,6 +19,7 @@ class Command(BaseCommand):
         self.stdout.write("🧹 Cleaning database...")
 
         CoachingRequest.objects.all().delete()
+        Article.objects.all().delete()
         CoachGalleryImage.objects.all().delete()
         CoachProfile.objects.all().delete()
         GymGalleryImage.objects.all().delete()
@@ -58,34 +60,34 @@ class Command(BaseCommand):
 
         gym_data = [
             {
-                "name": "Kigali Fitness Center",
+                "name": "WAKA Fitness",
                 "city": "Kigali",
-                "description": "A modern gym in Kigali with full equipment, cardio machines, and strength coaching.",
+                "description": "Modern fitness club in Kigali focused on strength, cardio and group workouts.",
             },
             {
-                "name": "Iron Gym Rwanda",
+                "name": "Kigali Fit Gym",
                 "city": "Kigali",
-                "description": "Focused on bodybuilding, strength training, and serious lifting culture.",
+                "description": "Community-driven gym offering structured workouts, personal training and functional fitness.",
             },
             {
-                "name": "City Gym Kigali",
+                "name": "Kigali Wellness Hub",
                 "city": "Kigali",
-                "description": "Accessible and practical fitness space for beginners and regular members.",
+                "description": "Fitness and wellness space combining training, yoga and recovery activities.",
             },
             {
-                "name": "PowerHouse Gym",
-                "city": "Huye",
-                "description": "Local gym offering weight training and group fitness sessions.",
-            },
-            {
-                "name": "Elite Fitness Club",
+                "name": "Fitness Point",
                 "city": "Kigali",
-                "description": "Premium-style fitness club with personal coaching and flexible schedules.",
+                "description": "Accessible gym space for beginners and regular fitness members.",
             },
             {
-                "name": "Mountain Fitness Musanze",
-                "city": "Musanze",
-                "description": "A growing gym community in Musanze for cardio, fitness, and strength training.",
+                "name": "Maisha Spa & Healthclub Kigali Serena",
+                "city": "Kigali",
+                "description": "Premium health club offering gym access, spa and wellness services.",
+            },
+            {
+                "name": "Platinum Gym Kigali",
+                "city": "Kigali",
+                "description": "Training gym in Kigali focused on fitness, coaching and member progress.",
             },
         ]
 
@@ -159,7 +161,7 @@ class Command(BaseCommand):
 
         coach_profiles = []
 
-        for i, user in enumerate(coach_users):
+        for user in coach_users:
             profile = CoachProfile.objects.get(user=user)
 
             profile.bio = random.choice(coach_bios)
@@ -171,8 +173,6 @@ class Command(BaseCommand):
             profile.available_online = random.choice([True, False])
             profile.available_in_person = True
             profile.instagram = f"https://instagram.com/{user.username}"
-
-            # Lien optionnel vers un gym
             profile.gym = random.choice(gyms + [None, None])
 
             profile.save()
@@ -199,6 +199,87 @@ class Command(BaseCommand):
                 goal=random.choice(goals),
                 message=random.choice(request_messages),
                 status=random.choice(statuses),
+            )
+
+        self.stdout.write("📰 Creating articles...")
+
+        articles_data = [
+            {
+                "title": "How to Start Your Fitness Journey in Rwanda",
+                "excerpt": "Simple steps to begin training consistently, even if you are starting from zero.",
+                "content": """
+Starting your fitness journey does not need to be complicated.
+
+Begin with small goals: walking more, training two or three times per week, and improving your meals gradually. The most important part is consistency.
+
+A good coach can help you avoid confusion, create a realistic plan, and stay motivated. RwandaFitness helps you discover coaches and gyms that match your goals.
+""",
+                "category": "training",
+                "is_featured": True,
+            },
+            {
+                "title": "Nutrition Basics for Better Results",
+                "excerpt": "Training is important, but nutrition plays a major role in your progress.",
+                "content": """
+Good nutrition supports your workouts, recovery, and energy.
+
+Focus on simple habits: eat enough protein, drink water, include fruits and vegetables, and avoid depending only on processed foods.
+
+You do not need a perfect diet. You need a realistic routine that you can maintain every week.
+""",
+                "category": "nutrition",
+                "is_featured": True,
+            },
+            {
+                "title": "Weight Loss: Focus on Habits, Not Pressure",
+                "excerpt": "Healthy weight loss comes from consistent habits, not extreme restrictions.",
+                "content": """
+Weight loss is easier to maintain when you focus on habits instead of pressure.
+
+Start with regular movement, better meal structure, enough sleep, and realistic goals. Avoid extreme diets that are difficult to continue.
+
+A coach can help you track progress and adjust your plan safely.
+""",
+                "category": "weight-loss",
+                "is_featured": True,
+            },
+            {
+                "title": "Why Strength Training Matters",
+                "excerpt": "Strength training helps build muscle, confidence, and long-term health.",
+                "content": """
+Strength training is not only for bodybuilders.
+
+It helps improve posture, muscle tone, metabolism, and general confidence. Beginners can start with basic movements and progress slowly.
+
+The key is proper technique and a program adapted to your level.
+""",
+                "category": "muscle-gain",
+                "is_featured": False,
+            },
+            {
+                "title": "How to Choose the Right Gym",
+                "excerpt": "Choosing a gym is easier when you know what to look for.",
+                "content": """
+A good gym should match your schedule, budget, training style, and comfort level.
+
+Look at equipment, cleanliness, location, opening hours, and whether coaches are available.
+
+The best gym is not always the biggest one. It is the one you can attend consistently.
+""",
+                "category": "gym-tips",
+                "is_featured": False,
+            },
+        ]
+
+        for item in articles_data:
+            Article.objects.create(
+                title=item["title"],
+                excerpt=item["excerpt"],
+                content=item["content"].strip(),
+                category=item["category"],
+                author_name="RwandaFitness Team",
+                is_published=True,
+                is_featured=item["is_featured"],
             )
 
         self.stdout.write(self.style.SUCCESS("🔥 SEED COMPLETED SUCCESSFULLY"))

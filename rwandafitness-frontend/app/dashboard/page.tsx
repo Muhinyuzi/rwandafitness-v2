@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { API_URL } from "@/lib/api";
 
 export default function DashboardPage() {
   useEffect(() => {
@@ -11,7 +13,7 @@ export default function DashboardPage() {
       return;
     }
 
-    fetch("http://127.0.0.1:8000/api/auth/me/", {
+    fetch(`${API_URL}/api/auth/me/`, {
       headers: {
         Authorization: `Token ${token}`,
       },

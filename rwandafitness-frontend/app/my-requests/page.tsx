@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { API_URL } from "@/lib/api";
 
 type Request = {
   id: number;
@@ -41,10 +42,10 @@ export default function MyRequestsPage() {
       setError("");
 
       const [userRes, reqRes] = await Promise.all([
-        fetch("http://127.0.0.1:8000/api/auth/me/", {
+        fetch(`${API_URL}/api/auth/me/`, {
           headers: { Authorization: `Token ${token}` },
         }),
-        fetch("http://127.0.0.1:8000/api/requests/", {
+        fetch(`${API_URL}/api/requests/`, {
           headers: { Authorization: `Token ${token}` },
         }),
       ]);
@@ -84,8 +85,9 @@ export default function MyRequestsPage() {
 
     try {
       setUpdatingId(id);
+      setError("");
 
-      const res = await fetch(`http://127.0.0.1:8000/api/requests/${id}/status/`, {
+      const res = await fetch(`${API_URL}/api/requests/${id}/status/`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -115,18 +117,18 @@ export default function MyRequestsPage() {
     user?.role === "coach" ? "Requests from Clients" : "My Coaching Requests";
 
   const getStatusClasses = (status: string) => {
-    if (status === "accepted") {
-      return "bg-green-100 text-green-700";
-    }
-    if (status === "rejected") {
-      return "bg-red-100 text-red-700";
-    }
+    if (status === "accepted") return "bg-green-100 text-green-700";
+    if (status === "rejected") return "bg-red-100 text-red-700";
+    if (status === "completed") return "bg-blue-100 text-blue-700";
+
     return "bg-amber-100 text-amber-700";
   };
 
   const formatStatus = (status: string) => {
     if (status === "accepted") return "Accepted";
     if (status === "rejected") return "Rejected";
+    if (status === "completed") return "Completed";
+
     return "Pending";
   };
 
@@ -139,7 +141,8 @@ export default function MyRequestsPage() {
 
         {user && (
           <p className="mt-2 text-sm text-zinc-500">
-            Logged in as <span className="font-medium">{user.full_name}</span> ({user.role})
+            Logged in as{" "}
+            <span className="font-medium">{user.full_name}</span> ({user.role})
           </p>
         )}
       </div>
@@ -162,7 +165,7 @@ export default function MyRequestsPage() {
         </div>
       )}
 
-      {!loading && !error && (
+      {!loading && !error && requests.length > 0 && (
         <div className="space-y-4">
           {requests.map((req) => (
             <div
@@ -171,17 +174,23 @@ export default function MyRequestsPage() {
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-zinc-900">{req.goal}</h2>
+                  <h2 className="text-xl font-semibold text-zinc-900">
+                    {req.goal}
+                  </h2>
 
                   <p className="mt-2 text-sm text-zinc-600">
                     {user?.role === "coach" ? (
                       <>
-                        <span className="font-medium text-zinc-900">Client:</span>{" "}
+                        <span className="font-medium text-zinc-900">
+                          Client:
+                        </span>{" "}
                         {req.client_name}
                       </>
                     ) : (
                       <>
-                        <span className="font-medium text-zinc-900">Coach:</span>{" "}
+                        <span className="font-medium text-zinc-900">
+                          Coach:
+                        </span>{" "}
                         {req.coach_name}
                       </>
                     )}
@@ -198,12 +207,15 @@ export default function MyRequestsPage() {
               </div>
 
               <div className="mt-4 rounded-xl bg-zinc-50 p-4">
-                <p className="text-sm leading-7 text-zinc-700">{req.message}</p>
+                <p className="text-sm leading-7 text-zinc-700">
+                  {req.message || "No message provided."}
+                </p>
               </div>
 
               {user?.role === "coach" && req.status === "pending" && (
                 <div className="mt-5 flex gap-3">
                   <button
+                    type="button"
                     onClick={() => updateStatus(req.id, "accepted")}
                     disabled={updatingId === req.id}
                     className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:opacity-70"
@@ -212,11 +224,27 @@ export default function MyRequestsPage() {
                   </button>
 
                   <button
+                    type="button"
                     onClick={() => updateStatus(req.id, "rejected")}
                     disabled={updatingId === req.id}
                     className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-70"
                   >
                     {updatingId === req.id ? "Updating..." : "Reject"}
+                  </button>
+                </div>
+              )}
+
+              {user?.role === "coach" && req.status === "accepted" && (
+                <div className="mt-5">
+                  <button
+                    type="button"
+                    onClick={() => updateStatus(req.id, "completed")}
+                    disabled={updatingId === req.id}
+                    className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-70"
+                  >
+                    {updatingId === req.id
+                      ? "Updating..."
+                      : "Mark as Completed"}
                   </button>
                 </div>
               )}

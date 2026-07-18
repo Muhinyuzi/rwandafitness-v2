@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { API_URL } from "@/lib/api";
 
 type Gym = {
   id: number;
@@ -19,7 +20,7 @@ export default function GymsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/gyms/")
+    fetch(`${API_URL}/api/gyms/`)
       .then((res) => res.json())
       .then((data) => {
         setGyms(Array.isArray(data) ? data : data.results ?? []);

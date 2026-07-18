@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 type Article = {
   id: number;
@@ -19,7 +20,7 @@ export default function ArticlesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/articles/")
+    fetch(`${API_URL}/api/articles/`)
       .then((res) => res.json())
       .then((data) => {
         setArticles(Array.isArray(data) ? data : data.results ?? []);

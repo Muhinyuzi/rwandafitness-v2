@@ -1,4 +1,5 @@
 import Link from "next/link";
+import FeaturedArticles from "@/components/FeaturedArticles";
 
 export default function HomePage() {
   return (
@@ -74,6 +75,8 @@ export default function HomePage() {
             </p>
           </div>
         </section>
+
+        <FeaturedArticles />
 
         <section className="mt-12 rounded-3xl border border-zinc-200 bg-primary px-8 py-14 text-center text-white shadow-sm">
           <h2 className="text-3xl font-bold tracking-tight">

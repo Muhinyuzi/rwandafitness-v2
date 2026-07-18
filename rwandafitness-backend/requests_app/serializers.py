@@ -74,7 +74,7 @@ class CoachingRequestStatusSerializer(serializers.ModelSerializer):
         fields = ["status"]
 
     def validate_status(self, value):
-        allowed = ["accepted", "rejected", "completed"]
+        allowed = ["pending", "accepted", "rejected", "completed"]
         if value not in allowed:
             raise serializers.ValidationError(
                 f"Status must be one of: {', '.join(allowed)}."

@@ -96,4 +96,37 @@ class RequestsStatsAPIView(APIView):
             "pending": qs.filter(status="pending").count(),
             "accepted": qs.filter(status="accepted").count(),
             "rejected": qs.filter(status="rejected").count(),
-        })        
+        })   
+        
+class CoachDashboardAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        if user.role != "coach":
+            raise PermissionDenied("Only coaches can access this dashboard.")
+
+        qs = CoachingRequest.objects.select_related(
+            "client",
+            "coach",
+            "coach__user",
+        ).filter(coach__user=user)
+
+        recent_requests = qs[:5]
+
+        return Response(
+            {
+                "stats": {
+                    "total": qs.count(),
+                    "pending": qs.filter(status="pending").count(),
+                    "accepted": qs.filter(status="accepted").count(),
+                    "rejected": qs.filter(status="rejected").count(),
+                    "completed": qs.filter(status="completed").count(),
+                },
+                "recent_requests": CoachingRequestSerializer(
+                    recent_requests,
+                    many=True,
+                ).data,
+            }
+        )             

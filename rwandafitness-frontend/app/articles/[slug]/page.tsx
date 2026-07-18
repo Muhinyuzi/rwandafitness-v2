@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 type Article = {
   id: number;
@@ -25,7 +26,7 @@ export default function ArticleDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/articles/${slug}/`)
+    fetch(`${API_URL}/api/articles/${slug}/`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to load article.");

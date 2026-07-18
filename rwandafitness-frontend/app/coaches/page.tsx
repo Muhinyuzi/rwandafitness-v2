@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 type Coach = {
   id: number;
@@ -25,7 +26,7 @@ export default function CoachesPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/coaches/")
+    fetch(`${API_URL}/api/coaches/`)
       .then((res) => res.json())
       .then((data) =>
         setCoaches(Array.isArray(data) ? data : data.results ?? [])
@@ -65,7 +66,7 @@ export default function CoachesPage() {
       setSubmitting(true);
       setStatusMessage("");
 
-      const res = await fetch("http://127.0.0.1:8000/api/requests/create/", {
+      const res = await fetch(`${API_URL}/api/requests/create/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
