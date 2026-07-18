@@ -1,176 +1,420 @@
-# 🏋🏾‍♂️ RwandaFitness v2
+# 🏋️ RwandaFitness V2
 
-**RwandaFitness v2** is a modern, scalable web platform focused on **fitness, health, and active lifestyle in Africa**.
-
-This project represents the **next generation** of the original RwandaFitness platform (launched in 2018) and is being rebuilt from scratch with a **modern tech stack**, clean architecture, and long-term product vision.
-
-While RwandaFitness v2 is a **real business-oriented project**, it is also used to demonstrate professional **full-stack engineering skills** in a real-world context.
-
----
-
-## 🌍 Vision
-
-RwandaFitness v2 aims to become:
-
-- A **digital fitness platform** for African audiences
-- A foundation for **premium content**, coaching programs, and community features
-- A scalable base for future expansion into a broader brand (**Africore**), including:
-  - Sportswear & footwear
-  - Lifestyle & wellness products
-  - Digital services (subscriptions, dashboards, analytics)
+<p align="center">
+  <h1 align="center">RwandaFitness</h1>
+  <p align="center">
+    <strong>The Home of Fitness in Rwanda</strong>
+  </p>
+</p>
 
 ---
 
-## 🚀 Current Status
+## 🌍 About
 
-- ✅ New architecture defined
-- ✅ Monorepo setup (Frontend + Backend)
-- 🚧 Active development (v2)
-- 🔁 Old Flask-based website still running in production (v1)
+**RwandaFitness V2** is a modern fitness platform built to connect people across Rwanda with gyms, fitness coaches, educational content, and a growing fitness community.
 
-> The legacy RwandaFitness (Flask) site will eventually be **replaced** by this new version once v2 is stable.
+The project is a complete rebuild of the original RwandaFitness platform using a modern technology stack, scalable architecture, and a long-term product vision.
 
----
-
-## 🧱 Architecture Overview
-
-This repository uses a **monorepo architecture**, separating concerns clearly while keeping everything in a single project.
-
-rwandafitness-v2/
-├─ apps/
-│ ├─ web/ # Next.js frontend (public + admin)
-│ └─ api/ # FastAPI backend
-│
-├─ packages/ # Shared packages (UI, types, config)
-├─ infra/ # Infrastructure & scripts
-├─ docs/ # Product & technical documentation
-├─ docker-compose.yml
-├─ .env.example
-└─ README.md
-
-yaml
-Copier le code
+While RwandaFitness is a real business-oriented platform, it also showcases professional full-stack software engineering practices through the development of a production-ready application.
 
 ---
 
-## 🖥️ Frontend (Next.js)
+# 🎯 Mission
 
-**Tech stack**
-- Next.js (App Router)
-- TypeScript
-- Modern component-based architecture
-- SEO-friendly (SSR / SSG)
-- Ready for public pages + admin dashboard
-
-**Features (planned & in progress)**
-- Marketing pages (home, programs, blog, contact)
-- Authentication (login / register)
-- Admin dashboard
-- API integration with backend
-- Responsive UI (mobile-first)
+> **Make Rwanda healthier through fitness.**
 
 ---
 
-## ⚙️ Backend (FastAPI)
+# 🚀 Vision
 
-**Tech stack**
+RwandaFitness aims to become the national fitness platform for Rwanda.
+
+Our goal is to help people:
+
+- 🏋️ Discover gyms
+- 👨‍🏫 Find trusted fitness coaches
+- 🥗 Learn about nutrition
+- 📚 Read educational fitness content
+- 💪 Request coaching
+- 🏃 Join fitness challenges
+- 📅 Discover fitness events
+- 👥 Become part of Rwanda's fitness community
+
+RwandaFitness is building the digital ecosystem for fitness in Rwanda.
+
+---
+
+# ✨ Current Features
+
+## Authentication
+
+- User registration
+- Email verification
+- Login
+- Logout
+- Forgot password
+- Password reset
+- Protected API endpoints
+
+---
+
+## Coach Directory
+
+- Public coach profiles
+- Coach dashboard
+- Coaching requests
+- Accept requests
+- Reject requests
+- Complete requests
+
+---
+
+## Gym Directory
+
+- Public gym profiles
+- Gym details
+- Search gyms
+
+---
+
+## Articles
+
+- Fitness articles
+- Categories
+- Featured articles
+- Responsive article pages
+
+---
+
+## Responsive Design
+
+- Desktop
+- Tablet
+- Mobile
+
+---
+
+# 🚧 Upcoming Features
+
+## Nutrition
+
+- Healthy recipes
+- Nutrition articles
+- Local food guides
+
+---
+
+## Events
+
+- Running events
+- Competitions
+- Workshops
+- Gym openings
+- Nutrition seminars
+
+---
+
+## Challenges
+
+Examples:
+
+- 30 Days Fitness Challenge
+- Kigali Running Challenge
+- Rwanda Transformation Challenge
+
+---
+
+## Community
+
+- User profiles
+- Community groups
+- Rankings
+- Badges
+- Achievements
+
+---
+
+## RwandaFitness TV
+
+- Coach interviews
+- Athlete stories
+- Workout tutorials
+- Nutrition education
+- Success stories
+
+---
+
+## Marketplace
+
+Future services:
+
+- Coach booking
+- Online coaching
+- Payments
+- Premium subscriptions
+
+---
+
+# 📈 Current Status
+
+- ✅ RwandaFitness V2 architecture completed
+- ✅ Django REST API
+- ✅ Next.js frontend
+- ✅ Authentication system
+- ✅ Email verification
+- ✅ Coach directory
+- ✅ Gym directory
+- ✅ Fitness articles
+- ✅ Coaching requests
+- 🚧 Client Dashboard
+- 🚧 SEO improvements
+- 🚧 Production deployment
+
+---
+
+# 🏗️ Technology Stack
+
+## Backend
+
 - Python
-- FastAPI
-- SQLAlchemy
-- Pydantic
-- JWT authentication
+- Django
+- Django REST Framework
 - PostgreSQL
-- Alembic migrations
+- Django Token Authentication
 
-**Features (planned & in progress)**
-- Authentication & authorization (RBAC)
-- User management
-- Fitness programs
-- Content management (articles, programs)
-- Email notifications (disabled in demo environments if restricted)
-- Clean service/repository architecture
+Future:
+
+- Redis
+- Celery
 
 ---
 
-## 🔐 Environments
+## Frontend
 
-The project is designed to support multiple environments:
-
-- `development`
-- `demo`
-- `production`
-
-Environment variables are managed via `.env` files and infrastructure configuration.
+- Next.js 16
+- React
+- TypeScript
+- Tailwind CSS
 
 ---
 
-## 🐳 Docker Support
+# 📁 Project Structure
 
-The project is fully Docker-ready.
+```
+backend/
+│
+├── users/
+├── coaches/
+├── gyms/
+├── articles/
+├── requests/
+├── core/
+└── manage.py
 
-```bash
-docker-compose up --build
-This will start:
+frontend/
+│
+├── app/
+├── components/
+├── lib/
+├── public/
+├── types/
+└── package.json
 
-Frontend (Next.js)
+docs/
 
-Backend (FastAPI)
+README.md
+```
 
-Database (PostgreSQL)
+---
 
-🧪 Testing
-Backend testing is handled using Pytest.
+# 🛣️ Roadmap
 
-Planned coverage includes:
+## Phase 1 — Foundation
 
-Authentication
+- Authentication
+- Coach directory
+- Gym directory
+- Articles
+- Coaching requests
+- Coach dashboard
+- Client dashboard
+- Search
+- SEO
+- Deployment
 
-Users
+---
 
-Permissions
+## Phase 2 — Community
 
-Core business logic
+- Reviews
+- Events
+- Challenges
+- Community groups
+- User profiles
 
-📦 Why This Project Matters
-This is not just a portfolio project.
+---
 
-RwandaFitness v2 is:
+## Phase 3 — Media
 
-A real product idea with long-term vision
+### RwandaFitness TV
 
-Built with production-grade tools
+- Interviews
+- Workout videos
+- Nutrition videos
+- Athlete stories
+- Podcasts
 
-Designed to scale beyond a single country
+---
 
-A foundation for future African digital products
+## Phase 4 — Marketplace
 
-At the same time, it demonstrates:
+- Coach booking
+- Online coaching
+- Payments
+- Premium memberships
+- Sponsorships
+- Advertising
 
-Full-stack architecture skills
+---
 
-Clean backend design
+# 🔍 SEO Strategy
 
-Modern frontend practices
+Target keywords:
 
-DevOps fundamentals
+- Fitness Rwanda
+- Gyms Rwanda
+- Gyms Kigali
+- Fitness Coaches Rwanda
+- Personal Trainers Kigali
+- Healthy Rwandan Food
 
-🔮 Roadmap (High-level)
- Core backend API
+Future landing pages:
 
- Authentication & admin access
+```
+/gyms
+/coaches
+/articles
+/nutrition
+/events
+/challenges
+```
 
- Public marketing pages
+---
 
- Content management
+# 💼 Business Model
 
- Deployment (cloud)
+## Phase 1
 
- Community & subscriptions
+Free platform
 
- Transition to broader brand (Africore)
+- Coach profiles
+- Gym profiles
+- Articles
 
-👤 Author
-Jean Claude Muhinyuzi
-📍 Québec, Canada
-💼 Software Development & Telecommunications
-🔗 GitHub: https://github.com/Muhinyuzi
+Goal:
+
+- Build audience
+- Improve SEO
+- Grow the fitness community
+
+---
+
+## Phase 2
+
+Premium subscriptions
+
+### Gym Pro
+
+- Premium profile
+- Better visibility
+- Promotions
+- Statistics
+
+### Coach Pro
+
+- Better visibility
+- Client leads
+- Premium programs
+
+---
+
+## Phase 3
+
+Marketplace
+
+Revenue sources:
+
+- Coaching commissions
+- Advertising
+- Sponsorships
+- Brand partnerships
+
+---
+
+# 📊 Success Metrics
+
+## Audience
+
+- Monthly visitors
+- Registered users
+- Page views
+
+## Platform
+
+- Registered gyms
+- Registered coaches
+- Published articles
+- Coaching requests
+
+## Community
+
+- Challenge participants
+- Reviews
+- User engagement
+
+---
+
+# 💡 Product Principles
+
+Every new feature should answer at least one of these questions:
+
+- Does it help people discover fitness?
+- Does it help gyms?
+- Does it help coaches?
+- Does it educate users?
+- Does it strengthen the community?
+- Does it improve the user experience?
+
+If the answer is **no**, it probably doesn't belong in RwandaFitness.
+
+---
+
+# 🌟 Long-Term Vision
+
+Within the next five years, RwandaFitness aims to become:
+
+- 🇷🇼 The largest fitness community in Rwanda
+- 🏋️ The leading gym directory
+- 👨‍🏫 The leading coach directory
+- 🎥 The leading fitness media platform
+- 💳 The leading fitness marketplace
+
+---
+
+# 👤 Founder
+
+**Jean Claude Muhinyuzi**
+
+Full Stack Developer
+
+Building technology products that create real-world impact.
+
+---
+
+# 📄 License
+
+This project is proprietary software.
+
+Copyright © RwandaFitness.
+
+All rights reserved.

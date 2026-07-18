@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import StatCard from "@/components/StatCard";
+import { API_URL } from "@/lib/api";
 
 type Stats = {
   total: number;
   pending: number;
   accepted: number;
   rejected: number;
+  completed: number;
 };
 
 type Request = {
@@ -16,6 +18,11 @@ type Request = {
   goal: string;
   client_name: string;
   status: string;
+};
+
+type DashboardData = {
+  stats: Stats;
+  recent_requests: Request[];
 };
 
 export default function CoachDashboard() {
@@ -36,35 +43,26 @@ export default function CoachDashboard() {
       try {
         setError("");
 
-        const [statsRes, requestsRes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/requests/stats/", {
-            headers: { Authorization: `Token ${token}` },
-          }),
-          fetch("http://127.0.0.1:8000/api/requests/", {
-            headers: { Authorization: `Token ${token}` },
-          }),
-        ]);
+        const res = await fetch(`${API_URL}/api/requests/coach/dashboard/`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
 
-        if (statsRes.status === 401 || requestsRes.status === 401) {
+        if (res.status === 401 || res.status === 403) {
           localStorage.removeItem("token");
           window.location.href = "/login";
           return;
         }
 
-        if (!statsRes.ok || !requestsRes.ok) {
+        if (!res.ok) {
           throw new Error("Failed to load dashboard data.");
         }
 
-        const statsData = await statsRes.json();
-        const requestsData = await requestsRes.json();
+        const data: DashboardData = await res.json();
 
-        setStats(statsData);
-
-        const normalizedRequests = Array.isArray(requestsData)
-          ? requestsData
-          : requestsData.results ?? [];
-
-        setRequests(normalizedRequests.slice(0, 3));
+        setStats(data.stats);
+        setRequests(data.recent_requests ?? []);
       } catch {
         setError("Failed to load dashboard data.");
       } finally {
@@ -79,53 +77,56 @@ export default function CoachDashboard() {
     if (status === "accepted") {
       return "bg-green-100 text-green-700";
     }
+
     if (status === "rejected") {
       return "bg-red-100 text-red-700";
     }
+
+    if (status === "completed") {
+      return "bg-blue-100 text-blue-700";
+    }
+
     return "bg-amber-100 text-amber-700";
   };
 
   const formatStatus = (status: string) => {
     if (status === "accepted") return "Accepted";
     if (status === "rejected") return "Rejected";
+    if (status === "completed") return "Completed";
+
     return "Pending";
   };
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
-      {/* HEADER */}
-      <h1 className="text-3xl font-bold text-zinc-900">
-        Coach Dashboard
-      </h1>
+      <h1 className="text-3xl font-bold text-zinc-900">Coach Dashboard</h1>
+
       <p className="mt-2 text-sm text-zinc-500">
         Track your incoming requests and manage client activity.
       </p>
 
-      {/* ERROR */}
       {error && (
         <div className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           {error}
         </div>
       )}
 
-      {/* LOADING */}
       {loading && (
         <div className="mt-6 rounded-2xl border border-zinc-200 bg-white p-6 text-sm text-zinc-600 shadow-sm">
           Loading dashboard...
         </div>
       )}
 
-      {/* STATS */}
       {!loading && stats && (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-5">
           <StatCard label="Total Requests" value={stats.total} />
           <StatCard label="Pending" value={stats.pending} />
           <StatCard label="Accepted" value={stats.accepted} />
           <StatCard label="Rejected" value={stats.rejected} />
+          <StatCard label="Completed" value={stats.completed} />
         </div>
       )}
 
-      {/* CTA */}
       {!loading && !error && (
         <div className="mt-8">
           <Link
@@ -137,12 +138,12 @@ export default function CoachDashboard() {
         </div>
       )}
 
-      {/* RECENT REQUESTS */}
       {!loading && !error && (
         <div className="mt-10">
           <h2 className="text-lg font-semibold text-zinc-900">
             Recent Client Requests
           </h2>
+
           <p className="mt-1 text-sm text-zinc-500">
             Latest activity from clients
           </p>
@@ -159,12 +160,9 @@ export default function CoachDashboard() {
                   className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:shadow-md"
                 >
                   <div>
-                    <p className="font-semibold text-zinc-900">
-                      {r.goal}
-                    </p>
-                    <p className="text-sm text-zinc-500">
-                      {r.client_name}
-                    </p>
+                    <p className="font-semibold text-zinc-900">{r.goal}</p>
+
+                    <p className="text-sm text-zinc-500">{r.client_name}</p>
                   </div>
 
                   <span

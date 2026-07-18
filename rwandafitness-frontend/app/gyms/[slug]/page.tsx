@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 type GymGalleryImage = {
   id: number;
@@ -51,7 +52,7 @@ export default function GymDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/gyms/${slug}/`)
+    fetch(`${API_URL}/api/gyms/${slug}/`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to load gym.");

@@ -1,21 +1,34 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_URL } from "@/lib/api";
+
+type LoginResponse = {
+  token?: string;
+  detail?: string;
+  non_field_errors?: string[];
+};
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
-
   const handleLogin = async () => {
+    if (loading) {
+      return;
+    }
+
     setError("");
 
-    if (!email || !password) {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
       setError("Please fill all fields.");
       return;
     }
@@ -23,29 +36,59 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const res = await fetch("http://127.0.0.1:8000/api/auth/login/", {
+      const response = await fetch(`${API_URL}/api/auth/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email: normalizedEmail,
+          password,
+        }),
       });
 
-      const data = await res.json();
+      const contentType = response.headers.get("content-type");
 
-      if (!res.ok) {
-        setError("Invalid email or password.");
+      const data: LoginResponse | null = contentType?.includes(
+        "application/json"
+      )
+        ? await response.json()
+        : null;
+
+      if (!response.ok) {
+        setError(
+          data?.detail ||
+            data?.non_field_errors?.[0] ||
+            "Invalid email or password."
+        );
+        return;
+      }
+
+      if (!data?.token) {
+        setError(
+          "Login succeeded, but no authentication token was returned."
+        );
         return;
       }
 
       localStorage.setItem("token", data.token);
 
-      router.push("/coaches");
+      window.dispatchEvent(new Event("auth-changed"));
+
+      router.replace("/coaches");
+      router.refresh();
     } catch {
-      setError("Something went wrong.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    await handleLogin();
   };
 
   return (
@@ -62,45 +105,64 @@ export default function LoginPage() {
         </p>
 
         {error && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+          <div
+            role="alert"
+            className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600"
+          >
             {error}
           </div>
         )}
 
-        <div className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="email"
+            name="email"
+            autoComplete="email"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
+            onChange={(event) => setEmail(event.target.value)}
+            disabled={loading}
+            required
+            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:bg-zinc-100"
           />
 
           <input
             type="password"
+            name="password"
+            autoComplete="current-password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary"
+            onChange={(event) => setPassword(event.target.value)}
+            disabled={loading}
+            required
+            className="rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:bg-zinc-100"
           />
 
           <button
-            type="button"
-            onClick={handleLogin}
+            type="submit"
             disabled={loading}
-            className="rounded-lg bg-primary py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-70"
+            className="rounded-lg bg-primary py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-70"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
-        </div>
+        </form>
 
         <p className="mt-6 text-center text-sm text-zinc-600">
-          Don’t have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/register"
             className="font-medium text-primary transition hover:underline"
           >
             Register
+          </Link>
+        </p>
+
+        <p className="mt-4 text-center text-sm text-zinc-600">
+          <Link
+            href="/forgot-password"
+            className="font-medium text-primary transition hover:underline"
+          >
+            Forgot your password?
           </Link>
         </p>
       </div>

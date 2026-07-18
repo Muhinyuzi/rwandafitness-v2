@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, useEffect, useState } from "react";
+import { API_URL } from "@/lib/api";
 
 type Gym = {
   id: number;
@@ -48,12 +49,12 @@ export default function CoachProfileEditPage() {
     }
 
     Promise.all([
-      fetch("http://127.0.0.1:8000/api/coaches/me/", {
+      fetch(`${API_URL}/api/coaches/me/`, {
         headers: {
           Authorization: `Token ${token}`,
         },
       }),
-      fetch("http://127.0.0.1:8000/api/gyms/", {
+      fetch(`${API_URL}/api/gyms/`, {
         headers: {
           Authorization: `Token ${token}`,
         },
@@ -141,7 +142,7 @@ export default function CoachProfileEditPage() {
         formData.append("photo", form.photo);
       }
 
-      const res = await fetch("http://127.0.0.1:8000/api/coaches/me/", {
+      const res = await fetch(`${API_URL}/api/coaches/me/`, {
         method: "PATCH",
         headers: {
           Authorization: `Token ${token}`,

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import StatCard from "../../../components/StatCard";
+import { API_URL } from "@/lib/api";
 
 type Stats = {
   total: number;
@@ -36,10 +37,10 @@ export default function ClientDashboard() {
         setError("");
 
         const [statsRes, requestsRes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/requests/stats/", {
+          fetch(`${API_URL}/api/requests/stats/`, {
             headers: { Authorization: `Token ${token}` },
           }),
-          fetch("http://127.0.0.1:8000/api/requests/", {
+          fetch(`${API_URL}/api/requests/`, {
             headers: { Authorization: `Token ${token}` },
           }),
         ]);

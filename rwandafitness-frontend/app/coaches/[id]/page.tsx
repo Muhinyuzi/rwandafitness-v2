@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { API_URL } from "@/lib/api";
 
 type CoachGalleryImage = {
   id: number;
@@ -41,7 +42,7 @@ export default function CoachDetailPage() {
   const [showRequestBox, setShowRequestBox] = useState(false);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/coaches/${id}/`)
+    fetch(`${API_URL}/api/coaches/${id}/`)
       .then((res) => res.json())
       .then((data) => {
         setCoach(data);
@@ -72,7 +73,7 @@ export default function CoachDetailPage() {
       setSubmitting(true);
       setStatusMessage("");
 
-      const res = await fetch("http://127.0.0.1:8000/api/requests/create/", {
+      const res = await fetch(`${API_URL}/api/requests/create/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

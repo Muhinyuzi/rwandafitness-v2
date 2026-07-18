@@ -27,6 +27,11 @@ class GymAdmin(admin.ModelAdmin):
         "email",
         "phone",
     )
+
+    prepopulated_fields = {
+        "slug": ("name",)
+    }
+
     inlines = [GymGalleryImageInline]
 
 

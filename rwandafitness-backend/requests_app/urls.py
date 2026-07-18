@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    CoachDashboardAPIView,
     CoachingRequestCreateAPIView,
     MyCoachingRequestListAPIView,
     CoachingRequestDetailAPIView,
@@ -15,4 +16,10 @@ urlpatterns = [
 
     path("<int:pk>/status/", CoachingRequestStatusUpdateAPIView.as_view(), name="coaching-request-status"),
     path("<int:pk>/", CoachingRequestDetailAPIView.as_view(), name="coaching-request-detail"),
+    
+    path(
+    "coach/dashboard/",
+    CoachDashboardAPIView.as_view(),
+    name="coach-dashboard",
+),
 ]
