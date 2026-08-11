@@ -22,12 +22,73 @@ SECRET_KEY = os.getenv(
     "django-insecure-dev-key-change-me",
 )
 
-DEBUG = os.getenv("DEBUG", "True") == "True"
+DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = os.getenv(
-    "ALLOWED_HOSTS",
-    "127.0.0.1,localhost",
-).split(",")
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv(
+        "ALLOWED_HOSTS",
+        "127.0.0.1,localhost",
+    ).split(",")
+    if host.strip()
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000",
+    ).split(",")
+    if origin.strip()
+]
+
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000",
+    ).split(",")
+    if origin.strip()
+]
+
+
+# ==================================================
+# PRODUCTION SECURITY
+# ==================================================
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+    SECURE_HSTS_SECONDS = int(
+        os.getenv(
+            "SECURE_HSTS_SECONDS",
+            "3600",
+        )
+    )
+
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = (
+        os.getenv(
+            "SECURE_HSTS_INCLUDE_SUBDOMAINS",
+            "True",
+        ).lower()
+        == "true"
+    )
+
+    SECURE_HSTS_PRELOAD = (
+        os.getenv(
+            "SECURE_HSTS_PRELOAD",
+            "False",
+        ).lower()
+        == "true"
+    )
+
+    SECURE_PROXY_SSL_HEADER = (
+        "HTTP_X_FORWARDED_PROTO",
+        "https",
+    )
 
 
 # ==================================================
@@ -48,6 +109,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "django_filters",
+    "django_ckeditor_5",
+    "drf_spectacular",
 
     # Local apps
     "accounts",
@@ -57,6 +120,8 @@ INSTALLED_APPS = [
     "requests_app",
     "articles",
     "core",
+    "contact",
+    "reviews",
 ]
 
 
@@ -113,6 +178,7 @@ TEMPLATES = [
 
 # PostgreSQL en production si DB_ENGINE=postgresql,
 # sinon SQLite en développement.
+
 if os.getenv("DB_ENGINE") == "postgresql":
     DATABASES = {
         "default": {
@@ -120,8 +186,14 @@ if os.getenv("DB_ENGINE") == "postgresql":
             "NAME": os.getenv("DB_NAME"),
             "USER": os.getenv("DB_USER"),
             "PASSWORD": os.getenv("DB_PASSWORD"),
-            "HOST": os.getenv("DB_HOST"),
-            "PORT": os.getenv("DB_PORT", "5432"),
+            "HOST": os.getenv(
+                "DB_HOST",
+                "localhost",
+            ),
+            "PORT": os.getenv(
+                "DB_PORT",
+                "5432",
+            ),
         }
     }
 else:
@@ -182,7 +254,7 @@ USE_TZ = True
 # STATIC / MEDIA
 # ==================================================
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
@@ -208,13 +280,19 @@ AUTH_USER_MODEL = "accounts.User"
 # ==================================================
 
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": (
+        "drf_spectacular.openapi.AutoSchema"
+    ),
+
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
+
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
+
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
@@ -225,20 +303,8 @@ REST_FRAMEWORK = {
 # CORS
 # ==================================================
 
-CORS_ALLOWED_ORIGINS = os.getenv(
-    "CORS_ALLOWED_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000",
-).split(",")
+CORS_ALLOW_CREDENTIALS = True
 
-
-# ==================================================
-# CSRF
-# ==================================================
-
-CSRF_TRUSTED_ORIGINS = os.getenv(
-    "CSRF_TRUSTED_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000",
-).split(",")
 
 # ==================================================
 # EMAIL
@@ -249,15 +315,98 @@ EMAIL_BACKEND = os.getenv(
     "django.core.mail.backends.console.EmailBackend",
 )
 
-EMAIL_HOST = os.getenv("EMAIL_HOST", "")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
+EMAIL_HOST = os.getenv(
+    "EMAIL_HOST",
+    "",
+)
+
+EMAIL_PORT = int(
+    os.getenv(
+        "EMAIL_PORT",
+        "587",
+    )
+)
+
+EMAIL_HOST_USER = os.getenv(
+    "EMAIL_HOST_USER",
+    "",
+)
+
+EMAIL_HOST_PASSWORD = os.getenv(
+    "EMAIL_HOST_PASSWORD",
+    "",
+)
+
+EMAIL_USE_TLS = (
+    os.getenv(
+        "EMAIL_USE_TLS",
+        "True",
+    ).lower()
+    == "true"
+)
+
+EMAIL_USE_SSL = (
+    os.getenv(
+        "EMAIL_USE_SSL",
+        "False",
+    ).lower()
+    == "true"
+)
 
 DEFAULT_FROM_EMAIL = os.getenv(
     "DEFAULT_FROM_EMAIL",
     "RwandaFitness <noreply@rwandafitness.com>",
 )
 
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+CONTACT_NOTIFICATION_EMAIL = os.getenv(
+    "CONTACT_NOTIFICATION_EMAIL",
+    "rwandafitness@gmail.com",
+)
+
+
+# ==================================================
+# FRONTEND
+# ==================================================
+
+FRONTEND_URL = os.getenv(
+    "FRONTEND_URL",
+    "http://localhost:3000",
+)
+
+
+# ==================================================
+# CKEDITOR 5
+# ==================================================
+
+CKEDITOR_5_CONFIGS = {
+    "default": {
+        "toolbar": [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "link",
+            "bulletedList",
+            "numberedList",
+            "blockQuote",
+            "|",
+            "insertTable",
+            "imageUpload",
+            "|",
+            "undo",
+            "redo",
+        ],
+    },
+}
+
+
+# ==================================================
+# DRF SPECTACULAR
+# ==================================================
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "RwandaFitness API",
+    "DESCRIPTION": "Official API for RwandaFitness",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}

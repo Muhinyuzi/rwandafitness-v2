@@ -5,14 +5,12 @@ from django.utils.text import slugify
 
 class Gym(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
     city = models.CharField(max_length=100)
 
     address = models.CharField(max_length=255, blank=True)
     phone = models.CharField(max_length=30, blank=True)
     email = models.EmailField(blank=True)
     website = models.URLField(blank=True)
-    opening_hours = models.CharField(max_length=255, blank=True)
 
     cover_image = models.ImageField(
         upload_to="gyms/covers/",
@@ -91,3 +89,42 @@ class GymGalleryImage(models.Model):
 
     def __str__(self):
         return f"Gallery image for {self.gym.name}"
+    
+class GymTranslation(models.Model):
+    LANGUAGE_CHOICES = (
+        ("en", "English"),
+        ("rw", "Kinyarwanda"),
+    )
+
+    gym = models.ForeignKey(
+        Gym,
+        related_name="translations",
+        on_delete=models.CASCADE,
+    )
+
+    language = models.CharField(
+        max_length=2,
+        choices=LANGUAGE_CHOICES,
+    )
+
+    description = models.TextField(blank=True)
+
+    opening_hours = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ("gym", "language")
+        verbose_name = "Gym translation"
+        verbose_name_plural = "Gym translations"
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=("gym", "language"),
+                name="unique_gym_translation_language",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.gym.name} - {self.get_language_display()}"   

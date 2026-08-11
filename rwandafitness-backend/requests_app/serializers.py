@@ -1,12 +1,28 @@
 from rest_framework import serializers
+
 from .models import CoachingRequest
 
 
 class CoachingRequestSerializer(serializers.ModelSerializer):
-    client_name = serializers.CharField(source="client.full_name", read_only=True)
-    client_email = serializers.EmailField(source="client.email", read_only=True)
-    coach_name = serializers.CharField(source="coach.user.full_name", read_only=True)
-    coach_email = serializers.EmailField(source="coach.user.email", read_only=True)
+    client_name = serializers.CharField(
+        source="client.full_name",
+        read_only=True,
+    )
+    client_email = serializers.EmailField(
+        source="client.email",
+        read_only=True,
+    )
+    coach_name = serializers.CharField(
+        source="coach.user.full_name",
+        read_only=True,
+    )
+    coach_email = serializers.EmailField(
+        source="coach.user.email",
+        read_only=True,
+    )
+
+    has_review = serializers.SerializerMethodField()
+    review_id = serializers.SerializerMethodField()
 
     class Meta:
         model = CoachingRequest
@@ -21,6 +37,8 @@ class CoachingRequestSerializer(serializers.ModelSerializer):
             "goal",
             "message",
             "status",
+            "has_review",
+            "review_id",
             "created_at",
             "updated_at",
         ]
@@ -30,9 +48,20 @@ class CoachingRequestSerializer(serializers.ModelSerializer):
             "client_name",
             "client_email",
             "status",
+            "has_review",
+            "review_id",
             "created_at",
             "updated_at",
         ]
+
+    def get_has_review(self, obj):
+        return hasattr(obj, "review")
+
+    def get_review_id(self, obj):
+        if hasattr(obj, "review"):
+            return obj.review.id
+
+        return None
 
 
 class CoachingRequestCreateSerializer(serializers.ModelSerializer):
@@ -49,19 +78,27 @@ class CoachingRequestCreateSerializer(serializers.ModelSerializer):
         user = request.user
 
         if not user.is_authenticated:
-            raise serializers.ValidationError("Authentication is required.")
+            raise serializers.ValidationError(
+                "Authentication is required."
+            )
 
         if user.role != "client":
-            raise serializers.ValidationError("Only clients can create a coaching request.")
+            raise serializers.ValidationError(
+                "Only clients can create a coaching request."
+            )
 
         coach = attrs["coach"]
+
         if coach.user.role != "coach":
-            raise serializers.ValidationError("Selected coach is invalid.")
+            raise serializers.ValidationError(
+                "Selected coach is invalid."
+            )
 
         return attrs
 
     def create(self, validated_data):
         request = self.context["request"]
+
         return CoachingRequest.objects.create(
             client=request.user,
             **validated_data,
@@ -74,9 +111,16 @@ class CoachingRequestStatusSerializer(serializers.ModelSerializer):
         fields = ["status"]
 
     def validate_status(self, value):
-        allowed = ["pending", "accepted", "rejected", "completed"]
+        allowed = [
+            "pending",
+            "accepted",
+            "rejected",
+            "completed",
+        ]
+
         if value not in allowed:
             raise serializers.ValidationError(
                 f"Status must be one of: {', '.join(allowed)}."
             )
+
         return value
