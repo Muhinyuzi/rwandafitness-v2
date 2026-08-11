@@ -1,0 +1,744 @@
+{
+  "Navbar": {
+    "tagline": "Imbaraga • Iterambere • Ubuzima",
+    "contact": "Twandikire",
+    "articles": "Inyandiko",
+    "coaches": "Abatoza",
+    "gyms": "Gyms",
+    "about": "Abo turibo",
+    "myRequests": "Ubusabe Bwanjye",
+    "clientRequests": "Ubusabe bw'Abakiliya",
+    "dashboard": "Imbonerahamwe",
+    "login": "Injira",
+    "register": "Iyandikishe",
+    "logout": "Sohoka",
+    "loggingOut": "Turimo kugusohora...",
+    "loadingAccount": "Konti irimo gufungurwa...",
+    "openMenu": "Fungura menu",
+    "closeMenu": "Funga menu",
+
+    "language": "Ururimi",
+    
+    "roles": {
+      "coach": "Umutoza",
+      "client": "Umukiliya",
+      "admin": "Umuyobozi"
+    },
+    "languages": {
+      "english": "English",
+      "kinyarwanda": "Kinyarwanda"
+    }
+  },
+  "HomePage": {
+    "hero": {
+      "title": "Menya abatoza n'inzu z'imyitozo hirya no hino mu Rwanda",
+      "description": "Shakisha abatoza, menya inzu z'imyitozo kandi wohereze ubusabe bwo gutozwa ukoresheje urubuga rworoshye, rugezweho kandi rwubakiwe u Rwanda.",
+      "browseCoaches": "Shakisha Abatoza",
+      "exploreGyms": "Reba Inzu z'Imyitozo"
+    },
+    "features": {
+      "coaches": {
+        "title": "Abatoza b'Inararibonye",
+        "description": "Reba imyirondoro y'abatoza, ibyo bazobereyemo, ibiciro, uburambe n'igihe baboneka."
+      },
+      "gyms": {
+        "title": "Menya Inzu z'Imyitozo",
+        "description": "Shakisha inzu z'imyitozo mu Rwanda, urebe aho zikorera kandi umenye abatoza bakorana na zo."
+      },
+      "requests": {
+        "title": "Ubusabe Bworoshye",
+        "description": "Ohereza ubusabe bwo gutozwa ukoresheje urubuga kandi ukurikirane neza imikoranire yawe n'umutoza."
+      }
+    },
+    "cta": {
+      "title": "Tangira urugendo rwawe rw'imyitozo uyu munsi",
+      "description": "Injira muri RwandaFitness maze uhuze n'abatoza n'inzu z'imyitozo mu buryo bworoshye, bwa hafi kandi bugezweho.",
+      "exploreCoaches": "Reba Abatoza",
+      "createAccount": "Fungura Konti"
+    }
+  },
+
+  "AboutPage": {
+    "hero": {
+      "badge": "Urugo rwa Fitness mu Rwanda",
+      "title": "Kubaka u Rwanda rufite ubuzima bwiza binyuze muri fitness.",
+      "description": "RwandaFitness ni urubuga rugamije guteza imbere fitness mu gihugu hose. Dufasha abantu kubona inzu z'imyitozo, guhura n'abatoza bizewe, kwiga ku mirire myiza, kwitabira amarushanwa ya fitness, kumenya ibikorwa bitandukanye no kuba mu muryango mugari wa fitness.",
+      "imageAlt": "Umuryango wa RwandaFitness",
+      "exploreCoaches": "Reba Abatoza",
+      "discoverGyms": "Shakisha Inzu z'Imyitozo"
+    },
+
+    "mission": {
+      "label": "Intego Yacu",
+      "title": "Kubaka u Rwanda rufite ubuzima bwiza binyuze muri fitness.",
+      "description": "Intego yacu ni ugufasha abantu bose bo mu Rwanda kubona fitness byoroshye, tubahuza n'inzu z'imyitozo, abatoza, inyigisho n'ibikoresho bifasha kugira ubuzima bwiza.",
+      "commitment": "Buri gikorwa dukora kigamije guteza imbere ubuzima bwiza n'imiryango ikomeye."
+    },
+
+    "vision": {
+      "title": "Icyerekezo Cyacu",
+      "description": "Kuba urubuga rwa mbere rwa fitness mu Rwanda ruhuza inzu z'imyitozo, abatoza, impuguke mu mirire, ibikorwa bya fitness n'umuryango mugari wa fitness."
+    },
+
+    "promise": {
+      "title": "Isezerano Ryacu",
+      "description": "Buri kintu twubaka kigamije intego imwe: gufasha Abanyarwanda kugira ubuzima bwiza binyuze muri fitness."
+    },
+
+    "pillars": {
+      "label": "Urusobe Rwacu",
+      "title": "Inkingi eshanu za RwandaFitness",
+      "description": "Ibikorwa byose bya RwandaFitness byubakiye kuri izi nkingi eshanu.",
+
+      "items": {
+        "gyms": {
+          "title": "Inzu z'Imyitozo",
+          "description": "Shakisha inzu z'imyitozo hirya no hino mu Rwanda."
+        },
+
+        "coaches": {
+          "title": "Abatoza",
+          "description": "Hura n'abatoza bizewe kandi b'umwuga."
+        },
+
+        "nutrition": {
+          "title": "Imirire",
+          "description": "Menya uburyo bwo kurya neza binyuze mu nyigisho zijyanye n'imirire."
+        },
+
+        "community": {
+          "title": "Umuryango",
+          "description": "Jya mu marushanwa, ibikorwa n'amatsinda ya fitness."
+        },
+
+        "media": {
+          "title": "Ibinyamakuru",
+          "description": "Reba amashusho, ibiganiro n'inkuru zitera imbaraga."
+        }
+      }
+    },
+
+    "benefits": {
+      "label": "Impamvu Wahitamo RwandaFitness",
+      "title": "Ibyo ukeneye byose mu rugendo rwawe rwa fitness",
+
+      "items": {
+        "discoverGyms": "Shakisha inzu z'imyitozo",
+        "findCoaches": "Shaka abatoza bizewe",
+        "readArticles": "Soma inyandiko za fitness",
+        "joinChallenges": "Jya mu marushanwa ya fitness",
+        "attendEvents": "itabire ibikorwa bya fitness",
+        "learnNutrition": "Menya ibijyanye n'imirire",
+        "watchMedia": "Reba RwandaFitness TV",
+        "joinCommunity": "Ba umwe mu muryango wa fitness"
+      }
+    },
+
+    "impact": {
+      "label": "Ingaruka Zacu",
+      "title": "Kubaka igihugu gifite ubuzima bwiza",
+      "description": "RwandaFitness si urubuga gusa. Twizera ko fitness ihindura ubuzima bw'abantu n'imiryango.",
+
+      "items": {
+        "families": "Imiryango ifite ubuzima bwiza",
+        "communities": "Abaturage bafite imbaraga",
+        "youth": "Urubyiruko rukora siporo",
+        "industry": "Iterambere ry'urwego rwa fitness mu Rwanda"
+      }
+    },
+
+    "roadmap": {
+      "label": "Gahunda y'Iterambere",
+      "title": "Gutera imbere intambwe ku yindi",
+      "description": "Icyerekezo cyacu ni ukubaka urusobe rwuzuye rwa fitness mu Rwanda.",
+
+      "phases": {
+        "foundation": {
+          "period": "Icyiciro cya 1",
+          "title": "Urufatiro",
+          "description": "Inzu z'imyitozo, abatoza, inyandiko, ubushakashatsi na SEO."
+        },
+
+        "community": {
+          "period": "Icyiciro cya 2",
+          "title": "Umuryango",
+          "description": "Amarushanwa, ibikorwa, ibitekerezo n'amatsinda."
+        },
+
+        "marketplace": {
+          "period": "Icyiciro cya 3",
+          "title": "Marketplace",
+          "description": "Kubika umutoza, kwishyura kuri internet na serivisi zihariye."
+        }
+      }
+    },
+
+    "cta": {
+      "title": "Dufatanye kubaka u Rwanda rufite ubuzima bwiza.",
+      "description": "Buri mutoza, buri nzu y'imyitozo n'icyemezo cyose cyo kubaho neza bifasha kugera ku ntego yacu.",
+
+      "findCoach": "Shaka Umutoza",
+      "exploreGyms": "Shakisha gyms",
+
+      "founder": "Yashinzwe na Jean Claude Muhinyuzi"
+    }
+  },
+
+  "ArticlesPage": {
+    "header": {
+      "badge": "RwandaFitness",
+      "title": "Inkuru za Fitness",
+      "description": "Inama, amabwiriza n'ubumenyi bigufasha guteza imbere urugendo rwawe rwa fitness no kugira ubuzima bwiza."
+    },
+    "states": {
+      "loading": "Inkuru zirimo gutangizwa...",
+      "error": "Ntibyashobotse gutangiza inkuru. Ongera ugerageze nyuma.",
+      "empty": "Nta inkuru ziraboneka."
+    },
+    "article": {
+      "noImage": "Nta shusho ihari",
+      "readMore": "Soma inyandiko",
+      "unknownDate": "Itariki yatangarijweho ntiboneka"
+    }
+  },
+
+  "ArticleDetailPage": {
+    "navigation": {
+      "back": "← Subira ku nyandiko"
+    },
+    "states": {
+      "loading": "Inkuru irimo gutangizwa...",
+      "error": "Ntibyashobotse gutangiza ibisobanuro by'inkuru. Ongera ugerageze nyuma.",
+      "notFound": "Inkuru ntiyabonetse."
+    },
+    "article": {
+      "noCoverImage": "Nta shusho y'inkuru ihari",
+      "by": "Yanditswe na {author}"
+    },
+    "cta": {
+      "title": "Komeza urugendo rwawe rwa fitness",
+      "description": "Shakisha abatoza n'inzu z'imyitozo kuri RwandaFitness maze utere indi ntambwe igana ku ntego zawe.",
+      "exploreCoaches": "Reba Abatoza",
+      "discoverGyms": "Shakisha Inzu z'Imyitozo"
+    }
+  },
+
+    "CheckEmail": {
+    "title": "Reba ubutumwa bwawe bwa email",
+    "accountCreated": "Konti yawe ya RwandaFitness yakozwe neza.",
+    "verificationSent": "Twohereje umurongo wo kwemeza konti kuri",
+    "instructions": "Fungura ubutumwa bwa email maze ukande ku murongo wo kwemeza kugira ngo utangize konti yawe. Uwo murongo urangira nyuma y'amasaha 24.",
+    "notReceivedTitle": "Ntabwo wabonye ubutumwa?",
+    "notReceivedDescription": "Reba muri spam cyangwa junk kandi wemeze ko aderesi ya email wanditse ari yo.",
+    "goToLogin": "Jya kwinjira",
+    "useAnotherEmail": "Koresha indi email",
+    "loading": "Birimo gutegurwa..."
+  },
+
+  "CoachDetail": {
+    "loading": "Amakuru y'umutoza arimo gutegurwa...",
+    "notFound": "Umutoza ntiyabonetse.",
+    "verified": "Yemejwe",
+    "yearsExperience": "Afite uburambe bw'imyaka {count}",
+    "worksAt": "Akorera kuri",
+    "aboutTitle": "Ibyerekeye uyu mutoza",
+    "noDescription": "Nta bisobanuro byatanzwe.",
+    "formatTitle": "Uburyo atoza",
+    "onlineAvailable": "✅ Ashobora gutoza akoresheje interineti",
+    "onlineUnavailable": "❌ Ntabwo atoza akoresheje interineti",
+    "inPersonAvailable": "✅ Ashobora gutoza imbonankubone",
+    "inPersonUnavailable": "❌ Ntabwo atoza imbonankubone",
+    "specialtyTitle": "Ibyo azobereyemo",
+    "specialtyDescription": "Uyu mutoza azobereye muri <strong>{specialty}</strong> kandi ashobora gufasha abakiriya hakurikijwe intego zabo.",
+    "gallery": "Amafoto",
+    "galleryImageAlt": "Ifoto y'umutoza",
+    "startingFrom": "Igiciro gitangirira kuri",
+    "contact": "Mubaze",
+    "perSession": "kuri buri somo",
+    "closeRequestForm": "Funga ifishi yo gusaba",
+    "requestCoaching": "Saba gutozwa",
+    "benefits": {
+      "directRequest": "Saba umutoza ukoresheje uru rubuga",
+      "quickContact": "Uburyo bworoshye kandi bwihuse bwo kuvugana",
+      "clearRequests": "Byateguwe kugira ngo ubusabe bwo gutozwa busobanuke"
+    },
+    "form": {
+      "title": "Ohereza ubusabe bwo gutozwa",
+      "goalLabel": "Intego yawe",
+      "goalPlaceholder": "Kugabanya ibiro, kongera imikaya, gukorera siporo mu rugo...",
+      "messageLabel": "Ubutumwa",
+      "messagePlaceholder": "Andikira umutoza ubutumwa bugufi...",
+      "sending": "Birimo koherezwa...",
+      "send": "Ohereza ubusabe"
+    },
+    "messages": {
+      "loginRequired": "Banza winjire nka mukiriya.",
+      "goalRequired": "Andika intego yawe.",
+      "requestSent": "Ubusabe bwo gutozwa bwoherejwe neza.",
+      "unexpectedError": "Habaye ikibazo mu kohereza ubusabe."
+    },
+    "errors": {
+      "requestFailed": "Kohereza ubusabe ntibyakunze."
+    },
+
+    "reviews": {
+      "title": "Ibitekerezo by’abakiriya",
+      "count": "{count, plural, =1 {Isuzuma #} other {Amasuzuma #}}",
+      "noReviews": "Nta suzuma riraboneka",
+      "loading": "Amasuzuma ari gutegurwa...",
+      "empty": "Uyu mutoza nta suzuma arabona.",
+      "anonymous": "Umukiriya wa RwandaFitness"
+    }
+  },
+
+    "Coaches": {
+    "title": "Shaka Umutoza",
+    "loading": "Turimo gutangiza urutonde rw'abatoza...",
+    "empty": "Nta batoza bahari muri iki gihe.",
+    "verified": "Yemejwe",
+    "worksAt": "Akorera kuri",
+    "pricePerSession": "{price} $ kuri buri somo",
+    "contactForPrice": "Mubaze igiciro",
+    "requestCoaching": "Saba Gutozwa",
+    "form": {
+      "title": "Saba gutozwa na {name}",
+      "goalLabel": "Intego yawe",
+      "goalPlaceholder": "Kugabanya ibiro, kongera imikaya, gukorera siporo mu rugo...",
+      "messageLabel": "Ubutumwa bwawe",
+      "messagePlaceholder": "Andikira umutoza ubutumwa bugufi...",
+      "cancel": "Hagarika",
+      "sending": "Birimo koherezwa...",
+      "send": "Ohereza"
+    },
+    "messages": {
+      "loadFailed": "Kuzana urutonde rw'abatoza ntibyakunze.",
+      "loginRequired": "Banza winjire nka mukiriya.",
+      "goalRequired": "Andika intego yawe.",
+      "requestSent": "Ubusabe bwo gutozwa bwoherejwe neza.",
+      "requestFailed": "Habaye ikibazo mu kohereza ubusabe."
+    }
+  },
+
+    "CoachProfileEdit": {
+    "title": "Hindura Umwirondoro w'Umutoza",
+    "loading": "Umwirondoro urimo gutegurwa...",
+    "saving": "Birimo kubikwa...",
+    "save": "Bika Umwirondoro",
+    "messages": {
+      "loadFailed": "Kuzana umwirondoro ntibyakunze.",
+      "saveSuccess": "Umwirondoro wavuguruwe neza.",
+      "saveFailed": "Kubika umwirondoro ntibyakunze."
+    },
+    "fields": {
+      "bio": {
+        "label": "Ibisobanuro byawe",
+        "placeholder": "Sobanurira abakiriya uburambe bwawe n'uburyo utoza"
+      },
+      "specialty": {
+        "label": "Ibyo uzobereyemo"
+      },
+      "yearsExperience": {
+        "label": "Imyaka y'uburambe",
+        "placeholder": "Imyaka y'uburambe"
+      },
+      "city": {
+        "label": "Umujyi",
+        "placeholder": "Umujyi"
+      },
+      "price": {
+        "label": "Igiciro kuri buri somo",
+        "placeholder": "Igiciro kuri buri somo"
+      },
+      "instagram": {
+        "label": "Instagram",
+        "placeholder": "Aderesi ya Instagram"
+      },
+      "gym": {
+        "label": "Gym",
+        "noGym": "Nta gym"
+      },
+      "availableOnline": "Nshobora gutoza nkoresheje interineti",
+      "availableInPerson": "Nshobora gutoza imbonankubone",
+      "photo": {
+        "label": "Ifoto y'umwirondoro",
+        "selected": "Ifoto yahiswemo: {name}"
+      }
+    },
+    "specialties": {
+      "fitness": "Imyitozo ngororamubiri",
+      "bodybuilding": "Kubaka imikaya",
+      "weightLoss": "Kugabanya ibiro",
+      "crossfit": "CrossFit",
+      "yoga": "Yoga",
+      "cardio": "Cardio",
+      "nutrition": "Imirire",
+      "other": "Ibindi"
+    }
+  },
+
+  "ClientDashboard": {
+    "title": "Imbonerahamwe y'Umukiriya",
+    "subtitle": "Kurikirana ubusabe bwawe bwo gutozwa kandi ukomeze urugendo rwawe rwa siporo.",
+    "loading": "Imbonerahamwe irimo gutegurwa...",
+    "stats": {
+      "total": "Ubusabe Bwose",
+      "pending": "Butegereje",
+      "accepted": "Bwemewe",
+      "rejected": "Bwanze"
+    },
+    "actions": {
+      "findCoach": "Shaka Umutoza",
+      "viewAllRequests": "Reba Ubusabe Bwose"
+    },
+    "recent": {
+      "title": "Ubusabe Bushya",
+      "subtitle": "Ibikorwa byawe bya vuba byo gusaba gutozwa",
+      "empty": "Nta busabe urakora."
+    },
+    "statuses": {
+      "pending": "Butegereje",
+      "accepted": "Bwemewe",
+      "rejected": "Bwanze",
+      "completed": "Bwarangiye"
+    },
+    "messages": {
+      "loadFailed": "Kuzana amakuru y'imbonerahamwe ntibyakunze."
+    }
+  },
+
+  "CoachDashboard": {
+    "title": "Imbonerahamwe y'Umutoza",
+    "subtitle": "Kurikirana ubusabe bushya kandi ucunge ibikorwa by'abakiriya.",
+    "loading": "Imbonerahamwe irimo gutegurwa...",
+    "stats": {
+      "total": "Ubusabe Bwose",
+      "pending": "Butegereje",
+      "accepted": "Bwemewe",
+      "rejected": "Bwanze",
+      "completed": "Bwarangiye"
+    },
+    "actions": {
+      "manageRequests": "Cunga Ubusabe",
+      "editProfile": "Hindura umwirondoro wanjye"
+    },
+    "recent": {
+      "title": "Ubusabe Bushya bw'Abakiriya",
+      "subtitle": "Ibikorwa bya vuba by'abakiriya",
+      "empty": "Nta busabe bw'abakiriya buraboneka.",
+      "client": "Umukiriya: {name}"
+    },
+    "statuses": {
+      "pending": "Butegereje",
+      "accepted": "Bwemewe",
+      "rejected": "Bwanze",
+      "completed": "Bwarangiye"
+    },
+    "messages": {
+      "loadFailed": "Kuzana amakuru y'imbonerahamwe ntibyakunze."
+    }
+  },
+
+  "DashboardRedirect": {
+    "title": "Imbonerahamwe irimo gutegurwa",
+    "description": "Tegereza gato mu gihe tukwohereza ku mbonerahamwe yawe ya RwandaFitness."
+  },
+
+  "EmailVerified": {
+    "title": "Imeyili Yemejwe",
+    "description": "Aderesi ya imeyili yawe yemejwe neza.",
+    "details": "Konti yawe ya RwandaFitness ubu irakora kandi ushobora gukoresha serivisi zose z'urubuga.",
+    "login": "Injira",
+    "home": "Subira Ahabanza",
+    "footer": "Murakoze kwinjira mu muryango wa RwandaFitness 💙"
+  },
+
+  "ForgotPassword": {
+    "title": "Wibagiwe Ijambobanga",
+    "description": "Andika aderesi ya imeyili yawe, turakohereza umurongo wo kongera gushyiraho ijambobanga.",
+    "emailPlaceholder": "Aderesi ya imeyili",
+    "send": "Ohereza Umurongo wo Gusubizaho Ijambobanga",
+    "sending": "Birimo koherezwa...",
+    "messages": {
+      "emailRequired": "Andika aderesi ya imeyili.",
+      "success": "Imeyili yo gusubizaho ijambobanga yoherejwe neza.",
+      "networkError": "Ntibyakunze kohereza imeyili yo gusubizaho ijambobanga.",
+      "unexpectedError": "Habaye ikibazo."
+    }
+  },
+
+  "GymDetail": {
+    "loading": "Gym irimo gutegurwa...",
+    "verified": "Yemejwe",
+    "coverUnavailable": "Nta foto nkuru ihari",
+    "about": {
+      "title": "Ibyerekeye iyi gym",
+      "empty": "Nta bisobanuro byatanzwe."
+    },
+    "gallery": {
+      "title": "Amafoto",
+      "imageAlt": "Ifoto ya gym ya {number}",
+      "noImage": "Nta foto ihari"
+    },
+    "coaches": {
+      "title": "Abatoza bakorera muri iyi gym",
+      "pricePerSession": "{price} $ kuri buri somo",
+      "contactForPrice": "Mubaze igiciro"
+    },
+    "information": {
+      "title": "Amakuru ya gym",
+      "address": "Aderesi",
+      "phone": "Telefoni",
+      "email": "Imeyili",
+      "website": "Urubuga",
+      "visitWebsite": "Sura urubuga",
+      "openingHours": "Amasaha yo gufungura",
+      "viewProfile": "Reba umwirondoro",
+      "viewPage": "Reba urupapuro",
+      "coordinates": "Aho iherereye"
+    },
+    "messages": {
+      "loadFailed": "Kuzana amakuru ya gym ntibyakunze.",
+      "notFound": "Gym ntiyabonetse."
+    }
+  },
+
+  "Gyms": {
+    "title": "Menya Ahantu ho Gukorera Imyitozo",
+    "description": "Shakisha gym n'ahandi hakorerwa imyitozo hirya no hino mu Rwanda.",
+    "loading": "Gym zirimo gutegurwa...",
+    "empty": "Nta gym ziraboneka.",
+    "noImage": "Nta foto ihari",
+    "noDescription": "Nta bisobanuro byatanzwe.",
+    "verified": "Yemejwe",
+    "messages": {
+      "loadFailed": "Kuzana urutonde rwa gym ntibyakunze."
+    }
+  },
+
+  "Login": {
+    "title": "Murakaza neza",
+    "description": "Injira muri konti yawe ya RwandaFitness",
+    "emailPlaceholder": "Imeyili",
+    "passwordPlaceholder": "Ijambobanga",
+    "login": "Injira",
+    "loggingIn": "Birimo kwinjira...",
+    "noAccount": "Nta konti ufite?",
+    "register": "Iyandikishe",
+    "forgotPassword": "Wibagiwe ijambobanga?",
+    "messages": {
+      "requiredFields": "Uzuza imyanya yose.",
+      "invalidCredentials": "Imeyili cyangwa ijambobanga si byo.",
+      "missingToken": "Kwinjira byakunze, ariko token yo kwemeza konti ntiyagarutse.",
+      "unexpectedError": "Habaye ikibazo. Ongera ugerageze."
+    }
+  },
+
+  "MyRequests": {
+    "titles": {
+      "coach": "Ubusabe Bwatanzwe n'Abakiriya",
+      "client": "Ubusabe Bwanjye bwo Gutozwa"
+    },
+    "loggedInAs": "Winjiye nka <strong>{name}</strong> ({role})",
+    "loading": "Ubusabe burimo gutegurwa...",
+    "empty": "Nta busabe buraboneka.",
+    "noMessage": "Nta butumwa bwatanzwe.",
+    "labels": {
+      "client": "Umukiriya",
+      "coach": "Umutoza"
+    },
+    "roles": {
+      "coach": "Umutoza",
+      "client": "Umukiriya",
+      "admin": "Umuyobozi"
+    },
+    "statuses": {
+      "pending": "Bugitegereje",
+      "accepted": "Bwemewe",
+      "rejected": "Bwanze",
+      "completed": "Bwarangiye"
+    },
+    "actions": {
+      "accept": "Emera",
+      "reject": "Hakana",
+      "markCompleted": "Shyira ko Bwarangiye",
+      "updating": "Birimo guhindurwa...",
+      "leaveReview": "Tanga isuzuma rya serivisi",
+      "reviewSubmitted": "Isuzuma ryawe ryoherejwe kandi ritegereje kwemezwa."
+    },
+    "messages": {
+      "loadFailed": "Kuzana ubusabe ntibyakunze.",
+      "updateFailed": "Guhindura ubusabe ntibyakunze."
+    }
+  },
+
+    "RequestDetail": {
+    "back": "Subira ku busabe",
+    "loading": "Ubusabe burimo gutegurwa...",
+    "requestNumber": "Ubusabe #{id}",
+    "invalidDate": "Itariki ntiboneka",
+    "client": {
+      "title": "Umukiriya"
+    },
+    "coach": {
+      "title": "Umutoza"
+    },
+    "message": {
+      "title": "Ubutumwa",
+      "empty": "Nta butumwa bwatanzwe."
+    },
+    "dates": {
+      "requested": "Igihe ubusabe bwatanzwe",
+      "updated": "Igihe buheruka guhindurwa"
+    },
+    "statuses": {
+      "pending": "Bugitegereje",
+      "accepted": "Bwemewe",
+      "rejected": "Bwanze",
+      "completed": "Bwarangiye"
+    },
+    "actions": {
+      "title": "Ibikorwa",
+      "accept": "Emera",
+      "reject": "Hakana",
+      "markCompleted": "Shyira ko bwarangiye",
+      "updating": "Birimo guhindurwa...",
+      "unavailable": "Nta gikorwa gishoboka kuri ubu busabe."
+    },
+    "messages": {
+      "loadFailed": "Kuzana ubu busabe ntibyakunze.",
+      "updateFailed": "Guhindura ubu busabe ntibyakunze.",
+      "notFound": "Ubu busabe ntibwaboneka."
+    }
+  },
+
+  "Register": {
+    "title": "Fungura konti yawe",
+    "description": "Iyandikishe kuri RwandaFitness maze utangire urugendo rwawe rw'imyitozo.",
+    "fields": {
+      "email": "Imeyili",
+      "username": "Izina ukoresha",
+      "fullName": "Amazina yawe yose",
+      "phone": "Telefoni (si ngombwa)",
+      "role": "Ubwoko bwa konti",
+      "password": "Ijambobanga",
+      "confirmPassword": "Emeza ijambobanga"
+    },
+    "roles": {
+      "client": "Umukiriya",
+      "coach": "Umutoza"
+    },
+    "passwordHelp": "Ijambobanga rigomba kuba rifite nibura inyuguti 8.",
+    "register": "Iyandikishe",
+    "creatingAccount": "Konti irimo gukorwa...",
+    "alreadyHaveAccount": "Usanzwe ufite konti?",
+    "login": "Injira",
+    "messages": {
+      "requiredFields": "Uzuza imyanya yose isabwa.",
+      "invalidEmail": "Andika imeyili yemewe.",
+      "usernameTooShort": "Izina ukoresha rigomba kuba rifite nibura inyuguti 3.",
+      "fullNameTooShort": "Amazina yawe ni magufi cyane.",
+      "passwordTooShort": "Ijambobanga rigomba kuba rifite nibura inyuguti 8.",
+      "passwordMismatch": "Amagambobanga ntabwo ahuye.",
+      "registrationFailed": "Kwiyandikisha ntibyakunze.",
+      "unexpectedError": "Habaye ikibazo. Ongera ugerageze."
+    }
+  },
+
+  "ResetPassword": {
+    "title": "Hindura ijambobanga",
+    "description": "Hitamo ijambobanga rishya rya konti yawe ya RwandaFitness.",
+    "fields": {
+      "newPassword": "Ijambobanga rishya",
+      "confirmPassword": "Emeza ijambobanga"
+    },
+    "passwordHelp": "Ijambobanga rigomba kuba rifite nibura inyuguti 8.",
+    "savePassword": "Bika ijambobanga",
+    "saving": "Birimo kubikwa...",
+    "login": "Komeza ujye kwinjira",
+    "messages": {
+      "requiredFields": "Uzuza imyanya yose.",
+      "passwordTooShort": "Ijambobanga rigomba kuba rifite nibura inyuguti 8.",
+      "passwordMismatch": "Amagambobanga ntabwo ahuye.",
+      "invalidToken": "Ihuza ryo guhindura ijambobanga ntabwo ryemewe.",
+      "resetFailed": "Guhindura ijambobanga ntibyakunze.",
+      "resetSuccess": "Ijambobanga ryawe ryahinduwe neza."
+    }
+  },
+
+  "Metadata": {
+    "title": "RwandaFitness",
+    "description": "Huza n'abatoza maze utangire urugendo rwawe rw'imyitozo."
+  },
+  "Layout": {
+    "footer": {
+      "qed": "Ibisubizo ni byo gihamya.",
+      "description": "Menya abatoza, gym n'andi makuru y'imyitozo hirya no hino mu Rwanda.",
+      "navigationLabel": "Amakuru yo hasi ku rubuga",
+      "links": {
+        "articles": "Inkuru",
+        "coaches": "Abatoza",
+        "gyms": "Gym",
+        "about": "Ibyerekeye"
+      },
+      "copyright": "© {startYear}–{currentYear} RwandaFitness. Uburenganzira bwose burabitswe."
+    }
+  },
+
+  "FeaturedArticles": {
+    "title": "Inkuru Ziheruka ku Myitozo",
+    "description": "Inama n'ubumenyi bugufasha mu rugendo rwawe rw'imyitozo.",
+    "viewAll": "Reba zose",
+    "noImage": "Nta foto"
+  },
+
+  "Contact": {
+    "title": "Twandikire",
+    "description": "Ufite ikibazo cyangwa ukeneye ubufasha? Twoherereze ubutumwa.",
+    "name": "Amazina yose",
+    "email": "Imeyili",
+    "subject": "Impamvu yo kutwandikira",
+    "message": "Ubutumwa",
+    "send": "Ohereza ubutumwa",
+    "success": "Ubutumwa bwawe bwoherejwe neza.",
+    "error": "Ubutumwa ntibushoboye koherezwa. Ongera ugerageze.",
+    "sending": "Birimo koherezwa..."
+  },
+
+  "ReviewForm": {
+    "title": "Tanga isuzuma rya serivisi",
+    "description": "Sangiza abandi uko serivisi yo gutozwa wahawe yagenze.",
+    "back": "Subira ku busabe bwanjye",
+    "loading": "Ubusabe burimo gufungurwa...",
+    "service": "Serivisi",
+    "coach": "Umutoza: {name}",
+    "rating": {
+      "label": "Amanota utanga",
+      "help": "Hitamo amanota kuva kuri 1 kugeza kuri 5.",
+      "starLabel": "Tanga inyenyeri {value}",
+      "selected": "Amanota {rating} kuri 5"
+    },
+    "comment": {
+      "label": "Igitekerezo cyawe",
+      "help": "Sobanura uko serivisi y'umutoza yagenze. Kwandika igitekerezo si itegeko.",
+      "placeholder": "Andika isuzuma ryawe hano..."
+    },
+    "actions": {
+      "cancel": "Hagarika",
+      "submit": "Ohereza isuzuma",
+      "submitting": "Birimo koherezwa..."
+    },
+    "alreadySubmitted": {
+      "title": "Isuzuma ryamaze gutangwa",
+      "description": "Wamaze gutanga isuzuma kuri iyi serivisi yo gutozwa."
+    },
+    "messages": {
+      "notFound": "Ubu busabe bwo gutozwa ntibubonetse.",
+      "loadFailed": "Ntibishobotse gufungura ubu busabe bwo gutozwa.",
+      "notCompleted": "Ushobora gutanga isuzuma ari uko serivisi yo gutozwa yarangiye.",
+      "ratingRequired": "Banza uhitemo amanota mbere yo kohereza.",
+      "submitFailed": "Ntibishobotse kohereza isuzuma ryawe."
+    }
+  }
+
+
+}

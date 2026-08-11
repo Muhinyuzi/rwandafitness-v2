@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { API_URL } from "@/lib/api";
+import {useEffect, useState} from "react";
+import {useTranslations} from "next-intl";
+
+import {Link} from "@/i18n/navigation";
+import {API_URL} from "@/lib/api";
 
 type Article = {
   id: number;
@@ -13,16 +15,59 @@ type Article = {
   category: string;
 };
 
+type FeaturedArticlesResponse =
+  | Article[]
+  | {
+      results?: Article[];
+    };
+
 export default function FeaturedArticles() {
+  const t = useTranslations("FeaturedArticles");
+
   const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/articles/featured/`)
-      .then((res) => res.json())
-      .then((data) => {
-        setArticles(Array.isArray(data) ? data : data.results ?? []);
-      })
-      .catch(() => setArticles([]));
+    const controller = new AbortController();
+
+    const loadArticles = async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/api/articles/featured/`,
+          {
+            signal: controller.signal,
+            cache: "no-store",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error();
+        }
+
+        const data: FeaturedArticlesResponse =
+          await response.json();
+
+        setArticles(
+          Array.isArray(data)
+            ? data
+            : Array.isArray(data.results)
+              ? data.results
+              : []
+        );
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.name === "AbortError"
+        ) {
+          return;
+        }
+
+        setArticles([]);
+      }
+    };
+
+    void loadArticles();
+
+    return () => controller.abort();
   }, []);
 
   if (articles.length === 0) {
@@ -34,11 +79,11 @@ export default function FeaturedArticles() {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold text-zinc-900">
-            Latest Fitness Articles
+            {t("title")}
           </h2>
 
           <p className="mt-2 text-sm text-zinc-500">
-            Tips, guides and insights to support your fitness journey.
+            {t("description")}
           </p>
         </div>
 
@@ -46,7 +91,7 @@ export default function FeaturedArticles() {
           href="/articles"
           className="text-sm font-semibold text-primary hover:underline"
         >
-          View all →
+          {t("viewAll")} →
         </Link>
       </div>
 
@@ -65,19 +110,22 @@ export default function FeaturedArticles() {
               />
             ) : (
               <div className="flex h-44 items-center justify-center bg-zinc-100 text-sm text-zinc-500">
-                No image
+                {t("noImage")}
               </div>
             )}
 
             <div className="p-5">
+              {/* catégorie provenant du backend → ne pas traduire */}
               <span className="text-xs font-semibold text-primary">
                 {article.category}
               </span>
 
+              {/* titre provenant du backend */}
               <h3 className="mt-2 text-lg font-semibold text-zinc-900">
                 {article.title}
               </h3>
 
+              {/* extrait provenant du backend */}
               <p className="mt-2 line-clamp-3 text-sm text-zinc-600">
                 {article.excerpt}
               </p>

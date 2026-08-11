@@ -1,0 +1,742 @@
+{
+  "Navbar": {
+    "tagline": "Stronger • Better • Life",
+    "contact": "Contact",
+    "articles": "Articles",
+    "coaches": "Coaches",
+    "gyms": "Gyms",
+    "about": "About",
+    "myRequests": "My Requests",
+    "clientRequests": "Client Requests",
+    "dashboard": "Dashboard",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "loggingOut": "Logging out...",
+    "loadingAccount": "Loading account...",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu",
+
+    "language": "Language",
+
+    "roles": {
+      "coach": "Coach",
+      "client": "Client",
+      "admin": "Admin"
+    },
+    "languages": {
+      "english": "English",
+      "kinyarwanda": "Kinyarwanda"
+    }
+  },
+  "HomePage": {
+    "hero": {
+      "title": "Discover coaches and gyms across Rwanda",
+      "description": "Explore fitness coaches, discover gyms, and send coaching requests through a simple, local, and modern platform built for Rwanda.",
+      "browseCoaches": "Browse Coaches",
+      "exploreGyms": "Explore Gyms"
+    },
+    "features": {
+      "coaches": {
+        "title": "Experienced Coaches",
+        "description": "Explore coach profiles with specialties, pricing, experience, and availability."
+      },
+      "gyms": {
+        "title": "Discover Gyms",
+        "description": "Find gyms across Rwanda, explore their spaces, and discover the coaches connected to them."
+      },
+      "requests": {
+        "title": "Easy Requests",
+        "description": "Send coaching requests directly from the platform and manage your interactions clearly."
+      }
+    },
+    "cta": {
+      "title": "Start your fitness journey today",
+      "description": "Join RwandaFitness and connect with coaches and gyms in a more direct, local, and modern way.",
+      "exploreCoaches": "Explore Coaches",
+      "createAccount": "Create Account"
+    }
+  },
+
+  "AboutPage": {
+  "hero": {
+    "badge": "The Home of Fitness in Rwanda",
+    "title": "Make Rwanda healthier through fitness.",
+    "description": "RwandaFitness is Rwanda's national fitness platform. We help people discover gyms, connect with trusted coaches, learn about nutrition, participate in fitness challenges, attend events and become part of a healthier community.",
+    "imageAlt": "RwandaFitness community",
+    "exploreCoaches": "Explore Coaches",
+    "discoverGyms": "Discover Gyms"
+  },
+
+  "mission": {
+    "label": "Our Mission",
+    "title": "Make Rwanda healthier through fitness.",
+    "description": "Our mission is to make fitness more accessible to everyone in Rwanda by connecting people with gyms, coaches, educational content and healthy lifestyle resources.",
+    "commitment": "Everything we build is designed to inspire healthier lives and stronger communities."
+  },
+
+  "vision": {
+    "title": "Our Vision",
+    "description": "To become the leading digital fitness platform in Rwanda by connecting gyms, coaches, nutrition experts, events and fitness communities in one ecosystem."
+  },
+
+  "promise": {
+    "title": "Our Promise",
+    "description": "Every feature we create supports one goal: helping Rwandans become healthier through fitness."
+  },
+
+  "pillars": {
+    "label": "Our Ecosystem",
+    "title": "Five pillars driving RwandaFitness",
+    "description": "Everything on RwandaFitness is built around these five pillars.",
+
+    "items": {
+      "gyms": {
+        "title": "Gyms",
+        "description": "Discover gyms across Rwanda."
+      },
+
+      "coaches": {
+        "title": "Coaches",
+        "description": "Connect with trusted fitness professionals."
+      },
+
+      "nutrition": {
+        "title": "Nutrition",
+        "description": "Learn healthy eating habits with local nutrition content."
+      },
+
+      "community": {
+        "title": "Community",
+        "description": "Join challenges, events and fitness groups."
+      },
+
+      "media": {
+        "title": "Media",
+        "description": "Watch educational videos, interviews and inspiring stories."
+      }
+    }
+  },
+
+  "benefits": {
+    "label": "Why RwandaFitness",
+    "title": "Everything you need for your fitness journey",
+
+    "items": {
+      "discoverGyms": "Discover gyms",
+      "findCoaches": "Find trusted coaches",
+      "readArticles": "Read fitness articles",
+      "joinChallenges": "Join fitness challenges",
+      "attendEvents": "Attend fitness events",
+      "learnNutrition": "Learn healthy nutrition",
+      "watchMedia": "Watch RwandaFitness TV",
+      "joinCommunity": "Become part of the community"
+    }
+  },
+
+  "impact": {
+    "label": "Our Impact",
+    "title": "Building a healthier nation",
+    "description": "RwandaFitness is more than a website. We believe fitness changes lives and communities.",
+
+    "items": {
+      "families": "Healthier families",
+      "communities": "Stronger communities",
+      "youth": "More active youth",
+      "industry": "A stronger fitness industry in Rwanda"
+    }
+  },
+
+  "roadmap": {
+    "label": "Roadmap",
+    "title": "Growing step by step",
+    "description": "Our long-term vision is to build Rwanda's complete fitness ecosystem.",
+
+    "phases": {
+      "foundation": {
+        "period": "Phase 1",
+        "title": "Foundation",
+        "description": "Gyms, coaches, articles, search and SEO."
+      },
+
+      "community": {
+        "period": "Phase 2",
+        "title": "Community",
+        "description": "Challenges, events, reviews and groups."
+      },
+
+      "marketplace": {
+        "period": "Phase 3",
+        "title": "Marketplace",
+        "description": "Coach booking, payments and premium services."
+      }
+    }
+  },
+
+  "cta": {
+    "title": "Together, let's build a healthier Rwanda.",
+    "description": "Every coach, every gym and every healthy lifestyle choice contributes to our mission.",
+
+    "findCoach": "Find a Coach",
+    "exploreGyms": "Explore Gyms",
+
+    "founder": "Founded by Jean Claude Muhinyuzi"
+  }
+ }, 
+
+  "ArticlesPage": {
+    "header": {
+      "badge": "RwandaFitness",
+      "title": "Fitness Articles",
+      "description": "Tips, guides and insights to improve your fitness journey and build a healthier lifestyle."
+    },
+    "states": {
+      "loading": "Loading articles...",
+      "error": "Failed to load articles. Please try again later.",
+      "empty": "No articles are available yet."
+    },
+    "article": {
+      "noImage": "No image available",
+      "readMore": "Read article",
+      "unknownDate": "Publication date unavailable"
+    }
+  },
+
+  "ArticleDetailPage": {
+    "navigation": {
+      "back": "← Back to articles"
+    },
+    "states": {
+      "loading": "Loading article...",
+      "error": "Failed to load article details. Please try again later.",
+      "notFound": "Article not found."
+    },
+    "article": {
+      "noCoverImage": "No cover image available",
+      "by": "By {author}"
+    },
+    "cta": {
+      "title": "Continue your fitness journey",
+      "description": "Explore coaches and gyms on RwandaFitness and take the next step toward your goals.",
+      "exploreCoaches": "Explore Coaches",
+      "discoverGyms": "Discover Gyms"
+    }
+  },
+
+  "CheckEmail": {
+    "title": "Check your email",
+    "accountCreated": "Your RwandaFitness account has been created successfully.",
+    "verificationSent": "We sent a verification link to",
+    "instructions": "Open the email and click the verification link to activate your account. The link expires after 24 hours.",
+    "notReceivedTitle": "Didn't receive the email?",
+    "notReceivedDescription": "Check your spam or junk folder and make sure the email address is correct.",
+    "goToLogin": "Go to login",
+    "useAnotherEmail": "Use another email",
+    "loading": "Loading..."
+  },
+
+  "CoachDetail": {
+    "loading": "Loading coach details...",
+    "notFound": "Coach not found.",
+    "verified": "Verified",
+    "yearsExperience": "{count, plural, one {# year of experience} other {# years of experience}}",
+    "worksAt": "Works at",
+    "aboutTitle": "About this coach",
+    "noDescription": "No description provided.",
+    "formatTitle": "Coaching format",
+    "onlineAvailable": "✅ Online coaching available",
+    "onlineUnavailable": "❌ No online coaching",
+    "inPersonAvailable": "✅ In-person coaching available",
+    "inPersonUnavailable": "❌ No in-person coaching",
+    "specialtyTitle": "Specialty",
+    "specialtyDescription": "This coach specializes in <strong>{specialty}</strong> and can help clients with personalized support based on their goals.",
+    "gallery": "Gallery",
+    "galleryImageAlt": "Coach gallery image",
+    "startingFrom": "Starting from",
+    "contact": "Contact",
+    "perSession": "per session",
+    "closeRequestForm": "Close request form",
+    "requestCoaching": "Request coaching",
+    "benefits": {
+      "directRequest": "Direct request from the platform",
+      "quickContact": "Quick and simple contact flow",
+      "clearRequests": "Designed for clear coaching requests"
+    },
+    "form": {
+      "title": "Send a coaching request",
+      "goalLabel": "Your goal",
+      "goalPlaceholder": "Weight loss, muscle gain, home fitness...",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Write a short message for the coach...",
+      "sending": "Sending...",
+      "send": "Send request"
+    },
+    "messages": {
+      "loginRequired": "Please log in as a client first.",
+      "goalRequired": "Please enter your goal.",
+      "requestSent": "Coaching request sent successfully.",
+      "unexpectedError": "Something went wrong while sending the request."
+    },
+    "errors": {
+      "requestFailed": "Failed to send the request."
+    },
+    "reviews": {
+      "title": "Client reviews",
+      "count": "{count, plural, =1 {# review} other {# reviews}}",
+      "noReviews": "No reviews yet",
+      "loading": "Loading reviews...",
+      "empty": "This coach has not received any reviews yet.",
+      "anonymous": "RwandaFitness client"
+   }
+  },
+
+    "Coaches": {
+    "title": "Find a Coach",
+    "loading": "Loading coaches...",
+    "empty": "No coaches are available at the moment.",
+    "verified": "Verified",
+    "worksAt": "Works at",
+    "pricePerSession": "{price} $ / session",
+    "contactForPrice": "Contact for price",
+    "requestCoaching": "Request Coaching",
+    "form": {
+      "title": "Request Coaching - {name}",
+      "goalLabel": "Your goal",
+      "goalPlaceholder": "Weight loss, muscle gain, home fitness...",
+      "messageLabel": "Your message",
+      "messagePlaceholder": "Write a short message for the coach...",
+      "cancel": "Cancel",
+      "sending": "Sending...",
+      "send": "Send"
+    },
+    "messages": {
+      "loadFailed": "Failed to load coaches.",
+      "loginRequired": "Please log in as a client first.",
+      "goalRequired": "Please enter your goal.",
+      "requestSent": "Coaching request sent successfully.",
+      "requestFailed": "Something went wrong while sending the request."
+    }
+  },
+
+  "CoachProfileEdit": {
+    "title": "Edit Coach Profile",
+    "loading": "Loading profile...",
+    "saving": "Saving...",
+    "save": "Save Profile",
+    "messages": {
+      "loadFailed": "Failed to load profile.",
+      "saveSuccess": "Profile updated successfully.",
+      "saveFailed": "Failed to save profile."
+    },
+    "fields": {
+      "bio": {
+        "label": "Bio",
+        "placeholder": "Tell clients about your experience and coaching approach"
+      },
+      "specialty": {
+        "label": "Specialty"
+      },
+      "yearsExperience": {
+        "label": "Years of experience",
+        "placeholder": "Years of experience"
+      },
+      "city": {
+        "label": "City",
+        "placeholder": "City"
+      },
+      "price": {
+        "label": "Price per session",
+        "placeholder": "Price per session"
+      },
+      "instagram": {
+        "label": "Instagram",
+        "placeholder": "Instagram URL"
+      },
+      "gym": {
+        "label": "Gym",
+        "noGym": "No gym"
+      },
+      "availableOnline": "Available online",
+      "availableInPerson": "Available in person",
+      "photo": {
+        "label": "Profile photo",
+        "selected": "Selected file: {name}"
+      }
+    },
+    "specialties": {
+      "fitness": "Fitness",
+      "bodybuilding": "Bodybuilding",
+      "weightLoss": "Weight Loss",
+      "crossfit": "CrossFit",
+      "yoga": "Yoga",
+      "cardio": "Cardio",
+      "nutrition": "Nutrition",
+      "other": "Other"
+    }
+  },
+
+  "ClientDashboard": {
+    "title": "Client Dashboard",
+    "subtitle": "Track your coaching requests and continue your fitness journey.",
+    "loading": "Loading dashboard...",
+    "stats": {
+      "total": "Total Requests",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    },
+    "actions": {
+      "findCoach": "Find a Coach",
+      "viewAllRequests": "View All Requests"
+    },
+    "recent": {
+      "title": "Recent Requests",
+      "subtitle": "Your latest coaching activity",
+      "empty": "No requests yet."
+    },
+    "statuses": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "completed": "Completed"
+    },
+    "messages": {
+      "loadFailed": "Failed to load dashboard data."
+    }
+  },
+
+  "CoachDashboard": {
+    "title": "Coach Dashboard",
+    "subtitle": "Track your incoming requests and manage client activity.",
+    "loading": "Loading dashboard...",
+    "stats": {
+      "total": "Total Requests",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "completed": "Completed"
+    },
+    "actions": {
+      "manageRequests": "Manage Requests",
+      "editProfile": "Edit my profile"
+    },
+    "recent": {
+      "title": "Recent Client Requests",
+      "subtitle": "Latest activity from clients",
+      "empty": "No client requests yet.",
+      "client": "Client: {name}"
+    },
+    "statuses": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "completed": "Completed"
+    },
+    "messages": {
+      "loadFailed": "Failed to load dashboard data."
+    }
+  },
+
+  "DashboardRedirect": {
+    "title": "Loading dashboard",
+    "description": "Please wait while we redirect you to your RwandaFitness dashboard."
+  },
+
+  "EmailVerified": {
+    "title": "Email Verified",
+    "description": "Your email address has been successfully verified.",
+    "details": "Your RwandaFitness account is now active and you can start using all platform features.",
+    "login": "Login",
+    "home": "Back to Home",
+    "footer": "Thank you for joining the RwandaFitness community 💙"
+  },
+
+  "ForgotPassword": {
+    "title": "Forgot Password",
+    "description": "Enter your email address and we'll send you a password reset link.",
+    "emailPlaceholder": "Email address",
+    "send": "Send Reset Link",
+    "sending": "Sending...",
+    "messages": {
+      "emailRequired": "Please enter your email address.",
+      "success": "Password reset email sent successfully.",
+      "networkError": "Unable to send the password reset email.",
+      "unexpectedError": "Something went wrong."
+    }
+  },
+
+  "GymDetail": {
+    "loading": "Loading gym...",
+    "verified": "Verified",
+    "coverUnavailable": "No cover image available",
+    "about": {
+      "title": "About this gym",
+      "empty": "No description provided."
+    },
+    "gallery": {
+      "title": "Gallery",
+      "imageAlt": "Gym gallery image {number}",
+      "noImage": "No image"
+    },
+    "coaches": {
+      "title": "Coaches at this gym",
+      "pricePerSession": "{price} $ / session",
+      "contactForPrice": "Contact for pricing"
+    },
+    "information": {
+      "title": "Gym information",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "website": "Website",
+      "visitWebsite": "Visit website",
+      "openingHours": "Opening hours",
+      "viewProfile": "View profile",
+      "viewPage": "View page",
+      "coordinates": "Coordinates"
+    },
+    "messages": {
+      "loadFailed": "Failed to load gym details.",
+      "notFound": "Gym not found."
+    }
+  },
+   
+  "Gyms": {
+    "title": "Discover Gyms",
+    "description": "Explore gyms and fitness spaces across Rwanda.",
+    "loading": "Loading gyms...",
+    "empty": "No gyms available yet.",
+    "noImage": "No image available",
+    "noDescription": "No description provided.",
+    "verified": "Verified",
+    "messages": {
+      "loadFailed": "Failed to load gyms."
+    }
+  },
+
+  "Login": {
+    "title": "Welcome back",
+    "description": "Login to your RwandaFitness account",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "login": "Login",
+    "loggingIn": "Logging in...",
+    "noAccount": "Don't have an account?",
+    "register": "Register",
+    "forgotPassword": "Forgot your password?",
+    "messages": {
+      "requiredFields": "Please fill all fields.",
+      "invalidCredentials": "Invalid email or password.",
+      "missingToken": "Login succeeded, but no authentication token was returned.",
+      "unexpectedError": "Something went wrong. Please try again."
+    }
+  },
+
+  "MyRequests": {
+    "titles": {
+      "coach": "Requests from Clients",
+      "client": "My Coaching Requests"
+    },
+    "loggedInAs": "Logged in as <strong>{name}</strong> ({role})",
+    "loading": "Loading requests...",
+    "empty": "No requests yet.",
+    "noMessage": "No message provided.",
+    "labels": {
+      "client": "Client",
+      "coach": "Coach"
+    },
+    "roles": {
+      "coach": "Coach",
+      "client": "Client",
+      "admin": "Administrator"
+    },
+    "statuses": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "completed": "Completed"
+    },
+    "actions": {
+      "accept": "Accept",
+      "reject": "Reject",
+      "markCompleted": "Mark as Completed",
+      "updating": "Updating...",
+      "leaveReview": "Leave a review",
+      "reviewSubmitted": "Your review has been submitted and is awaiting approval."
+    },
+    "messages": {
+      "loadFailed": "Failed to load requests.",
+      "updateFailed": "Failed to update the request."
+    }
+  },
+
+    "RequestDetail": {
+    "back": "Back to requests",
+    "loading": "Loading request...",
+    "requestNumber": "Request #{id}",
+    "invalidDate": "Date unavailable",
+    "client": {
+      "title": "Client"
+    },
+    "coach": {
+      "title": "Coach"
+    },
+    "message": {
+      "title": "Message",
+      "empty": "No message provided."
+    },
+    "dates": {
+      "requested": "Requested",
+      "updated": "Last updated"
+    },
+    "statuses": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "completed": "Completed"
+    },
+    "actions": {
+      "title": "Actions",
+      "accept": "Accept",
+      "reject": "Reject",
+      "markCompleted": "Mark as Completed",
+      "updating": "Updating...",
+      "unavailable": "No actions available for this request."
+    },
+    "messages": {
+      "loadFailed": "Failed to load the request.",
+      "updateFailed": "Failed to update the request.",
+      "notFound": "Request not found."
+    }
+  },
+
+  "Register": {
+    "title": "Create your account",
+    "description": "Join RwandaFitness and start your fitness journey.",
+    "fields": {
+      "email": "Email",
+      "username": "Username",
+      "fullName": "Full name",
+      "phone": "Phone (optional)",
+      "role": "Account type",
+      "password": "Password",
+      "confirmPassword": "Confirm password"
+    },
+    "roles": {
+      "client": "Client",
+      "coach": "Coach"
+    },
+    "passwordHelp": "Password must contain at least 8 characters.",
+    "register": "Register",
+    "creatingAccount": "Creating account...",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Login",
+    "messages": {
+      "requiredFields": "Please fill all required fields.",
+      "invalidEmail": "Please enter a valid email address.",
+      "usernameTooShort": "Username must contain at least 3 characters.",
+      "fullNameTooShort": "Full name is too short.",
+      "passwordTooShort": "Password must contain at least 8 characters.",
+      "passwordMismatch": "Passwords do not match.",
+      "registrationFailed": "Registration failed.",
+      "unexpectedError": "Something went wrong. Please try again."
+    }
+  },
+
+  "ResetPassword": {
+    "title": "Reset Password",
+    "description": "Choose a new password for your RwandaFitness account.",
+    "fields": {
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password"
+    },
+    "passwordHelp": "Password must contain at least 8 characters.",
+    "savePassword": "Save Password",
+    "saving": "Saving...",
+    "login": "Continue to login",
+    "messages": {
+      "requiredFields": "Please fill all fields.",
+      "passwordTooShort": "Password must contain at least 8 characters.",
+      "passwordMismatch": "Passwords do not match.",
+      "invalidToken": "This password reset link is invalid.",
+      "resetFailed": "Unable to reset password.",
+      "resetSuccess": "Your password has been reset successfully."
+    }
+  },
+
+  "Metadata": {
+    "title": "RwandaFitness",
+    "description": "Connect with coaches and start your fitness journey."
+  },
+  "Layout": {
+    "footer": {
+      "qed": "Results are the proof.",
+      "description": "The Home of Fitness in Rwanda",
+      "navigationLabel": "Footer navigation",
+      "links": {
+        "articles": "Articles",
+        "coaches": "Coaches",
+        "gyms": "Gyms",
+        "about": "About"
+      },
+      "copyright": "© {startYear}–{currentYear} RwandaFitness. All rights reserved."
+    }
+  },
+
+  "FeaturedArticles": {
+    "title": "Latest Fitness Articles",
+    "description": "Tips, guides and insights to support your fitness journey.",
+    "viewAll": "View all",
+    "noImage": "No image"
+  },
+
+  "Contact": {
+    "title": "Contact us",
+    "description": "Have a question or need support? Send us a message.",
+    "name": "Full name",
+    "email": "Email address",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send message",
+    "success": "Your message has been sent successfully.",
+    "error": "Unable to send your message. Please try again.",
+    "sending": "Sending..."
+  },
+
+  "ReviewForm": {
+    "title": "Leave a review",
+    "description": "Share your experience with the coaching service you received.",
+    "back": "Back to my requests",
+    "loading": "Loading request...",
+    "service": "Service",
+    "coach": "Coach: {name}",
+    "rating": {
+      "label": "Your rating",
+      "help": "Choose a rating from 1 to 5 stars.",
+      "starLabel": "Give {value} stars",
+      "selected": "{rating} out of 5 stars"
+    },
+    "comment": {
+      "label": "Your comment",
+      "help": "Describe your experience with the coach. This field is optional.",
+      "placeholder": "Write your review here..."
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "submit": "Submit review",
+      "submitting": "Submitting..."
+    },
+    "alreadySubmitted": {
+      "title": "Review already submitted",
+      "description": "You have already reviewed this coaching service."
+    },
+    "messages": {
+      "notFound": "This coaching request could not be found.",
+      "loadFailed": "Unable to load the coaching request.",
+      "notCompleted": "You can leave a review only after the coaching service has been completed.",
+      "ratingRequired": "Please choose a rating before submitting.",
+      "submitFailed": "Unable to submit your review."
+    }
+  }
+
+}
