@@ -1,22 +1,46 @@
-from rest_framework import generics, filters, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import CoachProfile
-from .serializers import CoachProfileSerializer, CoachProfileUpdateSerializer
+from rest_framework import filters, generics, permissions
+
 from .filters import CoachFilter
+from .models import CoachProfile
+from .serializers import (
+    CoachProfileSerializer,
+    CoachProfileUpdateSerializer,
+)
 
 
 class CoachListAPIView(generics.ListAPIView):
-    queryset = (
-        CoachProfile.objects.select_related("user", "gym")
-        .prefetch_related("gallery_images")
-        .filter(user__role="coach")
-    )
     serializer_class = CoachProfileSerializer
 
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    queryset = (
+        CoachProfile.objects
+        .select_related(
+            "user",
+            "gym",
+        )
+        .prefetch_related(
+            "gallery_images",
+            "translations",
+        )
+        .filter(
+            user__role="coach",
+        )
+    )
+
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+    ]
+
     filterset_class = CoachFilter
-    search_fields = ["user__full_name", "city", "bio", "gym__name"]
+
+    search_fields = [
+        "user__full_name",
+        "city",
+        "translations__bio",
+        "gym__name",
+    ]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -25,12 +49,22 @@ class CoachListAPIView(generics.ListAPIView):
 
 
 class CoachDetailAPIView(generics.RetrieveAPIView):
-    queryset = (
-        CoachProfile.objects.select_related("user", "gym")
-        .prefetch_related("gallery_images")
-        .filter(user__role="coach")
-    )
     serializer_class = CoachProfileSerializer
+
+    queryset = (
+        CoachProfile.objects
+        .select_related(
+            "user",
+            "gym",
+        )
+        .prefetch_related(
+            "gallery_images",
+            "translations",
+        )
+        .filter(
+            user__role="coach",
+        )
+    )
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -39,18 +73,31 @@ class CoachDetailAPIView(generics.RetrieveAPIView):
 
 
 class MyCoachProfileAPIView(generics.RetrieveUpdateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
 
     def get_serializer_class(self):
-        if self.request.method in ["PUT", "PATCH"]:
+        if self.request.method in {"PUT", "PATCH"}:
             return CoachProfileUpdateSerializer
+
         return CoachProfileSerializer
 
     def get_queryset(self):
         return (
-            CoachProfile.objects.select_related("user", "gym")
-            .prefetch_related("gallery_images")
-            .filter(user=self.request.user, user__role="coach")
+            CoachProfile.objects
+            .select_related(
+                "user",
+                "gym",
+            )
+            .prefetch_related(
+                "gallery_images",
+                "translations",
+            )
+            .filter(
+                user=self.request.user,
+                user__role="coach",
+            )
         )
 
     def get_object(self):

@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from .models import Gym, GymGalleryImage
+
 from coaches.models import CoachProfile
+
+from .models import Gym, GymGalleryImage, GymTranslation
 
 
 class GymGalleryImageSerializer(serializers.ModelSerializer):
@@ -18,13 +20,18 @@ class GymGalleryImageSerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         request = self.context.get("request")
+
         if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
+
         return None
 
 
 class GymCoachSerializer(serializers.ModelSerializer):
-    full_name = serializers.CharField(source="user.full_name", read_only=True)
+    full_name = serializers.CharField(
+        source="user.full_name",
+        read_only=True,
+    )
     photo_url = serializers.SerializerMethodField()
 
     class Meta:
@@ -41,15 +48,28 @@ class GymCoachSerializer(serializers.ModelSerializer):
 
     def get_photo_url(self, obj):
         request = self.context.get("request")
+
         if obj.photo and request:
             return request.build_absolute_uri(obj.photo.url)
+
         return None
 
 
 class GymSerializer(serializers.ModelSerializer):
+    description = serializers.SerializerMethodField()
+    opening_hours = serializers.SerializerMethodField()
+
     cover_image_url = serializers.SerializerMethodField()
-    gallery_images = GymGalleryImageSerializer(many=True, read_only=True)
-    coaches = GymCoachSerializer(many=True, read_only=True)
+
+    gallery_images = GymGalleryImageSerializer(
+        many=True,
+        read_only=True,
+    )
+
+    coaches = GymCoachSerializer(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Gym
@@ -76,8 +96,74 @@ class GymSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 
+    def get_requested_language(self):
+        request = self.context.get("request")
+
+        if not request:
+            return "en"
+
+        language = request.query_params.get("lang", "en")
+
+        if language not in {"en", "rw"}:
+            return "en"
+
+        return language
+
+    def get_translation(self, obj):
+        language = self.get_requested_language()
+
+        translations = getattr(
+            obj,
+            "_prefetched_objects_cache",
+            {},
+        ).get("translations")
+
+        if translations is not None:
+            translation_by_language = {
+                translation.language: translation
+                for translation in translations
+            }
+
+            return (
+                translation_by_language.get(language)
+                or translation_by_language.get("en")
+                or translation_by_language.get("rw")
+            )
+
+        translation = obj.translations.filter(
+            language=language,
+        ).first()
+
+        if translation:
+            return translation
+
+        return (
+            obj.translations.filter(language="en").first()
+            or obj.translations.filter(language="rw").first()
+        )
+
+    def get_description(self, obj):
+        translation = self.get_translation(obj)
+
+        if not translation:
+            return ""
+
+        return translation.description
+
+    def get_opening_hours(self, obj):
+        translation = self.get_translation(obj)
+
+        if not translation:
+            return ""
+
+        return translation.opening_hours
+
     def get_cover_image_url(self, obj):
         request = self.context.get("request")
+
         if obj.cover_image and request:
-            return request.build_absolute_uri(obj.cover_image.url)
+            return request.build_absolute_uri(
+                obj.cover_image.url
+            )
+
         return None
