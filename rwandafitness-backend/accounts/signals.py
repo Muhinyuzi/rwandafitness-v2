@@ -12,7 +12,6 @@ def create_coach_profile(sender, instance, created, **kwargs):
     if created and instance.role == "coach":
         CoachProfile.objects.create(
             user=instance,
-            bio="New coach",
             city="Kigali",
             available_online=True,
             available_in_person=True,
