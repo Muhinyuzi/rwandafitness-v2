@@ -690,16 +690,12 @@ export default function CoachDetailPage() {
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
               {coach.photo_url ? (
                 <img
-                  src={
-                    coach.photo_url
-                  }
-                  alt={
-                    coach.full_name
-                  }
-                  className="h-24 w-24 rounded-full object-cover"
+                  src={coach.photo_url}
+                  alt={coach.full_name}
+                  className="h-32 w-32 shrink-0 rounded-full object-cover sm:h-36 sm:w-36"
                 />
               ) : (
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-3xl font-bold text-white">
+                <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-full bg-primary text-4xl font-bold text-white sm:h-36 sm:w-36">
                   {coach.full_name
                     .charAt(0)
                     .toUpperCase()}
