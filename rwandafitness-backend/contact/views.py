@@ -15,17 +15,25 @@ class ContactMessageViewSet(
 ):
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageSerializer
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        serializer = self.get_serializer(
+            data=request.data
+        )
+        serializer.is_valid(
+            raise_exception=True
+        )
 
         contact_message = serializer.save()
 
         try:
             email = EmailMessage(
-                subject=f"[RwandaFitness] {contact_message.subject}",
+                subject=(
+                    f"[RwandaFitness] "
+                    f"{contact_message.subject}"
+                ),
                 body=(
                     "Nouveau message reçu depuis RwandaFitness\n\n"
                     f"Nom : {contact_message.name}\n"
@@ -38,10 +46,15 @@ class ContactMessageViewSet(
                 reply_to=[contact_message.email],
             )
 
-            email.send(fail_silently=False)
+            email.send(
+                fail_silently=False
+            )
 
         except Exception as error:
-            print("Contact email notification error:", error)
+            print(
+                "Contact email notification error:",
+                error,
+            )
 
         return Response(
             serializer.data,
