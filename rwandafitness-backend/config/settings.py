@@ -401,6 +401,15 @@ CKEDITOR_5_CONFIGS = {
 
 
 # ==================================================
+# UPLOAD LIMITS
+# ==================================================
+
+# Allow larger Django Admin forms for legacy articles
+# containing large HTML content and image uploads.
+DATA_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024  # 20 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
+
+# ==================================================
 # DRF SPECTACULAR
 # ==================================================
 
