@@ -4,7 +4,10 @@ import {useEffect, useState} from "react";
 import {useParams} from "next/navigation";
 import {useLocale, useTranslations} from "next-intl";
 
-import {Link} from "@/i18n/navigation";
+import {
+  Link,
+  useRouter,
+} from "@/i18n/navigation";
 import {API_URL} from "@/lib/api";
 
 type CoachGalleryImage = {
@@ -108,6 +111,7 @@ export default function CoachDetailPage() {
   const locale = useLocale();
   const t = useTranslations("CoachDetail");
   const params = useParams();
+  const router = useRouter();
 
   const id =
     typeof params.id === "string"
@@ -119,15 +123,16 @@ export default function CoachDetailPage() {
   const [coach, setCoach] =
     useState<Coach | null>(null);
 
-  const [reviews, setReviews] = useState<
-    Review[]
-  >([]);
+  const [reviews, setReviews] =
+    useState<Review[]>([]);
 
   const [loading, setLoading] =
     useState(true);
 
-  const [reviewsLoading, setReviewsLoading] =
-    useState(true);
+  const [
+    reviewsLoading,
+    setReviewsLoading,
+  ] = useState(true);
 
   const [goal, setGoal] = useState("");
   const [message, setMessage] = useState("");
@@ -255,7 +260,9 @@ export default function CoachDetailPage() {
         if (
           isPaginatedReviews(data)
         ) {
-          setReviews(data.results);
+          setReviews(
+            data.results,
+          );
           return;
         }
 
@@ -498,6 +505,28 @@ export default function CoachDetailPage() {
   };
 
   // =========================================================
+  // OPEN COACHING REQUEST
+  // =========================================================
+
+  const handleRequestCoaching = () => {
+    const token =
+      localStorage.getItem(
+        "token",
+      );
+
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    setStatusMessage("");
+
+    setShowRequestBox(
+      (current) => !current,
+    );
+  };
+
+  // =========================================================
   // SEND COACHING REQUEST
   // =========================================================
 
@@ -509,11 +538,8 @@ export default function CoachDetailPage() {
         );
 
       if (!token) {
-        setStatusMessage(
-          t(
-            "messages.loginRequired",
-          ),
-        );
+        setShowRequestBox(false);
+        router.push("/login");
         return;
       }
 
@@ -539,19 +565,17 @@ export default function CoachDetailPage() {
             `${API_URL}/api/requests/create/`,
             {
               method: "POST",
-
               headers: {
                 "Content-Type":
                   "application/json",
-
                 Authorization:
                   `Token ${token}`,
               },
-
               body: JSON.stringify(
                 {
                   coach: coach.id,
-                  goal: goal.trim(),
+                  goal:
+                    goal.trim(),
                   message:
                     message.trim(),
                 },
@@ -569,6 +593,21 @@ export default function CoachDetailPage() {
           data = null;
         }
 
+        if (
+          response.status === 401 ||
+          response.status === 403
+        ) {
+          localStorage.removeItem(
+            "token",
+          );
+
+          setShowRequestBox(false);
+
+          router.push("/login");
+
+          return;
+        }
+
         if (!response.ok) {
           setStatusMessage(
             formatApiError(data),
@@ -584,10 +623,7 @@ export default function CoachDetailPage() {
 
         setGoal("");
         setMessage("");
-
-        setShowRequestBox(
-          false,
-        );
+        setShowRequestBox(false);
       } catch {
         setStatusMessage(
           t(
@@ -690,8 +726,12 @@ export default function CoachDetailPage() {
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
               {coach.photo_url ? (
                 <img
-                  src={coach.photo_url}
-                  alt={coach.full_name}
+                  src={
+                    coach.photo_url
+                  }
+                  alt={
+                    coach.full_name
+                  }
                   className="h-32 w-32 shrink-0 rounded-full object-cover sm:h-36 sm:w-36"
                 />
               ) : (
@@ -809,8 +849,6 @@ export default function CoachDetailPage() {
               </div>
             </div>
 
-            {/* ABOUT */}
-
             <div className="mt-8">
               <h2 className="text-lg font-semibold text-zinc-900">
                 {t(
@@ -825,8 +863,6 @@ export default function CoachDetailPage() {
                   )}
               </p>
             </div>
-
-            {/* FORMAT + SPECIALTY */}
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl bg-zinc-50 p-5">
@@ -887,8 +923,6 @@ export default function CoachDetailPage() {
                 </p>
               </div>
             </div>
-
-            {/* GALLERY */}
 
             {galleryImages.length >
               0 && (
@@ -961,8 +995,6 @@ export default function CoachDetailPage() {
               </div>
             )}
           </div>
-
-          {/* REVIEWS */}
 
           <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-4">
@@ -1073,8 +1105,6 @@ export default function CoachDetailPage() {
           </section>
         </div>
 
-        {/* REQUEST SIDEBAR */}
-
         <aside className="h-fit rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm lg:sticky lg:top-24">
           <p className="text-sm text-zinc-500">
             {t(
@@ -1098,11 +1128,8 @@ export default function CoachDetailPage() {
 
           <button
             type="button"
-            onClick={() =>
-              setShowRequestBox(
-                (current) =>
-                  !current,
-              )
+            onClick={
+              handleRequestCoaching
             }
             className="mt-6 w-full rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
           >
@@ -1215,10 +1242,6 @@ export default function CoachDetailPage() {
         </aside>
       </div>
 
-      {/* =====================================================
-          LIGHTBOX
-      ===================================================== */}
-
       {selectedImage &&
         selectedImageIndex !==
           null && (
@@ -1230,8 +1253,6 @@ export default function CoachDetailPage() {
               closeLightbox
             }
           >
-            {/* CLOSE */}
-
             <button
               type="button"
               onClick={
@@ -1251,8 +1272,6 @@ export default function CoachDetailPage() {
                 event.stopPropagation()
               }
             >
-              {/* PREVIOUS */}
-
               {galleryImages.length >
                 1 && (
                 <button
@@ -1266,8 +1285,6 @@ export default function CoachDetailPage() {
                   ‹
                 </button>
               )}
-
-              {/* IMAGE */}
 
               <div className="flex max-h-full max-w-full flex-col items-center">
                 <img
@@ -1302,8 +1319,6 @@ export default function CoachDetailPage() {
                   </p>
                 </div>
               </div>
-
-              {/* NEXT */}
 
               {galleryImages.length >
                 1 && (
