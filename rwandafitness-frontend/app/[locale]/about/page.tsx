@@ -68,7 +68,7 @@ export default async function AboutPage() {
             <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
               <div className="relative min-h-[420px] bg-zinc-100 lg:min-h-[620px]">
                 <Image
-                  src="/about_us.JPG"
+                  src="/about_us.png"
                   alt={t("hero.imageAlt")}
                   fill
                   priority
