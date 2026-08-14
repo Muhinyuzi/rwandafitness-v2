@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {useLocale, useTranslations} from "next-intl";
 import {useEffect, useState} from "react";
 
@@ -76,6 +77,7 @@ export default function Navbar() {
 
           setToken(null);
           setUser(null);
+
           return;
         }
 
@@ -143,7 +145,9 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
+    const handleEscape = (
+      event: KeyboardEvent,
+    ) => {
       if (event.key === "Escape") {
         setMobileMenuOpen(false);
       }
@@ -289,16 +293,15 @@ export default function Navbar() {
           onClick={closeMobileMenu}
           className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3 xl:flex-none"
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-md transition-transform hover:scale-105 sm:h-12 sm:w-12">
-            <span className="text-xl font-black tracking-tighter sm:text-2xl">
-              <span className="text-cyan-500">
-                R
-              </span>
-
-              <span className="text-slate-900">
-                F
-              </span>
-            </span>
+          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white shadow-md transition-transform hover:scale-105 sm:h-12 sm:w-12">
+            <Image
+              src="/rwandafitness-icon.png"
+              alt="RwandaFitness"
+              fill
+              priority
+              sizes="48px"
+              className="object-contain"
+            />
           </div>
 
           <div className="flex min-w-0 flex-col leading-none">

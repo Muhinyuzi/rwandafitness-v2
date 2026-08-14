@@ -1,5 +1,6 @@
 import type {Metadata} from "next";
 import type {ReactNode} from "react";
+import Image from "next/image";
 import {Geist, Geist_Mono} from "next/font/google";
 import {NextIntlClientProvider, hasLocale} from "next-intl";
 import {
@@ -63,7 +64,36 @@ export async function generateMetadata({
       default: t("title"),
       template: `%s | ${t("title")}`,
     },
+
     description: t("description"),
+
+    icons: {
+      icon: [
+        {
+          url: "/favicon.ico",
+        },
+        {
+          url: "/favicon-16x16.png",
+          sizes: "16x16",
+          type: "image/png",
+        },
+        {
+          url: "/favicon-32x32.png",
+          sizes: "32x32",
+          type: "image/png",
+        },
+      ],
+
+      apple: [
+        {
+          url: "/apple-touch-icon.png",
+          sizes: "180x180",
+          type: "image/png",
+        },
+      ],
+    },
+
+    manifest: "/site.webmanifest",
   };
 }
 
@@ -101,13 +131,31 @@ export default async function LocaleLayout({
             </main>
 
             <footer className="border-t border-zinc-200 bg-white">
-              <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-zinc-600 md:flex-row">
+              <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-8 text-sm text-zinc-600 md:flex-row">
                 <div className="text-center md:text-left">
-                  <h3 className="text-lg font-bold text-primary">
-                    RwandaFitness
-                  </h3>
+                  <div className="flex items-center justify-center gap-3 md:justify-start">
+                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-white shadow-sm">
+                      <Image
+                        src="/rwandafitness-icon.png"
+                        alt="RwandaFitness"
+                        fill
+                        sizes="48px"
+                        className="object-contain"
+                      />
+                    </div>
 
-                  <p className="mt-1 font-semibold text-zinc-800">
+                    <div>
+                      <h3 className="text-lg font-bold text-primary">
+                        RwandaFitness
+                      </h3>
+
+                      <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
+                        Stronger • Better • Life
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="mt-4 font-semibold text-zinc-800">
                     Q.E.D. — {t("footer.qed")}
                   </p>
 
