@@ -3,10 +3,11 @@
 /* =========================
    THEME RWANDAFITNESS
 ========================= */
+
 @theme inline {
-  --color-primary: #00b7c8;   /* turquoise */
-  --color-primary-dark: #0097a7;
-  --color-accent: #F19F4D;    /* orange */
+  --color-primary: #078db2;
+  --color-primary-dark: #067795;
+  --color-accent: #f19f4d;
 
   --color-background: #f8fafc;
   --color-foreground: #171717;
@@ -18,6 +19,7 @@
 /* =========================
    BASE
 ========================= */
+
 body {
   background: var(--color-background);
   color: var(--color-foreground);
