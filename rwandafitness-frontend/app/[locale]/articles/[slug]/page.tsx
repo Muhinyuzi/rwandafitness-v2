@@ -202,7 +202,9 @@ export default function ArticleDetailPage() {
   // =========================================================
 
   useEffect(() => {
-    if (!article?.id) {
+    const articleId = article?.id;
+
+    if (!articleId) {
       setVideos([]);
       setVideosLoading(false);
       return;
@@ -217,7 +219,7 @@ export default function ArticleDetailPage() {
         setVideos([]);
 
         const response = await fetch(
-          `${API_URL}/api/videos/?lang=${locale}&article=${article.id}`,
+          `${API_URL}/api/videos/?lang=${locale}&article=${articleId}`,
           {
             signal: controller.signal,
             cache: "no-store",
