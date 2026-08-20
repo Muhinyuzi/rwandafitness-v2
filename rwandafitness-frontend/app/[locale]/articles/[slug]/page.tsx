@@ -19,6 +19,81 @@ type Article = {
   published_at: string | null;
 };
 
+type ArticleVideo = {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  video_url: string;
+  language: "en" | "rw" | "all";
+  thumbnail: string | null;
+};
+
+type PaginatedVideos = {
+  results: ArticleVideo[];
+};
+
+function isPaginatedVideos(
+  data: unknown,
+): data is PaginatedVideos {
+  if (!data || typeof data !== "object") {
+    return false;
+  }
+
+  const value = data as Record<string, unknown>;
+
+  return Array.isArray(value.results);
+}
+
+function getYouTubeId(url: string) {
+  try {
+    const parsed = new URL(url);
+
+    if (
+      parsed.hostname === "youtu.be" ||
+      parsed.hostname.endsWith(".youtu.be")
+    ) {
+      return (
+        parsed.pathname
+          .replace(/^\/+/, "")
+          .split("/")[0] || null
+      );
+    }
+
+    if (
+      parsed.hostname === "youtube.com" ||
+      parsed.hostname === "www.youtube.com" ||
+      parsed.hostname === "m.youtube.com"
+    ) {
+      if (parsed.pathname === "/watch") {
+        return parsed.searchParams.get("v");
+      }
+
+      if (parsed.pathname.startsWith("/embed/")) {
+        return parsed.pathname.split("/")[2] || null;
+      }
+
+      if (parsed.pathname.startsWith("/shorts/")) {
+        return parsed.pathname.split("/")[2] || null;
+      }
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function getYouTubeThumbnail(url: string) {
+  const videoId = getYouTubeId(url);
+
+  if (!videoId) {
+    return null;
+  }
+
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+}
+
 export default function ArticleDetailPage() {
   const params = useParams<{slug: string}>();
   const slug = params.slug;
@@ -26,12 +101,30 @@ export default function ArticleDetailPage() {
   const t = useTranslations("ArticleDetailPage");
   const locale = useLocale();
 
-  const [article, setArticle] = useState<Article | null>(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [article, setArticle] =
+    useState<Article | null>(null);
+
+  const [videos, setVideos] =
+    useState<ArticleVideo[]>([]);
+
+  const [error, setError] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [
+    videosLoading,
+    setVideosLoading,
+  ] = useState(true);
+
+  // =========================================================
+  // LOAD ARTICLE
+  // =========================================================
 
   useEffect(() => {
-    const controller = new AbortController();
+    const controller =
+      new AbortController();
 
     async function loadArticle() {
       try {
@@ -40,37 +133,58 @@ export default function ArticleDetailPage() {
         setArticle(null);
 
         const response = await fetch(
-          `${API_URL}/api/articles/${encodeURIComponent(slug)}/?lang=${locale}`,
+          `${API_URL}/api/articles/${encodeURIComponent(
+            slug,
+          )}/?lang=${locale}`,
           {
             signal: controller.signal,
+            cache: "no-store",
           },
         );
 
         if (!response.ok) {
           if (response.status === 404) {
-            throw new Error("ARTICLE_NOT_FOUND");
+            throw new Error(
+              "ARTICLE_NOT_FOUND",
+            );
           }
 
-          throw new Error("ARTICLE_LOAD_FAILED");
+          throw new Error(
+            "ARTICLE_LOAD_FAILED",
+          );
         }
 
-        const data: Article = await response.json();
+        const data: Article =
+          await response.json();
 
         if (!controller.signal.aborted) {
           setArticle(data);
         }
       } catch (error) {
-        if (error instanceof Error && error.name === "AbortError") {
+        if (
+          error instanceof Error &&
+          error.name === "AbortError"
+        ) {
           return;
         }
 
-        if (error instanceof Error && error.message === "ARTICLE_NOT_FOUND") {
-          setError(t("states.notFound"));
+        if (
+          error instanceof Error &&
+          error.message ===
+            "ARTICLE_NOT_FOUND"
+        ) {
+          setError(
+            t("states.notFound"),
+          );
         } else {
-          setError(t("states.error"));
+          setError(
+            t("states.error"),
+          );
         }
       } finally {
-        if (!controller.signal.aborted) {
+        if (
+          !controller.signal.aborted
+        ) {
           setLoading(false);
         }
       }
@@ -83,23 +197,118 @@ export default function ArticleDetailPage() {
     };
   }, [slug, locale, t]);
 
-  function formatPublishedDate(date: string | null) {
+  // =========================================================
+  // LOAD ARTICLE VIDEOS
+  // =========================================================
+
+  useEffect(() => {
+    if (!article?.id) {
+      setVideos([]);
+      setVideosLoading(false);
+      return;
+    }
+
+    const controller =
+      new AbortController();
+
+    async function loadVideos() {
+      try {
+        setVideosLoading(true);
+        setVideos([]);
+
+        const response = await fetch(
+          `${API_URL}/api/videos/?lang=${locale}&article=${article.id}`,
+          {
+            signal: controller.signal,
+            cache: "no-store",
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            "Unable to load article videos.",
+          );
+        }
+
+        const data: unknown =
+          await response.json();
+
+        if (Array.isArray(data)) {
+          setVideos(
+            data as ArticleVideo[],
+          );
+          return;
+        }
+
+        if (
+          isPaginatedVideos(data)
+        ) {
+          setVideos(
+            data.results,
+          );
+          return;
+        }
+
+        setVideos([]);
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.name === "AbortError"
+        ) {
+          return;
+        }
+
+        setVideos([]);
+      } finally {
+        if (
+          !controller.signal.aborted
+        ) {
+          setVideosLoading(false);
+        }
+      }
+    }
+
+    void loadVideos();
+
+    return () => {
+      controller.abort();
+    };
+  }, [
+    article?.id,
+    locale,
+  ]);
+
+  function formatPublishedDate(
+    date: string | null,
+  ) {
     if (!date) {
       return "";
     }
 
-    const parsedDate = new Date(date);
+    const parsedDate =
+      new Date(date);
 
-    if (Number.isNaN(parsedDate.getTime())) {
+    if (
+      Number.isNaN(
+        parsedDate.getTime(),
+      )
+    ) {
       return "";
     }
 
-    return new Intl.DateTimeFormat(locale, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(parsedDate);
+    return new Intl.DateTimeFormat(
+      locale,
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      },
+    ).format(parsedDate);
   }
+
+  // =========================================================
+  // LOADING
+  // =========================================================
 
   if (loading) {
     return (
@@ -109,12 +318,18 @@ export default function ArticleDetailPage() {
             role="status"
             className="rounded-2xl border border-zinc-200 bg-white p-6 text-sm text-zinc-600 shadow-sm"
           >
-            {t("states.loading")}
+            {t(
+              "states.loading",
+            )}
           </div>
         </main>
       </div>
     );
   }
+
+  // =========================================================
+  // ERROR / NOT FOUND
+  // =========================================================
 
   if (error || !article) {
     return (
@@ -124,21 +339,29 @@ export default function ArticleDetailPage() {
             role="alert"
             className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
           >
-            {error || t("states.notFound")}
+            {error ||
+              t(
+                "states.notFound",
+              )}
           </div>
 
           <Link
             href="/articles"
             className="mt-6 inline-flex text-sm font-semibold text-primary transition hover:underline"
           >
-            {t("navigation.back")}
+            {t(
+              "navigation.back",
+            )}
           </Link>
         </main>
       </div>
     );
   }
 
-  const publishedDate = formatPublishedDate(article.published_at);
+  const publishedDate =
+    formatPublishedDate(
+      article.published_at,
+    );
 
   return (
     <div className="min-h-screen bg-zinc-50">
@@ -148,7 +371,9 @@ export default function ArticleDetailPage() {
             href="/articles"
             className="text-sm font-medium text-primary transition hover:underline"
           >
-            {t("navigation.back")}
+            {t(
+              "navigation.back",
+            )}
           </Link>
         </div>
 
@@ -156,14 +381,20 @@ export default function ArticleDetailPage() {
           {article.cover_image_url ? (
             <div className="overflow-hidden bg-zinc-100">
               <img
-                src={article.cover_image_url}
-                alt={article.title}
+                src={
+                  article.cover_image_url
+                }
+                alt={
+                  article.title
+                }
                 className="h-72 w-full object-cover sm:h-96"
               />
             </div>
           ) : (
             <div className="flex h-72 w-full items-center justify-center bg-zinc-100 px-4 text-center text-sm text-zinc-500 sm:h-96">
-              {t("article.noCoverImage")}
+              {t(
+                "article.noCoverImage",
+              )}
             </div>
           )}
 
@@ -172,74 +403,213 @@ export default function ArticleDetailPage() {
 
             {article.category && (
               <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
-                {article.category}
+                {
+                  article.category
+                }
               </span>
             )}
 
             <h1 className="mt-4 text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-              {article.title}
+              {
+                article.title
+              }
             </h1>
 
-            {(article.author_name || publishedDate) && (
+            {(article.author_name ||
+              publishedDate) && (
               <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-zinc-500">
                 {article.author_name && (
                   <span>
-                    {t("article.by", {
-                      author: article.author_name,
-                    })}
+                    {t(
+                      "article.by",
+                      {
+                        author:
+                          article.author_name,
+                      },
+                    )}
                   </span>
                 )}
 
-                {article.author_name && publishedDate && (
-                  <span aria-hidden="true">•</span>
-                )}
+                {article.author_name &&
+                  publishedDate && (
+                    <span
+                      aria-hidden="true"
+                    >
+                      •
+                    </span>
+                  )}
 
                 {publishedDate && (
-                  <time dateTime={article.published_at ?? undefined}>
-                    {publishedDate}
+                  <time
+                    dateTime={
+                      article.published_at ??
+                      undefined
+                    }
+                  >
+                    {
+                      publishedDate
+                    }
                   </time>
                 )}
               </div>
             )}
 
             {article.excerpt && (
-              <p className="mt-6 text-lg leading-8 text-zinc-600">
-                {article.excerpt}
-              </p>
+              <div className="mx-auto max-w-3xl">
+                <p className="mt-6 text-lg font-medium leading-8 text-zinc-600">
+                  {
+                    article.excerpt
+                  }
+                </p>
+              </div>
             )}
 
             <div className="mt-8 border-t border-zinc-200 pt-8">
-              <div
-                className="
-                  prose prose-zinc max-w-none
-                  prose-headings:font-bold
-                  prose-headings:text-zinc-900
-                  prose-p:leading-8
-                  prose-p:text-zinc-700
-                  prose-a:text-primary
-                  prose-a:no-underline
-                  hover:prose-a:underline
-                  prose-img:rounded-2xl
-                  prose-blockquote:border-primary
-                  prose-blockquote:text-zinc-600
-                  prose-li:text-zinc-700
-                  prose-strong:text-zinc-900
-                "
-                dangerouslySetInnerHTML={{
-                  __html: article.content,
-                }}
-              />
+              <div className="mx-auto max-w-3xl">
+                <div
+                  className="article-content"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      article.content,
+                  }}
+                />
+              </div>
             </div>
           </div>
         </article>
 
+        {/* =====================================================
+            ARTICLE VIDEOS
+        ===================================================== */}
+
+        {(videosLoading ||
+          videos.length > 0) && (
+          <section className="mt-10 rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-zinc-900">
+                  {t(
+                    "videos.title",
+                  )}
+                </h2>
+
+                <p className="mt-1 text-sm text-zinc-500">
+                  {t(
+                    "videos.description",
+                  )}
+                </p>
+              </div>
+
+              {videos.length >
+                0 && (
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                  {t(
+                    "videos.count",
+                    {
+                      count:
+                        videos.length,
+                    },
+                  )}
+                </span>
+              )}
+            </div>
+
+            {videosLoading ? (
+              <div className="mt-6 rounded-2xl bg-zinc-50 p-5 text-sm text-zinc-500">
+                {t(
+                  "videos.loading",
+                )}
+              </div>
+            ) : (
+              <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                {videos.map(
+                  (video) => {
+                    const thumbnail =
+                      video.thumbnail ||
+                      getYouTubeThumbnail(
+                        video.video_url,
+                      );
+
+                    return (
+                      <Link
+                        key={
+                          video.id
+                        }
+                        href={`/videos/${video.slug}`}
+                        className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white transition hover:-translate-y-0.5 hover:shadow-md"
+                      >
+                        <div className="relative aspect-video overflow-hidden bg-zinc-100">
+                          {thumbnail ? (
+                            <img
+                              src={
+                                thumbnail
+                              }
+                              alt={
+                                video.title
+                              }
+                              className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center px-4 text-center text-sm text-zinc-400">
+                              {t(
+                                "videos.noThumbnail",
+                              )}
+                            </div>
+                          )}
+
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/10 transition group-hover:bg-black/20">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/95 text-lg text-primary shadow-lg transition group-hover:scale-110">
+                              ▶
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-4">
+                          <h3 className="font-semibold text-zinc-900">
+                            {
+                              video.title
+                            }
+                          </h3>
+
+                          {video.description && (
+                            <p className="mt-2 line-clamp-2 text-sm leading-6 text-zinc-600">
+                              {
+                                video.description
+                              }
+                            </p>
+                          )}
+
+                          <p className="mt-3 text-sm font-semibold text-primary">
+                            {t(
+                              "videos.watch",
+                            )}{" "}
+                            →
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  },
+                )}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* =====================================================
+            CTA
+        ===================================================== */}
+
         <section className="mt-10 rounded-3xl border border-zinc-200 bg-primary px-8 py-10 text-center text-white shadow-sm">
           <h2 className="text-2xl font-bold tracking-tight">
-            {t("cta.title")}
+            {t(
+              "cta.title",
+            )}
           </h2>
 
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-white/90 sm:text-base">
-            {t("cta.description")}
+            {t(
+              "cta.description",
+            )}
           </p>
 
           <div className="mt-6 flex flex-col justify-center gap-4 sm:flex-row">
@@ -247,14 +617,18 @@ export default function ArticleDetailPage() {
               href="/coaches"
               className="inline-flex justify-center rounded-xl bg-white px-6 py-3 text-sm font-semibold text-primary transition hover:bg-zinc-100"
             >
-              {t("cta.exploreCoaches")}
+              {t(
+                "cta.exploreCoaches",
+              )}
             </Link>
 
             <Link
               href="/gyms"
               className="inline-flex justify-center rounded-xl border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              {t("cta.discoverGyms")}
+              {t(
+                "cta.discoverGyms",
+              )}
             </Link>
           </div>
         </section>

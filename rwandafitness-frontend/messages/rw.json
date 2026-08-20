@@ -27,7 +27,8 @@
     "languages": {
       "english": "English",
       "kinyarwanda": "Kinyarwanda"
-    }
+    },
+    "videos": "Amashusho"
   },
   "HomePage": {
     "hero": {
@@ -220,6 +221,15 @@
       "description": "Shakisha abatoza n'inzu z'imyitozo kuri RwandaFitness maze utere indi ntambwe igana ku ntego zawe.",
       "exploreCoaches": "Reba Abatoza",
       "discoverGyms": "Shakisha Inzu z'Imyitozo"
+    },
+
+    "videos": {
+      "title": "Amashusho ajyanye n'iyi nkuru",
+      "description": "Reba amashusho ajyanye n'iyi nkuru.",
+      "loading": "Amashusho ari gufungurwa...",
+      "noThumbnail": "Nta foto ibanziriza amashusho",
+      "watch": "Reba amashusho",
+      "count": "{count, plural, one {# video} other {# videos}}"
     }
   },
 
@@ -288,6 +298,15 @@
       "loading": "Amasuzuma ari gutegurwa...",
       "empty": "Uyu mutoza nta suzuma arabona.",
       "anonymous": "Umukiriya wa RwandaFitness"
+    },
+
+    "videos": {
+      "title": "Amashusho",
+      "description": "Reba amashusho y'imyitozo n'ibindi bijyanye na fitness by'uyu mutoza.",
+      "loading": "Amashusho ari gufungurwa...",
+      "noThumbnail": "Nta foto ibanziriza amashusho",
+      "watch": "Reba amashusho",
+      "count": "{count, plural, one {# video} other {# videos}}"
     }
   },
 
@@ -499,6 +518,15 @@
     "messages": {
       "loadFailed": "Kuzana amakuru ya gym ntibyakunze.",
       "notFound": "Gym ntiyabonetse."
+    },
+
+    "videos": {
+      "title": "Amashusho",
+      "description": "Reba amashusho n'ibindi bijyanye na fitness byo muri iyi gym.",
+      "loading": "Amashusho ari gufungurwa...",
+      "noThumbnail": "Nta foto ibanziriza amashusho",
+      "watch": "Reba amashusho",
+      "count": "{count, plural, one {# video} other {# videos}}"
     }
   },
 
@@ -738,7 +766,43 @@
       "ratingRequired": "Banza uhitemo amanota mbere yo kohereza.",
       "submitFailed": "Ntibishobotse kohereza isuzuma ryawe."
     }
-  }
+  },
+
+    "Videos": {
+      "title": "Videos kuri Fitness",
+      "description": "Reba imyitozo, inama n'amashusho ajyanye na fitness kuri RwandaFitness.",
+      "loading": "Amashusho ari gufungurwa...",
+      "empty": "Nta mashusho arajya hanze.",
+      "noThumbnail": "Nta foto ibanziriza amashusho",
+      "watchVideo": "Reba amashusho",
+      "messages": {
+        "loadFailed": "Ntibishobotse gufungura amashusho."
+      },
+      "languages": {
+        "en": "Icyongereza",
+        "rw": "Ikinyarwanda",
+        "all": "Indimi zose"
+      }
+  },
+
+  "VideoDetail": {
+    "loading": "Amashusho ari gufungurwa...",
+    "notFound": "Aya mashusho ntabashije kuboneka.",
+    "backToVideos": "Subira ku mashusho",
+    "invalidVideo": "Aya mashusho ntabasha kwerekanwa.",
+    "videoLabel": "Amashusho",
+    "coach": "Umutoza",
+    "gym": "Gym",
+    "article": "Inkuru",
+    "messages": {
+      "loadFailed": "Ntibishobotse gufungura aya mashusho."
+    },
+    "languages": {
+      "en": "Icyongereza",
+      "rw": "Ikinyarwanda",
+      "all": "Indimi zose"
+    }
+  }  
 
 
 }
