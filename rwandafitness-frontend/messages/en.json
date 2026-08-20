@@ -27,7 +27,8 @@
     "languages": {
       "english": "English",
       "kinyarwanda": "Kinyarwanda"
-    }
+    },
+    "videos": "Videos"
   },
   "HomePage": {
     "hero": {
@@ -220,6 +221,15 @@
       "description": "Explore coaches and gyms on RwandaFitness and take the next step toward your goals.",
       "exploreCoaches": "Explore Coaches",
       "discoverGyms": "Discover Gyms"
+    },
+
+    "videos": {
+      "title": "Related videos",
+      "description": "Watch videos related to this article.",
+      "loading": "Loading videos...",
+      "noThumbnail": "No thumbnail",
+      "watch": "Watch video",
+      "count": "{count, plural, one {# video} other {# videos}}"
     }
   },
 
@@ -287,7 +297,16 @@
       "loading": "Loading reviews...",
       "empty": "This coach has not received any reviews yet.",
       "anonymous": "RwandaFitness client"
-   }
+   },
+
+   "videos": {
+      "title": "Videos",
+      "description": "Watch training videos and fitness content from this coach.",
+      "loading": "Loading videos...",
+      "noThumbnail": "No thumbnail",
+      "watch": "Watch video",
+      "count": "{count, plural, one {# video} other {# videos}}"
+    }
   },
 
     "Coaches": {
@@ -498,6 +517,15 @@
     "messages": {
       "loadFailed": "Failed to load gym details.",
       "notFound": "Gym not found."
+    },
+
+    "videos": {
+      "title": "Videos",
+      "description": "Watch videos and fitness content from this gym.",
+      "loading": "Loading videos...",
+      "noThumbnail": "No thumbnail",
+      "watch": "Watch video",
+      "count": "{count, plural, one {# video} other {# videos}}"
     }
   },
    
@@ -736,6 +764,41 @@
       "notCompleted": "You can leave a review only after the coaching service has been completed.",
       "ratingRequired": "Please choose a rating before submitting.",
       "submitFailed": "Unable to submit your review."
+    }
+  },
+    "Videos": {
+      "title": "Fitness Videos",
+      "description": "Watch training tips, demonstrations and fitness content from RwandaFitness.",
+      "loading": "Loading videos...",
+      "empty": "No videos are available yet.",
+      "noThumbnail": "No thumbnail",
+      "watchVideo": "Watch video",
+      "messages": {
+        "loadFailed": "Unable to load videos."
+      },
+      "languages": {
+        "en": "English",
+        "rw": "Kinyarwanda",
+        "all": "All languages"
+      }
+  },
+
+  "VideoDetail": {
+    "loading": "Loading video...",
+    "notFound": "This video could not be found.",
+    "backToVideos": "Back to videos",
+    "invalidVideo": "This video cannot be displayed.",
+    "videoLabel": "Video",
+    "coach": "Coach",
+    "gym": "Gym",
+    "article": "Article",
+    "messages": {
+      "loadFailed": "Unable to load this video."
+    },
+    "languages": {
+      "en": "English",
+      "rw": "Kinyarwanda",
+      "all": "All languages"
     }
   }
 

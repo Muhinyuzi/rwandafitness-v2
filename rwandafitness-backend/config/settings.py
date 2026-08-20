@@ -122,6 +122,7 @@ INSTALLED_APPS = [
     "core",
     "contact",
     "reviews",
+    "videos",
 ]
 
 

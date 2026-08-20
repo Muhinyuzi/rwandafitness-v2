@@ -183,9 +183,19 @@ export default function Navbar() {
       pathname.startsWith("/articles/") &&
       pathname !== "/articles";
 
-    const destination = isArticleDetailPage
-      ? "/articles"
-      : pathname;
+    const isVideoDetailPage =
+      pathname.startsWith("/videos/") &&
+      pathname !== "/videos";
+
+    let destination = pathname;
+
+    if (isArticleDetailPage) {
+      destination = "/articles";
+    }
+
+    if (isVideoDetailPage) {
+      destination = "/videos";
+    }
 
     router.replace(destination, {
       locale: nextLocale,
@@ -321,6 +331,13 @@ export default function Navbar() {
             className="transition hover:text-accent"
           >
             {t("articles")}
+          </Link>
+
+          <Link
+            href="/videos"
+            className="transition hover:text-accent"
+          >
+            {t("videos")}
           </Link>
 
           <Link
@@ -565,6 +582,14 @@ export default function Navbar() {
                 className={mobileLinkClasses}
               >
                 {t("articles")}
+              </Link>
+
+              <Link
+                href="/videos"
+                onClick={closeMobileMenu}
+                className={mobileLinkClasses}
+              >
+                {t("videos")}
               </Link>
 
               <Link

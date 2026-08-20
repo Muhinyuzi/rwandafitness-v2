@@ -337,16 +337,12 @@ export default function CoachesPage() {
 
                 {coach.photo_url ? (
                   <img
-                    src={
-                      coach.photo_url
-                    }
-                    className="mb-4 h-16 w-16 rounded-full object-cover"
-                    alt={
-                      coach.full_name
-                    }
+                    src={coach.photo_url}
+                    className="mb-4 h-24 w-24 shrink-0 rounded-full object-cover sm:h-28 sm:w-28"
+                    alt={coach.full_name}
                   />
                 ) : (
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-xl font-bold text-white">
+                  <div className="mb-4 flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-primary text-2xl font-bold text-white sm:h-28 sm:w-28">
                     {coach.full_name
                       .charAt(0)
                       .toUpperCase()}

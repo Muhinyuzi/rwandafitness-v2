@@ -49,6 +49,20 @@ type PaginatedReviews = {
   results: Review[];
 };
 
+type CoachVideo = {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  video_url: string;
+  language: "en" | "rw" | "all";
+  thumbnail: string | null;
+};
+
+type PaginatedVideos = {
+  results: CoachVideo[];
+};
+
 function isPaginatedReviews(
   data: unknown,
 ): data is PaginatedReviews {
@@ -59,6 +73,67 @@ function isPaginatedReviews(
   const value = data as Record<string, unknown>;
 
   return Array.isArray(value.results);
+}
+
+function isPaginatedVideos(
+  data: unknown,
+): data is PaginatedVideos {
+  if (!data || typeof data !== "object") {
+    return false;
+  }
+
+  const value = data as Record<string, unknown>;
+
+  return Array.isArray(value.results);
+}
+
+function getYouTubeId(url: string) {
+  try {
+    const parsed = new URL(url);
+
+    if (
+      parsed.hostname === "youtu.be" ||
+      parsed.hostname.endsWith(".youtu.be")
+    ) {
+      return (
+        parsed.pathname
+          .replace(/^\/+/, "")
+          .split("/")[0] || null
+      );
+    }
+
+    if (
+      parsed.hostname === "youtube.com" ||
+      parsed.hostname === "www.youtube.com" ||
+      parsed.hostname === "m.youtube.com"
+    ) {
+      if (parsed.pathname === "/watch") {
+        return parsed.searchParams.get("v");
+      }
+
+      if (parsed.pathname.startsWith("/embed/")) {
+        return parsed.pathname.split("/")[2] || null;
+      }
+
+      if (parsed.pathname.startsWith("/shorts/")) {
+        return parsed.pathname.split("/")[2] || null;
+      }
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function getYouTubeThumbnail(url: string) {
+  const videoId = getYouTubeId(url);
+
+  if (!videoId) {
+    return null;
+  }
+
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 }
 
 function RatingStars({
@@ -126,12 +201,20 @@ export default function CoachDetailPage() {
   const [reviews, setReviews] =
     useState<Review[]>([]);
 
+  const [videos, setVideos] =
+    useState<CoachVideo[]>([]);
+
   const [loading, setLoading] =
     useState(true);
 
   const [
     reviewsLoading,
     setReviewsLoading,
+  ] = useState(true);
+
+  const [
+    videosLoading,
+    setVideosLoading,
   ] = useState(true);
 
   const [goal, setGoal] = useState("");
@@ -296,6 +379,85 @@ export default function CoachDetailPage() {
       controller.abort();
     };
   }, [id]);
+
+  // =========================================================
+  // LOAD COACH VIDEOS
+  // =========================================================
+
+  useEffect(() => {
+    const controller =
+      new AbortController();
+
+    const loadVideos = async () => {
+      try {
+        setVideosLoading(true);
+        setVideos([]);
+
+        const response = await fetch(
+          `${API_URL}/api/videos/?lang=${locale}&coach=${encodeURIComponent(
+            id,
+          )}`,
+          {
+            signal: controller.signal,
+            cache: "no-store",
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            "Unable to load coach videos",
+          );
+        }
+
+        const data: unknown =
+          await response.json();
+
+        if (Array.isArray(data)) {
+          setVideos(
+            data as CoachVideo[],
+          );
+          return;
+        }
+
+        if (
+          isPaginatedVideos(data)
+        ) {
+          setVideos(
+            data.results,
+          );
+          return;
+        }
+
+        setVideos([]);
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.name === "AbortError"
+        ) {
+          return;
+        }
+
+        setVideos([]);
+      } finally {
+        if (
+          !controller.signal.aborted
+        ) {
+          setVideosLoading(false);
+        }
+      }
+    };
+
+    if (id) {
+      void loadVideos();
+    } else {
+      setVideos([]);
+      setVideosLoading(false);
+    }
+
+    return () => {
+      controller.abort();
+    };
+  }, [id, locale]);
 
   // =========================================================
   // GALLERY
@@ -995,6 +1157,122 @@ export default function CoachDetailPage() {
               </div>
             )}
           </div>
+
+          {/* COACH VIDEOS */}
+
+          {(videosLoading ||
+            videos.length > 0) && (
+            <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-semibold text-zinc-900">
+                    {t(
+                      "videos.title",
+                    )}
+                  </h2>
+
+                  <p className="mt-1 text-sm text-zinc-500">
+                    {t(
+                      "videos.description",
+                    )}
+                  </p>
+                </div>
+
+                {videos.length > 0 && (
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                    {t(
+                      "videos.count",
+                      {
+                        count:
+                          videos.length,
+                      },
+                    )}
+                  </span>
+                )}
+              </div>
+
+              {videosLoading ? (
+                <div className="mt-6 rounded-2xl bg-zinc-50 p-5 text-sm text-zinc-500">
+                  {t(
+                    "videos.loading",
+                  )}
+                </div>
+              ) : (
+                <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                  {videos.map(
+                    (video) => {
+                      const thumbnail =
+                        video.thumbnail ||
+                        getYouTubeThumbnail(
+                          video.video_url,
+                        );
+
+                      return (
+                        <Link
+                          key={
+                            video.id
+                          }
+                          href={`/videos/${video.slug}`}
+                          className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white transition hover:-translate-y-0.5 hover:shadow-md"
+                        >
+                          <div className="relative aspect-video overflow-hidden bg-zinc-100">
+                            {thumbnail ? (
+                              <img
+                                src={
+                                  thumbnail
+                                }
+                                alt={
+                                  video.title
+                                }
+                                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center text-sm text-zinc-400">
+                                {t(
+                                  "videos.noThumbnail",
+                                )}
+                              </div>
+                            )}
+
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/10 transition group-hover:bg-black/20">
+                              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/95 text-lg text-primary shadow-lg transition group-hover:scale-110">
+                                ▶
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="p-4">
+                            <h3 className="font-semibold text-zinc-900">
+                              {
+                                video.title
+                              }
+                            </h3>
+
+                            {video.description && (
+                              <p className="mt-2 line-clamp-2 text-sm leading-6 text-zinc-600">
+                                {
+                                  video.description
+                                }
+                              </p>
+                            )}
+
+                            <p className="mt-3 text-sm font-semibold text-primary">
+                              {t(
+                                "videos.watch",
+                              )}{" "}
+                              →
+                            </p>
+                          </div>
+                        </Link>
+                      );
+                    },
+                  )}
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* REVIEWS */}
 
           <section className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-4">
