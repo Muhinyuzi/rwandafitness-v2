@@ -32,30 +32,47 @@
   },
   "HomePage": {
     "hero": {
-      "title": "Discover coaches and gyms across Rwanda",
-      "description": "Explore fitness coaches, discover gyms, and send coaching requests through a simple, local, and modern platform built for Rwanda.",
+      "eyebrow": "The home of fitness in Rwanda",
+      "title": "Stronger together. Healthier Rwanda.",
+      "description": "Discover fitness coaches, gyms, training videos and practical content to help you build a healthier lifestyle.",
       "browseCoaches": "Browse Coaches",
-      "exploreGyms": "Explore Gyms"
+      "exploreGyms": "Explore Gyms",
+      "imageAlt": "Fitness training in Rwanda"
+    },
+    "discover": {
+      "title": "Everything you need to move forward",
+      "description": "Find the right coach, discover training spaces and learn from practical fitness content."
     },
     "features": {
       "coaches": {
-        "title": "Experienced Coaches",
-        "description": "Explore coach profiles with specialties, pricing, experience, and availability."
+        "title": "Find a Coach",
+        "description": "Discover coaches and connect with professionals who match your goals.",
+        "action": "Explore Coaches",
+        "imageAlt": "Fitness coach in Rwanda"
       },
       "gyms": {
         "title": "Discover Gyms",
-        "description": "Find gyms across Rwanda, explore their spaces, and discover the coaches connected to them."
+        "description": "Explore gyms and training spaces available across Rwanda.",
+        "action": "Explore Gyms",
+        "imageAlt": "Gym in Rwanda"
       },
-      "requests": {
-        "title": "Easy Requests",
-        "description": "Send coaching requests directly from the platform and manage your interactions clearly."
+      "videos": {
+        "title": "Watch Fitness Videos",
+        "description": "Learn from workouts, demonstrations and practical fitness guidance.",
+        "action": "Watch Videos",
+        "imageAlt": "Fitness training video"
       }
     },
     "cta": {
-      "title": "Start your fitness journey today",
-      "description": "Join RwandaFitness and connect with coaches and gyms in a more direct, local, and modern way.",
+      "title": "Start your fitness journey with RwandaFitness",
+      "description": "Explore Rwanda's growing fitness community and find the resources that fit your goals.",
       "exploreCoaches": "Explore Coaches",
-      "createAccount": "Create Account"
+      "createAccount": "Create Account",
+      "points": {
+        "coaches": "Discover coaches",
+        "gyms": "Find gyms",
+        "content": "Learn from quality content"
+      }
     }
   },
 
