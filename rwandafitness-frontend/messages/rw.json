@@ -32,30 +32,47 @@
   },
   "HomePage": {
     "hero": {
-      "title": "Menya abatoza n'inzu z'imyitozo hirya no hino mu Rwanda",
-      "description": "Shakisha abatoza, menya inzu z'imyitozo kandi wohereze ubusabe bwo gutozwa ukoresheje urubuga rworoshye, rugezweho kandi rwubakiwe u Rwanda.",
-      "browseCoaches": "Shakisha Abatoza",
-      "exploreGyms": "Reba Inzu z'Imyitozo"
+      "eyebrow": "Iwabo wa fitness mu Rwanda",
+      "title": "Dukomere hamwe. Tugire u Rwanda ruzima.",
+      "description": "Menya abatoza, gyms, amashusho y'imyitozo n'inyigisho zagufasha kubaho ubuzima bwiza.",
+      "browseCoaches": "Reba Abatoza",
+      "exploreGyms": "Reba Gyms",
+      "imageAlt": "Imyitozo ya fitness mu Rwanda"
+    },
+    "discover": {
+      "title": "Ibyagufasha gutera imbere muri fitness",
+      "description": "Shaka umutoza ukubereye, menya aho wakorera imyitozo kandi wige uko wakora fitness neza."
     },
     "features": {
       "coaches": {
-        "title": "Abatoza b'Inararibonye",
-        "description": "Reba imyirondoro y'abatoza, ibyo bazobereyemo, ibiciro, uburambe n'igihe baboneka."
+        "title": "Shaka Umutoza",
+        "description": "Menya abatoza kandi uhitemo ushobora kugufasha kugera ku ntego zawe.",
+        "action": "Reba Abatoza",
+        "imageAlt": "Umutoza wa fitness mu Rwanda"
       },
       "gyms": {
-        "title": "Menya Inzu z'Imyitozo",
-        "description": "Shakisha inzu z'imyitozo mu Rwanda, urebe aho zikorera kandi umenye abatoza bakorana na zo."
+        "title": "Menya Gyms",
+        "description": "Shakisha gyms n'ahantu ho gukorera imyitozo mu Rwanda.",
+        "action": "Reba Gyms",
+        "imageAlt": "Gym yo mu Rwanda"
       },
-      "requests": {
-        "title": "Ubusabe Bworoshye",
-        "description": "Ohereza ubusabe bwo gutozwa ukoresheje urubuga kandi ukurikirane neza imikoranire yawe n'umutoza."
+      "videos": {
+        "title": "Reba Amashusho",
+        "description": "Iga uko wakora imyitozo binyuze mu mashusho n'inyigisho za fitness.",
+        "action": "Reba Amashusho",
+        "imageAlt": "Amashusho y'imyitozo"
       }
     },
     "cta": {
-      "title": "Tangira urugendo rwawe rw'imyitozo uyu munsi",
-      "description": "Injira muri RwandaFitness maze uhuze n'abatoza n'inzu z'imyitozo mu buryo bworoshye, bwa hafi kandi bugezweho.",
+      "title": "Tangira urugendo rwa fitness hamwe na RwandaFitness",
+      "description": "Menya umuryango wa fitness mu Rwanda kandi ushake ibigufasha kugera ku ntego zawe.",
       "exploreCoaches": "Reba Abatoza",
-      "createAccount": "Fungura Konti"
+      "createAccount": "Fungura Konti",
+      "points": {
+        "coaches": "Menya abatoza",
+        "gyms": "Shaka gyms",
+        "content": "Iga ku nyigisho nziza"
+      }
     }
   },
 
