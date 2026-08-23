@@ -94,11 +94,31 @@ function getYouTubeThumbnail(url: string) {
   return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 }
 
+function normalizeArticleContent(
+  html: string,
+) {
+  const backendUrl =
+    API_URL.replace(/\/+$/, "");
+
+  return html
+    .replace(
+      /(<img\b[^>]*\bsrc=["'])\/media\//gi,
+      `$1${backendUrl}/media/`,
+    )
+    .replace(
+      /(<img\b[^>]*\bsrc=["'])(?!https?:\/\/|\/\/|\/|data:|blob:)/gi,
+      `$1${backendUrl}/`,
+    );
+}
+
 export default function ArticleDetailPage() {
   const params = useParams<{slug: string}>();
   const slug = params.slug;
 
-  const t = useTranslations("ArticleDetailPage");
+  const t = useTranslations(
+    "ArticleDetailPage",
+  );
+
   const locale = useLocale();
 
   const [article, setArticle] =
@@ -157,7 +177,9 @@ export default function ArticleDetailPage() {
         const data: Article =
           await response.json();
 
-        if (!controller.signal.aborted) {
+        if (
+          !controller.signal.aborted
+        ) {
           setArticle(data);
         }
       } catch (error) {
@@ -195,14 +217,19 @@ export default function ArticleDetailPage() {
     return () => {
       controller.abort();
     };
-  }, [slug, locale, t]);
+  }, [
+    slug,
+    locale,
+    t,
+  ]);
 
   // =========================================================
   // LOAD ARTICLE VIDEOS
   // =========================================================
 
   useEffect(() => {
-    const articleId = article?.id;
+    const articleId =
+      article?.id;
 
     if (!articleId) {
       setVideos([]);
@@ -239,6 +266,7 @@ export default function ArticleDetailPage() {
           setVideos(
             data as ArticleVideo[],
           );
+
           return;
         }
 
@@ -248,6 +276,7 @@ export default function ArticleDetailPage() {
           setVideos(
             data.results,
           );
+
           return;
         }
 
@@ -279,6 +308,10 @@ export default function ArticleDetailPage() {
     article?.id,
     locale,
   ]);
+
+  // =========================================================
+  // DATE
+  // =========================================================
 
   function formatPublishedDate(
     date: string | null,
@@ -333,7 +366,10 @@ export default function ArticleDetailPage() {
   // ERROR / NOT FOUND
   // =========================================================
 
-  if (error || !article) {
+  if (
+    error ||
+    !article
+  ) {
     return (
       <div className="min-h-screen bg-zinc-50">
         <main className="mx-auto max-w-4xl px-6 py-10">
@@ -363,6 +399,11 @@ export default function ArticleDetailPage() {
   const publishedDate =
     formatPublishedDate(
       article.published_at,
+    );
+
+  const normalizedContent =
+    normalizeArticleContent(
+      article.content,
     );
 
   return (
@@ -472,7 +513,7 @@ export default function ArticleDetailPage() {
                   className="article-content"
                   dangerouslySetInnerHTML={{
                     __html:
-                      article.content,
+                      normalizedContent,
                   }}
                 />
               </div>
@@ -485,7 +526,8 @@ export default function ArticleDetailPage() {
         ===================================================== */}
 
         {(videosLoading ||
-          videos.length > 0) && (
+          videos.length >
+            0) && (
           <section className="mt-10 rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
