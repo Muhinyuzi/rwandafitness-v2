@@ -1,8 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import {useLocale, useTranslations} from "next-intl";
-import {useEffect, useState} from "react";
+import {
+  useLocale,
+  useTranslations,
+} from "next-intl";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import {
   Link,
@@ -10,6 +16,7 @@ import {
   useRouter,
 } from "@/i18n/navigation";
 import {API_URL} from "@/lib/api";
+
 
 type User = {
   id: number;
@@ -22,100 +29,213 @@ type User = {
   created_at: string;
 };
 
-type SupportedLocale = "en" | "rw";
+
+type SupportedLocale =
+  | "en"
+  | "rw";
+
+
+type UnreadCountResponse = {
+  count: number;
+};
+
 
 export default function Navbar() {
-  const t = useTranslations("Navbar");
-  const locale = useLocale() as SupportedLocale;
+  const t = useTranslations(
+    "Navbar",
+  );
 
-  const router = useRouter();
-  const pathname = usePathname();
+  const locale =
+    useLocale() as SupportedLocale;
 
-  const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [loadingUser, setLoadingUser] = useState(true);
-  const [loggingOut, setLoggingOut] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const router =
+    useRouter();
+
+  const pathname =
+    usePathname();
+
+  const [
+    token,
+    setToken,
+  ] = useState<string | null>(
+    null,
+  );
+
+  const [
+    user,
+    setUser,
+  ] = useState<User | null>(
+    null,
+  );
+
+  const [
+    loadingUser,
+    setLoadingUser,
+  ] = useState(true);
+
+  const [
+    loggingOut,
+    setLoggingOut,
+  ] = useState(false);
+
+  const [
+    mobileMenuOpen,
+    setMobileMenuOpen,
+  ] = useState(false);
+
+  const [
+    unreadNotifications,
+    setUnreadNotifications,
+  ] = useState(0);
+
+  // =========================================================
+  // LOAD CURRENT USER
+  // =========================================================
 
   useEffect(() => {
-    let controller: AbortController | null = null;
+    let controller:
+      | AbortController
+      | null = null;
 
-    const loadCurrentUser = async () => {
-      controller?.abort();
-      controller = new AbortController();
+    const loadCurrentUser =
+      async () => {
+        controller?.abort();
 
-      const storedToken = localStorage.getItem("token");
+        controller =
+          new AbortController();
 
-      setToken(storedToken);
-      setLoadingUser(true);
-      setLoggingOut(false);
+        const storedToken =
+          localStorage.getItem(
+            "token",
+          );
 
-      if (!storedToken) {
-        setUser(null);
-        setLoadingUser(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `${API_URL}/api/auth/me/`,
-          {
-            headers: {
-              Authorization: `Token ${storedToken}`,
-            },
-            signal: controller.signal,
-            cache: "no-store",
-          },
+        setToken(
+          storedToken,
         );
 
-        if (
-          response.status === 401 ||
-          response.status === 403
-        ) {
-          localStorage.removeItem("token");
-          sessionStorage.removeItem("token");
+        setLoadingUser(
+          true,
+        );
+
+        setLoggingOut(
+          false,
+        );
+
+        if (!storedToken) {
+          setUser(null);
+
+          setUnreadNotifications(
+            0,
+          );
+
+          setLoadingUser(
+            false,
+          );
+
+          return;
+        }
+
+        try {
+          const response =
+            await fetch(
+              `${API_URL}/api/auth/me/`,
+              {
+                headers: {
+                  Authorization:
+                    `Token ${storedToken}`,
+                },
+                signal:
+                  controller.signal,
+                cache:
+                  "no-store",
+              },
+            );
+
+          if (
+            response.status ===
+              401 ||
+            response.status ===
+              403
+          ) {
+            localStorage.removeItem(
+              "token",
+            );
+
+            sessionStorage.removeItem(
+              "token",
+            );
+
+            setToken(null);
+            setUser(null);
+
+            setUnreadNotifications(
+              0,
+            );
+
+            return;
+          }
+
+          if (!response.ok) {
+            throw new Error(
+              "Unable to load the current user.",
+            );
+          }
+
+          const data: User =
+            await response.json();
+
+          if (
+            !controller.signal
+              .aborted
+          ) {
+            setToken(
+              storedToken,
+            );
+
+            setUser(
+              data,
+            );
+          }
+        } catch (error) {
+          if (
+            error instanceof
+              Error &&
+            error.name ===
+              "AbortError"
+          ) {
+            return;
+          }
+
+          localStorage.removeItem(
+            "token",
+          );
+
+          sessionStorage.removeItem(
+            "token",
+          );
 
           setToken(null);
           setUser(null);
 
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error(
-            "Unable to load the current user.",
+          setUnreadNotifications(
+            0,
           );
+        } finally {
+          if (
+            !controller.signal
+              .aborted
+          ) {
+            setLoadingUser(
+              false,
+            );
+          }
         }
+      };
 
-        const data: User = await response.json();
-
-        if (!controller.signal.aborted) {
-          setToken(storedToken);
-          setUser(data);
-        }
-      } catch (error) {
-        if (
-          error instanceof Error &&
-          error.name === "AbortError"
-        ) {
-          return;
-        }
-
-        localStorage.removeItem("token");
-        sessionStorage.removeItem("token");
-
-        setToken(null);
-        setUser(null);
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoadingUser(false);
-        }
-      }
-    };
-
-    const handleAuthChange = () => {
-      void loadCurrentUser();
-    };
+    const handleAuthChange =
+      () => {
+        void loadCurrentUser();
+      };
 
     void loadCurrentUser();
 
@@ -144,12 +264,143 @@ export default function Navbar() {
     };
   }, []);
 
+  // =========================================================
+  // LOAD UNREAD NOTIFICATIONS
+  // =========================================================
+
+  useEffect(() => {
+    if (!token) {
+      setUnreadNotifications(
+        0,
+      );
+
+      return;
+    }
+
+    let controller:
+      | AbortController
+      | null = null;
+
+    const loadUnreadNotifications =
+      async () => {
+        controller?.abort();
+
+        controller =
+          new AbortController();
+
+        try {
+          const response =
+            await fetch(
+              `${API_URL}/api/notifications/unread-count/`,
+              {
+                headers: {
+                  Authorization:
+                    `Token ${token}`,
+                },
+                signal:
+                  controller.signal,
+                cache:
+                  "no-store",
+              },
+            );
+
+          if (
+            response.status ===
+              401 ||
+            response.status ===
+              403
+          ) {
+            setUnreadNotifications(
+              0,
+            );
+
+            return;
+          }
+
+          if (!response.ok) {
+            return;
+          }
+
+          const data:
+            UnreadCountResponse =
+            await response.json();
+
+          if (
+            !controller.signal
+              .aborted
+          ) {
+            setUnreadNotifications(
+              Number.isFinite(
+                data.count,
+              )
+                ? data.count
+                : 0,
+            );
+          }
+        } catch (error) {
+          if (
+            error instanceof
+              Error &&
+            error.name ===
+              "AbortError"
+          ) {
+            return;
+          }
+        }
+      };
+
+    const handleFocus =
+      () => {
+        void loadUnreadNotifications();
+      };
+
+    const handleNotificationsChange =
+      () => {
+        void loadUnreadNotifications();
+      };
+
+    void loadUnreadNotifications();
+
+    window.addEventListener(
+      "focus",
+      handleFocus,
+    );
+
+    window.addEventListener(
+      "notifications-changed",
+      handleNotificationsChange,
+    );
+
+    return () => {
+      controller?.abort();
+
+      window.removeEventListener(
+        "focus",
+        handleFocus,
+      );
+
+      window.removeEventListener(
+        "notifications-changed",
+        handleNotificationsChange,
+      );
+    };
+  }, [token]);
+
+  // =========================================================
+  // ESCAPE CLOSES MOBILE MENU
+  // =========================================================
+
   useEffect(() => {
     const handleEscape = (
       event: KeyboardEvent,
     ) => {
-      if (event.key === "Escape") {
-        setMobileMenuOpen(false);
+      if (
+        event.key ===
+        "Escape"
+      ) {
+        setMobileMenuOpen(
+          false,
+        );
       }
     };
 
@@ -166,141 +417,233 @@ export default function Navbar() {
     };
   }, []);
 
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-  };
+  // =========================================================
+  // HELPERS
+  // =========================================================
+
+  const closeMobileMenu =
+    () => {
+      setMobileMenuOpen(
+        false,
+      );
+    };
 
   const handleLocaleChange = (
-    nextLocale: SupportedLocale,
+    nextLocale:
+      SupportedLocale,
   ) => {
-    if (nextLocale === locale) {
+    if (
+      nextLocale ===
+      locale
+    ) {
       return;
     }
 
-    setMobileMenuOpen(false);
+    setMobileMenuOpen(
+      false,
+    );
 
     const isArticleDetailPage =
-      pathname.startsWith("/articles/") &&
-      pathname !== "/articles";
+      pathname.startsWith(
+        "/articles/",
+      ) &&
+      pathname !==
+        "/articles";
 
     const isVideoDetailPage =
-      pathname.startsWith("/videos/") &&
-      pathname !== "/videos";
+      pathname.startsWith(
+        "/videos/",
+      ) &&
+      pathname !==
+        "/videos";
 
-    let destination = pathname;
+    let destination =
+      pathname;
 
-    if (isArticleDetailPage) {
-      destination = "/articles";
+    if (
+      isArticleDetailPage
+    ) {
+      destination =
+        "/articles";
     }
 
-    if (isVideoDetailPage) {
-      destination = "/videos";
+    if (
+      isVideoDetailPage
+    ) {
+      destination =
+        "/videos";
     }
 
-    router.replace(destination, {
-      locale: nextLocale,
-    });
-  };
-
-  const handleLogout = () => {
-    if (loggingOut) {
-      return;
-    }
-
-    setLoggingOut(true);
-    setMobileMenuOpen(false);
-
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
-
-    setToken(null);
-    setUser(null);
-    setLoadingUser(false);
-
-    window.dispatchEvent(
-      new Event("auth-changed"),
-    );
-
-    router.replace("/login");
-    router.refresh();
-  };
-
-  const getInitials = () => {
-    if (!user) {
-      return "U";
-    }
-
-    const displayValue =
-      user.full_name?.trim() ||
-      user.username?.trim() ||
-      user.email;
-
-    const parts = displayValue
-      .split(/[\s._-]+/)
-      .map((part) => part.trim())
-      .filter(Boolean);
-
-    if (parts.length >= 2) {
-      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-    }
-
-    return displayValue
-      .slice(0, 2)
-      .toUpperCase();
-  };
-
-  const getDisplayName = () => {
-    if (!user) {
-      return "";
-    }
-
-    if (user.full_name?.trim()) {
-      return user.full_name.trim();
-    }
-
-    if (user.username?.trim()) {
-      return user.username.trim();
-    }
-
-    return (
-      user.email.split("@")[0] ||
-      user.email
+    router.replace(
+      destination,
+      {
+        locale:
+          nextLocale,
+      },
     );
   };
+
+  const handleLogout =
+    () => {
+      if (loggingOut) {
+        return;
+      }
+
+      setLoggingOut(
+        true,
+      );
+
+      setMobileMenuOpen(
+        false,
+      );
+
+      localStorage.removeItem(
+        "token",
+      );
+
+      sessionStorage.removeItem(
+        "token",
+      );
+
+      setToken(null);
+      setUser(null);
+
+      setUnreadNotifications(
+        0,
+      );
+
+      setLoadingUser(
+        false,
+      );
+
+      window.dispatchEvent(
+        new Event(
+          "auth-changed",
+        ),
+      );
+
+      router.replace(
+        "/login",
+      );
+
+      router.refresh();
+    };
+
+  const getInitials =
+    () => {
+      if (!user) {
+        return "U";
+      }
+
+      const displayValue =
+        user.full_name?.trim() ||
+        user.username?.trim() ||
+        user.email;
+
+      const parts =
+        displayValue
+          .split(
+            /[\s._-]+/,
+          )
+          .map(
+            (part) =>
+              part.trim(),
+          )
+          .filter(
+            Boolean,
+          );
+
+      if (
+        parts.length >= 2
+      ) {
+        return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+      }
+
+      return displayValue
+        .slice(
+          0,
+          2,
+        )
+        .toUpperCase();
+    };
+
+  const getDisplayName =
+    () => {
+      if (!user) {
+        return "";
+      }
+
+      if (
+        user.full_name?.trim()
+      ) {
+        return user.full_name.trim();
+      }
+
+      if (
+        user.username?.trim()
+      ) {
+        return user.username.trim();
+      }
+
+      return (
+        user.email.split(
+          "@",
+        )[0] ||
+        user.email
+      );
+    };
 
   const formatRole = (
     role: User["role"],
   ) => {
-    return t(`roles.${role}`);
+    return t(
+      `roles.${role}`,
+    );
   };
 
   const mobileLinkClasses =
     "block rounded-lg px-4 py-3 text-sm font-semibold uppercase text-white transition hover:bg-white/10 hover:text-accent";
 
-  const languageButtonClasses = (
-    buttonLocale: SupportedLocale,
-  ) =>
-    `rounded-md px-2 py-1 text-xs font-bold transition ${
-      locale === buttonLocale
-        ? "bg-white text-primary"
-        : "text-white hover:bg-white/10"
-    }`;
+  const languageButtonClasses =
+    (
+      buttonLocale:
+        SupportedLocale,
+    ) =>
+      `rounded-md px-2 py-1 text-xs font-bold transition ${
+        locale ===
+        buttonLocale
+          ? "bg-white text-primary"
+          : "text-white hover:bg-white/10"
+      }`;
 
-  const mobileLanguageButtonClasses = (
-    buttonLocale: SupportedLocale,
-  ) =>
-    `rounded-lg px-4 py-3 text-sm font-semibold transition ${
-      locale === buttonLocale
-        ? "bg-white text-primary"
-        : "border border-white/30 text-white hover:bg-white/10"
-    }`;
+  const mobileLanguageButtonClasses =
+    (
+      buttonLocale:
+        SupportedLocale,
+    ) =>
+      `rounded-lg px-4 py-3 text-sm font-semibold transition ${
+        locale ===
+        buttonLocale
+          ? "bg-white text-primary"
+          : "border border-white/30 text-white hover:bg-white/10"
+      }`;
+
+  // =========================================================
+  // RENDER
+  // =========================================================
 
   return (
     <nav className="sticky top-0 z-50 bg-primary text-white shadow-sm">
       <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-3 px-4 py-3 sm:px-6">
+        {/* =====================================================
+            BRAND
+        ===================================================== */}
+
         <Link
           href="/"
-          onClick={closeMobileMenu}
+          onClick={
+            closeMobileMenu
+          }
           className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3 xl:flex-none"
         >
           <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white shadow-md transition-transform hover:scale-105 sm:h-12 sm:w-12">
@@ -320,69 +663,93 @@ export default function Navbar() {
             </span>
 
             <span className="mt-1 truncate text-[7px] uppercase tracking-[0.18em] text-white/75 min-[380px]:text-[8px] min-[380px]:tracking-[0.22em] sm:text-[10px] sm:tracking-[0.25em]">
-              {t("tagline")}
+              {t(
+                "tagline",
+              )}
             </span>
           </div>
         </Link>
+
+        {/* =====================================================
+            DESKTOP NAVIGATION
+        ===================================================== */}
 
         <div className="hidden items-center gap-4 text-sm font-semibold uppercase xl:flex">
           <Link
             href="/articles"
             className="transition hover:text-accent"
           >
-            {t("articles")}
+            {t(
+              "articles",
+            )}
           </Link>
 
           <Link
             href="/videos"
             className="transition hover:text-accent"
           >
-            {t("videos")}
+            {t(
+              "videos",
+            )}
           </Link>
 
           <Link
             href="/coaches"
             className="transition hover:text-accent"
           >
-            {t("coaches")}
+            {t(
+              "coaches",
+            )}
           </Link>
 
           <Link
             href="/gyms"
             className="transition hover:text-accent"
           >
-            {t("gyms")}
+            {t(
+              "gyms",
+            )}
           </Link>
 
           <Link
             href="/about"
             className="transition hover:text-accent"
           >
-            {t("about")}
+            {t(
+              "about",
+            )}
           </Link>
 
           <Link
             href="/contact"
             className="transition hover:text-accent"
           >
-            {t("contact")}
+            {t(
+              "contact",
+            )}
           </Link>
 
-          {user?.role === "client" && (
+          {user?.role ===
+            "client" && (
             <Link
               href="/my-requests"
               className="transition hover:text-accent"
             >
-              {t("myRequests")}
+              {t(
+                "myRequests",
+              )}
             </Link>
           )}
 
-          {user?.role === "coach" && (
+          {user?.role ===
+            "coach" && (
             <Link
               href="/my-requests"
               className="transition hover:text-accent"
             >
-              {t("clientRequests")}
+              {t(
+                "clientRequests",
+              )}
             </Link>
           )}
 
@@ -391,22 +758,37 @@ export default function Navbar() {
               href="/dashboard"
               className="transition hover:text-accent"
             >
-              {t("dashboard")}
+              {t(
+                "dashboard",
+              )}
             </Link>
           )}
         </div>
 
+        {/* =====================================================
+            DESKTOP / MOBILE ACTIONS
+        ===================================================== */}
+
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          {/* LANGUAGE DESKTOP */}
+
           <div
             className="hidden items-center rounded-lg border border-white/20 p-1 xl:flex"
-            aria-label={t("language")}
+            aria-label={t(
+              "language",
+            )}
           >
             <button
               type="button"
               onClick={() =>
-                handleLocaleChange("en")
+                handleLocaleChange(
+                  "en",
+                )
               }
-              aria-pressed={locale === "en"}
+              aria-pressed={
+                locale ===
+                "en"
+              }
               className={languageButtonClasses(
                 "en",
               )}
@@ -417,9 +799,14 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() =>
-                handleLocaleChange("rw")
+                handleLocaleChange(
+                  "rw",
+                )
               }
-              aria-pressed={locale === "rw"}
+              aria-pressed={
+                locale ===
+                "rw"
+              }
               className={languageButtonClasses(
                 "rw",
               )}
@@ -434,75 +821,156 @@ export default function Navbar() {
                 href="/login"
                 className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
               >
-                {t("login")}
+                {t(
+                  "login",
+                )}
               </Link>
 
               <Link
                 href="/register"
                 className="rounded-lg border border-white/30 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
               >
-                {t("register")}
+                {t(
+                  "register",
+                )}
               </Link>
             </div>
           ) : (
             <div className="hidden items-center gap-2 xl:flex">
-              {!loadingUser && user && (
-                <Link
-                  href="/dashboard"
-                  title={user.email}
-                  className="flex max-w-56 min-w-0 items-center gap-2 rounded-xl bg-white/10 px-3 py-2 transition hover:bg-white/15"
-                >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-primary">
-                    {getInitials()}
-                  </div>
+              {/* =============================================
+                  NOTIFICATIONS
+              ============================================= */}
 
-                  <div className="min-w-0 leading-tight">
-                    <p className="truncate text-sm font-semibold normal-case text-white">
-                      {getDisplayName()}
-                    </p>
+              {!loadingUser &&
+                user && (
+                  <Link
+                    href="/notifications"
+                    aria-label={t(
+                      "notifications",
+                    )}
+                    title={t(
+                      "notifications",
+                    )}
+                    className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/10 transition hover:bg-white/15"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      className="h-5 w-5"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9a6 6 0 0 0-12 0v.75a8.967 8.967 0 0 1-2.312 6.022 23.848 23.848 0 0 0 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+                      />
+                    </svg>
 
-                    <div className="mt-1">
-                      <span className="inline-flex items-center rounded-full border border-white/20 bg-white/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white">
-                        {formatRole(user.role)}
+                    {unreadNotifications >
+                      0 && (
+                      <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold leading-none text-white shadow-sm">
+                        {unreadNotifications >
+                        99
+                          ? "99+"
+                          : unreadNotifications}
                       </span>
+                    )}
+                  </Link>
+                )}
+
+              {/* USER */}
+
+              {!loadingUser &&
+                user && (
+                  <Link
+                    href="/dashboard"
+                    title={
+                      user.email
+                    }
+                    className="flex max-w-56 min-w-0 items-center gap-2 rounded-xl bg-white/10 px-3 py-2 transition hover:bg-white/15"
+                  >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-primary">
+                      {getInitials()}
                     </div>
-                  </div>
-                </Link>
-              )}
+
+                    <div className="min-w-0 leading-tight">
+                      <p className="truncate text-sm font-semibold normal-case text-white">
+                        {getDisplayName()}
+                      </p>
+
+                      <div className="mt-1">
+                        <span className="inline-flex items-center rounded-full border border-white/20 bg-white/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white">
+                          {formatRole(
+                            user.role,
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                )}
+
+              {/* LOGOUT */}
 
               <button
                 type="button"
-                onClick={handleLogout}
-                disabled={loggingOut}
+                onClick={
+                  handleLogout
+                }
+                disabled={
+                  loggingOut
+                }
                 className="rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loggingOut
-                  ? t("loggingOut")
-                  : t("logout")}
+                  ? t(
+                      "loggingOut",
+                    )
+                  : t(
+                      "logout",
+                    )}
               </button>
             </div>
           )}
+
+          {/* =================================================
+              MOBILE MENU BUTTON
+          ================================================= */}
 
           <button
             type="button"
             onClick={() =>
               setMobileMenuOpen(
-                (current) => !current,
+                (
+                  current,
+                ) =>
+                  !current,
               )
             }
             aria-label={
               mobileMenuOpen
-                ? t("closeMenu")
-                : t("openMenu")
+                ? t(
+                    "closeMenu",
+                  )
+                : t(
+                    "openMenu",
+                  )
             }
-            aria-expanded={mobileMenuOpen}
+            aria-expanded={
+              mobileMenuOpen
+            }
             aria-controls="mobile-navigation"
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/20 transition hover:bg-white/10 xl:hidden"
           >
             <span className="sr-only">
               {mobileMenuOpen
-                ? t("closeMenu")
-                : t("openMenu")}
+                ? t(
+                    "closeMenu",
+                  )
+                : t(
+                    "openMenu",
+                  )}
             </span>
 
             <div className="flex w-5 flex-col gap-1.5">
@@ -534,24 +1002,33 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* =====================================================
+          MOBILE NAVIGATION
+      ===================================================== */}
+
       {mobileMenuOpen && (
         <div
           id="mobile-navigation"
           className="border-t border-white/10 bg-primary px-4 pb-5 pt-3 shadow-lg xl:hidden"
         >
           <div className="mx-auto max-w-6xl">
-            {token && loadingUser && (
-              <div className="mb-3 rounded-xl bg-white/10 p-3 text-sm text-white/70">
-                {t("loadingAccount")}
-              </div>
-            )}
+            {token &&
+              loadingUser && (
+                <div className="mb-3 rounded-xl bg-white/10 p-3 text-sm text-white/70">
+                  {t(
+                    "loadingAccount",
+                  )}
+                </div>
+              )}
 
             {token &&
               !loadingUser &&
               user && (
                 <Link
                   href="/dashboard"
-                  onClick={closeMobileMenu}
+                  onClick={
+                    closeMobileMenu
+                  }
                   className="mb-3 flex items-center gap-3 rounded-xl bg-white/10 p-3 transition hover:bg-white/15"
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-primary">
@@ -561,14 +1038,18 @@ export default function Navbar() {
                   <div className="min-w-0">
                     <p
                       className="truncate text-sm font-semibold normal-case text-white"
-                      title={user.email}
+                      title={
+                        user.email
+                      }
                     >
                       {getDisplayName()}
                     </p>
 
                     <div className="mt-1">
                       <span className="inline-flex items-center rounded-full border border-white/20 bg-white/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-white">
-                        {formatRole(user.role)}
+                        {formatRole(
+                          user.role,
+                        )}
                       </span>
                     </div>
                   </div>
@@ -578,95 +1059,192 @@ export default function Navbar() {
             <div className="space-y-1">
               <Link
                 href="/articles"
-                onClick={closeMobileMenu}
-                className={mobileLinkClasses}
+                onClick={
+                  closeMobileMenu
+                }
+                className={
+                  mobileLinkClasses
+                }
               >
-                {t("articles")}
+                {t(
+                  "articles",
+                )}
               </Link>
 
               <Link
                 href="/videos"
-                onClick={closeMobileMenu}
-                className={mobileLinkClasses}
+                onClick={
+                  closeMobileMenu
+                }
+                className={
+                  mobileLinkClasses
+                }
               >
-                {t("videos")}
+                {t(
+                  "videos",
+                )}
               </Link>
 
               <Link
                 href="/coaches"
-                onClick={closeMobileMenu}
-                className={mobileLinkClasses}
+                onClick={
+                  closeMobileMenu
+                }
+                className={
+                  mobileLinkClasses
+                }
               >
-                {t("coaches")}
+                {t(
+                  "coaches",
+                )}
               </Link>
 
               <Link
                 href="/gyms"
-                onClick={closeMobileMenu}
-                className={mobileLinkClasses}
+                onClick={
+                  closeMobileMenu
+                }
+                className={
+                  mobileLinkClasses
+                }
               >
-                {t("gyms")}
+                {t(
+                  "gyms",
+                )}
               </Link>
 
               <Link
                 href="/about"
-                onClick={closeMobileMenu}
-                className={mobileLinkClasses}
+                onClick={
+                  closeMobileMenu
+                }
+                className={
+                  mobileLinkClasses
+                }
               >
-                {t("about")}
+                {t(
+                  "about",
+                )}
               </Link>
 
               <Link
                 href="/contact"
-                onClick={closeMobileMenu}
-                className={mobileLinkClasses}
+                onClick={
+                  closeMobileMenu
+                }
+                className={
+                  mobileLinkClasses
+                }
               >
-                {t("contact")}
+                {t(
+                  "contact",
+                )}
               </Link>
 
-              {user?.role === "client" && (
+              {user?.role ===
+                "client" && (
                 <Link
                   href="/my-requests"
-                  onClick={closeMobileMenu}
-                  className={mobileLinkClasses}
+                  onClick={
+                    closeMobileMenu
+                  }
+                  className={
+                    mobileLinkClasses
+                  }
                 >
-                  {t("myRequests")}
+                  {t(
+                    "myRequests",
+                  )}
                 </Link>
               )}
 
-              {user?.role === "coach" && (
+              {user?.role ===
+                "coach" && (
                 <Link
                   href="/my-requests"
-                  onClick={closeMobileMenu}
-                  className={mobileLinkClasses}
+                  onClick={
+                    closeMobileMenu
+                  }
+                  className={
+                    mobileLinkClasses
+                  }
                 >
-                  {t("clientRequests")}
+                  {t(
+                    "clientRequests",
+                  )}
                 </Link>
               )}
 
               {token && (
                 <Link
                   href="/dashboard"
-                  onClick={closeMobileMenu}
-                  className={mobileLinkClasses}
+                  onClick={
+                    closeMobileMenu
+                  }
+                  className={
+                    mobileLinkClasses
+                  }
                 >
-                  {t("dashboard")}
+                  {t(
+                    "dashboard",
+                  )}
+                </Link>
+              )}
+
+              {/* =============================================
+                  NOTIFICATIONS MOBILE
+              ============================================= */}
+
+              {token && (
+                <Link
+                  href="/notifications"
+                  onClick={
+                    closeMobileMenu
+                  }
+                  className={`${mobileLinkClasses} flex items-center justify-between`}
+                >
+                  <span>
+                    {t(
+                      "notifications",
+                    )}
+                  </span>
+
+                  {unreadNotifications >
+                    0 && (
+                    <span className="flex min-h-6 min-w-6 items-center justify-center rounded-full bg-accent px-1.5 text-[10px] font-bold text-white">
+                      {unreadNotifications >
+                      99
+                        ? "99+"
+                        : unreadNotifications}
+                    </span>
+                  )}
                 </Link>
               )}
             </div>
 
+            {/* =================================================
+                MOBILE LANGUAGE
+            ================================================= */}
+
             <div className="mt-4 border-t border-white/10 pt-4">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/60">
-                {t("language")}
+                {t(
+                  "language",
+                )}
               </p>
 
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() =>
-                    handleLocaleChange("en")
+                    handleLocaleChange(
+                      "en",
+                    )
                   }
-                  aria-pressed={locale === "en"}
+                  aria-pressed={
+                    locale ===
+                    "en"
+                  }
                   className={mobileLanguageButtonClasses(
                     "en",
                   )}
@@ -677,9 +1255,14 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() =>
-                    handleLocaleChange("rw")
+                    handleLocaleChange(
+                      "rw",
+                    )
                   }
-                  aria-pressed={locale === "rw"}
+                  aria-pressed={
+                    locale ===
+                    "rw"
+                  }
                   className={mobileLanguageButtonClasses(
                     "rw",
                   )}
@@ -689,35 +1272,55 @@ export default function Navbar() {
               </div>
             </div>
 
+            {/* =================================================
+                MOBILE AUTH
+            ================================================= */}
+
             <div className="mt-4 border-t border-white/10 pt-4">
               {!token ? (
                 <div className="grid grid-cols-2 gap-3">
                   <Link
                     href="/login"
-                    onClick={closeMobileMenu}
+                    onClick={
+                      closeMobileMenu
+                    }
                     className="rounded-lg bg-accent px-4 py-3 text-center text-sm font-semibold text-white transition hover:opacity-90"
                   >
-                    {t("login")}
+                    {t(
+                      "login",
+                    )}
                   </Link>
 
                   <Link
                     href="/register"
-                    onClick={closeMobileMenu}
+                    onClick={
+                      closeMobileMenu
+                    }
                     className="rounded-lg border border-white/30 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
                   >
-                    {t("register")}
+                    {t(
+                      "register",
+                    )}
                   </Link>
                 </div>
               ) : (
                 <button
                   type="button"
-                  onClick={handleLogout}
-                  disabled={loggingOut}
+                  onClick={
+                    handleLogout
+                  }
+                  disabled={
+                    loggingOut
+                  }
                   className="w-full rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loggingOut
-                    ? t("loggingOut")
-                    : t("logout")}
+                    ? t(
+                        "loggingOut",
+                      )
+                    : t(
+                        "logout",
+                      )}
                 </button>
               )}
             </div>

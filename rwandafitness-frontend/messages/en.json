@@ -28,7 +28,8 @@
       "english": "English",
       "kinyarwanda": "Kinyarwanda"
     },
-    "videos": "Videos"
+    "videos": "Videos",
+    "notifications": "Notifications"
   },
   "HomePage": {
     "hero": {
@@ -732,7 +733,8 @@
     "title": "Latest Fitness Articles",
     "description": "Tips, guides and insights to support your fitness journey.",
     "viewAll": "View all",
-    "noImage": "No image"
+    "noImage": "No image",
+    "readMore": "Read article"
   },
 
   "Contact": {
@@ -816,6 +818,25 @@
       "en": "English",
       "rw": "Kinyarwanda",
       "all": "All languages"
+    }
+  },  
+
+  "NotificationsPage": {
+    "title": "Notifications",
+    "loading": "Loading notifications...",
+    "unreadCount": "{count, plural, =1 {# unread notification} other {# unread notifications}}",
+    "allRead": "You're all caught up.",
+    "markAllRead": "Mark all as read",
+    "markingAll": "Updating...",
+    "unread": "Unread",
+    "open": "Open",
+    "messages": {
+      "loadFailed": "Unable to load your notifications."
+    },
+    "empty": {
+      "title": "No notifications yet",
+      "description": "Updates about coaching requests and your RwandaFitness activity will appear here.",
+      "dashboard": "Go to Dashboard"
     }
   }
 
