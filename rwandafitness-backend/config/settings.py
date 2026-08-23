@@ -398,6 +398,10 @@ CKEDITOR_5_CONFIGS = {
             "undo",
             "redo",
         ],
+
+        "simpleUpload": {
+            "uploadUrl": "/ckeditor5/image_upload/",
+        },
     },
 }
 
