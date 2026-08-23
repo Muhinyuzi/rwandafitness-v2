@@ -28,7 +28,8 @@
       "english": "English",
       "kinyarwanda": "Kinyarwanda"
     },
-    "videos": "Amashusho"
+    "videos": "Amashusho",
+    "notifications": "Notifications"
   },
   "HomePage": {
     "hero": {
@@ -733,7 +734,8 @@
     "title": "Inkuru Ziheruka ku Myitozo",
     "description": "Inama n'ubumenyi bugufasha mu rugendo rwawe rw'imyitozo.",
     "viewAll": "Reba zose",
-    "noImage": "Nta foto"
+    "noImage": "Nta foto",
+    "readMore": "Soma inkuru"
   },
 
   "Contact": {
@@ -819,7 +821,26 @@
       "rw": "Ikinyarwanda",
       "all": "Indimi zose"
     }
-  }  
+  },
+
+  "NotificationsPage": {
+    "title": "Notifications",
+    "loading": "Notifications zirimo gufungurwa...",
+    "unreadCount": "Ufite notifications {count} utarasoma",
+    "allRead": "Nta notification nshya ufite.",
+    "markAllRead": "Zishyireho ko zasomwe",
+    "markingAll": "Birimo gukorwa...",
+    "unread": "Ntirayasomwa",
+    "open": "Fungura",
+    "messages": {
+      "loadFailed": "Ntibyashobotse gufungura notifications zawe."
+    },
+    "empty": {
+      "title": "Nta notifications urabona",
+      "description": "Amakuru ajyanye na coaching requests n'ibindi bikorwa byawe kuri RwandaFitness azajya agaragara hano.",
+      "dashboard": "Jya kuri Dashboard"
+    }
+  }
 
 
 }
