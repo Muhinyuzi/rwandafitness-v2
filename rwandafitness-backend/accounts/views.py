@@ -4,6 +4,10 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.urls import reverse
 
+from drf_spectacular.utils import (
+    OpenApiResponse,
+    extend_schema,
+)
 from rest_framework import generics, permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -21,15 +25,23 @@ from .serializers import (
     ResetPasswordSerializer,
 )
 
+
 User = get_user_model()
 
 
 class RegisterAPIView(generics.CreateAPIView):
     authentication_classes = []
     serializer_class = RegisterSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [
+        permissions.AllowAny,
+    ]
 
-    def create(self, request, *args, **kwargs):
+    def create(
+        self,
+        request,
+        *args,
+        **kwargs,
+    ):
         serializer = self.get_serializer(
             data=request.data,
         )
@@ -108,7 +120,27 @@ class VerifyEmailAPIView(APIView):
         permissions.AllowAny,
     ]
 
-    def get(self, request, token):
+    @extend_schema(
+        request=None,
+        responses={
+            302: OpenApiResponse(
+                description=(
+                    "Email verified successfully. "
+                    "Redirects to the frontend."
+                ),
+            ),
+            400: OpenApiResponse(
+                description=(
+                    "Invalid or expired verification link."
+                ),
+            ),
+        },
+    )
+    def get(
+        self,
+        request,
+        token,
+    ):
         try:
             verification_token = (
                 EmailVerificationToken.objects.get(
@@ -133,8 +165,7 @@ class VerifyEmailAPIView(APIView):
             return Response(
                 {
                     "detail": (
-                        "Verification link has "
-                        "expired."
+                        "Verification link has expired."
                     ),
                 },
                 status=(
@@ -173,7 +204,26 @@ class LoginAPIView(APIView):
         permissions.AllowAny,
     ]
 
-    def post(self, request):
+    @extend_schema(
+        request=LoginSerializer,
+        responses={
+            200: MeSerializer,
+            400: OpenApiResponse(
+                description=(
+                    "Invalid email or password."
+                ),
+            ),
+            403: OpenApiResponse(
+                description=(
+                    "Email address has not been verified."
+                ),
+            ),
+        },
+    )
+    def post(
+        self,
+        request,
+    ):
         serializer = LoginSerializer(
             data=request.data,
             context={
@@ -222,7 +272,15 @@ class MeAPIView(APIView):
         permissions.IsAuthenticated,
     ]
 
-    def get(self, request):
+    @extend_schema(
+        responses={
+            200: MeSerializer,
+        },
+    )
+    def get(
+        self,
+        request,
+    ):
         serializer = MeSerializer(
             request.user,
         )
@@ -239,7 +297,24 @@ class ForgotPasswordAPIView(APIView):
         permissions.AllowAny,
     ]
 
-    def post(self, request):
+    @extend_schema(
+        request=ForgotPasswordSerializer,
+        responses={
+            200: OpenApiResponse(
+                description=(
+                    "If the email exists, a reset "
+                    "link has been sent."
+                ),
+            ),
+            400: OpenApiResponse(
+                description="Invalid request.",
+            ),
+        },
+    )
+    def post(
+        self,
+        request,
+    ):
         serializer = ForgotPasswordSerializer(
             data=request.data,
         )
@@ -316,7 +391,26 @@ class ResetPasswordAPIView(APIView):
         permissions.AllowAny,
     ]
 
-    def post(self, request, token):
+    @extend_schema(
+        request=ResetPasswordSerializer,
+        responses={
+            200: OpenApiResponse(
+                description=(
+                    "Password updated successfully."
+                ),
+            ),
+            400: OpenApiResponse(
+                description=(
+                    "Invalid or expired reset link."
+                ),
+            ),
+        },
+    )
+    def post(
+        self,
+        request,
+        token,
+    ):
         serializer = ResetPasswordSerializer(
             data=request.data,
         )

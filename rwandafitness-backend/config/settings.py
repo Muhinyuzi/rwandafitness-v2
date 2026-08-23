@@ -123,6 +123,7 @@ INSTALLED_APPS = [
     "contact",
     "reviews",
     "videos",
+    "notifications",
 ]
 
 
