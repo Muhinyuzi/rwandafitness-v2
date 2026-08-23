@@ -15,6 +15,7 @@ class Article(models.Model):
         ("muscle-gain", "Muscle Gain"),
         ("gym-tips", "Gym Tips"),
         ("wellness", "Wellness"),
+        ("news", "News"),
     ]
 
     cover_image = models.ImageField(
