@@ -894,7 +894,7 @@ export default function CoachDetailPage() {
                   alt={
                     coach.full_name
                   }
-                  className="h-32 w-32 shrink-0 rounded-full object-cover sm:h-36 sm:w-36"
+                  className="h-40 w-40 shrink-0 rounded-3xl object-cover sm:h-44 sm:w-44"
                 />
               ) : (
                 <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-full bg-primary text-4xl font-bold text-white sm:h-36 sm:w-36">
@@ -1086,6 +1086,13 @@ export default function CoachDetailPage() {
               </div>
             </div>
 
+            {/* =====================================================
+                GALLERY
+                Bigger images:
+                - maximum 2 columns
+                - h-72 instead of h-48
+            ====================================================== */}
+
             {galleryImages.length >
               0 && (
               <div className="mt-10">
@@ -1104,7 +1111,7 @@ export default function CoachDetailPage() {
                   </span>
                 </div>
 
-                <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-4 grid gap-5 sm:grid-cols-2">
                   {galleryImages.map(
                     (
                       item,
@@ -1122,7 +1129,7 @@ export default function CoachDetailPage() {
                         }
                         className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white text-left transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                       >
-                        <div className="relative overflow-hidden">
+                        <div className="relative overflow-hidden bg-zinc-100">
                           <img
                             src={
                               item.image_url
@@ -1133,7 +1140,7 @@ export default function CoachDetailPage() {
                                 "galleryImageAlt",
                               )
                             }
-                            className="h-48 w-full object-cover transition duration-300 group-hover:scale-105"
+                            className="h-72 w-full object-cover transition duration-300 group-hover:scale-105"
                           />
 
                           <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition group-hover:bg-black/20">
@@ -1520,6 +1527,10 @@ export default function CoachDetailPage() {
         </aside>
       </div>
 
+      {/* =====================================================
+          LIGHTBOX
+      ====================================================== */}
+
       {selectedImage &&
         selectedImageIndex !==
           null && (
@@ -1575,7 +1586,7 @@ export default function CoachDetailPage() {
                       "galleryImageAlt",
                     )
                   }
-                  className="max-h-[82vh] max-w-full rounded-xl object-contain shadow-2xl"
+                  className="max-h-[86vh] max-w-full rounded-xl object-contain shadow-2xl"
                 />
 
                 <div className="mt-4 flex max-w-3xl flex-col items-center gap-1 text-center text-white">
