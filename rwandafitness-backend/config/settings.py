@@ -124,6 +124,7 @@ INSTALLED_APPS = [
     "reviews",
     "videos",
     "notifications",
+    "ai_content",
 ]
 
 

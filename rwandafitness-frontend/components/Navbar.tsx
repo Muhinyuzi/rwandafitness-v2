@@ -644,21 +644,23 @@ export default function Navbar() {
           onClick={
             closeMobileMenu
           }
-          className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3 xl:flex-none"
+          className="group flex min-w-0 flex-1 items-center gap-2 sm:gap-3 xl:flex-none"
         >
-          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white shadow-md transition-transform hover:scale-105 sm:h-12 sm:w-12">
-            <Image
-              src="/rwandafitness-icon.png"
-              alt="RwandaFitness"
-              fill
-              priority
-              sizes="48px"
-              className="object-contain"
-            />
+          <div className="rf-logo-shell relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white shadow-md sm:h-12 sm:w-12">
+            <div className="rf-logo-runner absolute inset-0">
+              <Image
+                src="/rwandafitness-icon.png"
+                alt="RwandaFitness"
+                fill
+                priority
+                sizes="48px"
+                className="object-contain"
+              />
+            </div>
           </div>
 
           <div className="flex min-w-0 flex-col leading-none">
-            <span className="truncate text-lg font-extrabold tracking-tight text-white sm:text-2xl">
+            <span className="truncate text-lg font-extrabold tracking-tight text-white transition-colors duration-300 group-hover:text-white/95 sm:text-2xl">
               RwandaFitness
             </span>
 
@@ -1327,6 +1329,127 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* =====================================================
+          RWANDAFITNESS LOGO ANIMATION
+      ===================================================== */}
+
+      <style jsx>{`
+        /*
+         * The white container stays mostly stable.
+         */
+        .rf-logo-shell {
+          transition:
+            transform 300ms ease,
+            box-shadow 300ms ease;
+        }
+
+        /*
+         * The RF symbol performs a short movement,
+         * rests, and repeats every 6 seconds.
+         */
+        .rf-logo-runner {
+          transform-origin: 50% 70%;
+          animation: rfRunnerMove 6s ease-in-out infinite;
+          will-change: transform;
+        }
+
+        @keyframes rfRunnerMove {
+          /*
+           * REST
+           */
+          0%,
+          68% {
+            transform:
+              translate3d(0, 0, 0)
+              rotate(0deg)
+              scale(1);
+          }
+
+          /*
+           * PREPARE / LEAN FORWARD
+           */
+          73% {
+            transform:
+              translate3d(1px, 0, 0)
+              rotate(3deg)
+              scale(1.02);
+          }
+
+          /*
+           * FIRST IMPULSE
+           */
+          77% {
+            transform:
+              translate3d(3px, -3px, 0)
+              rotate(-3deg)
+              scale(1.06);
+          }
+
+          /*
+           * REBOUND
+           */
+          81% {
+            transform:
+              translate3d(-1px, 1px, 0)
+              rotate(2deg)
+              scale(0.99);
+          }
+
+          /*
+           * SECOND SMALL IMPULSE
+           */
+          85% {
+            transform:
+              translate3d(2px, -2px, 0)
+              rotate(-1deg)
+              scale(1.035);
+          }
+
+          /*
+           * LAND
+           */
+          90% {
+            transform:
+              translate3d(0, 1px, 0)
+              rotate(0deg)
+              scale(0.995);
+          }
+
+          /*
+           * BACK TO REST
+           */
+          94%,
+          100% {
+            transform:
+              translate3d(0, 0, 0)
+              rotate(0deg)
+              scale(1);
+          }
+        }
+
+        /*
+         * Mouse interaction.
+         */
+        .group:hover .rf-logo-shell {
+          transform: translateY(-1px) scale(1.04);
+          box-shadow:
+            0 8px 20px rgb(0 0 0 / 0.16);
+        }
+
+        /*
+         * Accessibility.
+         */
+        @media (prefers-reduced-motion: reduce) {
+          .rf-logo-runner {
+            animation: none;
+          }
+
+          .rf-logo-shell {
+            transition: none;
+          }
+        }
+      `}</style>
     </nav>
   );
 }
