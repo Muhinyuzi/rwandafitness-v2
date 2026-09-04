@@ -35,30 +35,40 @@ export default function CoachesPage() {
   const t = useTranslations("Coaches");
   const router = useRouter();
 
-  const [coaches, setCoaches] = useState<Coach[]>([]);
+  const [coaches, setCoaches] =
+    useState<Coach[]>([]);
 
   const [
     selectedCoach,
     setSelectedCoach,
   ] = useState<Coach | null>(null);
 
-  const [goal, setGoal] = useState("");
-  const [message, setMessage] = useState("");
+  const [goal, setGoal] =
+    useState("");
+
+  const [message, setMessage] =
+    useState("");
 
   const [
     statusMessage,
     setStatusMessage,
   ] = useState("");
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] =
+    useState(true);
 
   const [
     submitting,
     setSubmitting,
   ] = useState(false);
 
+  // =========================================================
+  // LOAD COACHES
+  // =========================================================
+
   useEffect(() => {
-    const controller = new AbortController();
+    const controller =
+      new AbortController();
 
     const loadCoaches = async () => {
       try {
@@ -122,6 +132,10 @@ export default function CoachesPage() {
     };
   }, [locale, t]);
 
+  // =========================================================
+  // OPEN REQUEST FORM
+  // =========================================================
+
   const openRequestForm = (
     coach: Coach,
   ) => {
@@ -141,11 +155,19 @@ export default function CoachesPage() {
     setStatusMessage("");
   };
 
+  // =========================================================
+  // CLOSE REQUEST FORM
+  // =========================================================
+
   const closeRequestForm = () => {
     setSelectedCoach(null);
     setGoal("");
     setMessage("");
   };
+
+  // =========================================================
+  // FORMAT API ERROR
+  // =========================================================
 
   const formatApiError = (
     data: unknown,
@@ -193,6 +215,10 @@ export default function CoachesPage() {
       "messages.requestFailed",
     );
   };
+
+  // =========================================================
+  // SEND REQUEST
+  // =========================================================
 
   const handleSendRequest =
     async () => {
@@ -302,133 +328,305 @@ export default function CoachesPage() {
       }
     };
 
-  return (
-    <div className="mx-auto max-w-6xl px-6 py-10">
-      <h1 className="mb-6 text-3xl font-bold text-zinc-900">
-        {t("title")}
-      </h1>
+  // =========================================================
+  // LOADING
+  // =========================================================
 
-      {statusMessage && (
-        <div className="mb-6 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-700">
-          {statusMessage}
-        </div>
-      )}
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-zinc-50">
+        <section className="border-b border-zinc-200 bg-white">
+          <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
+            <div className="max-w-2xl">
+              <div className="h-1.5 w-14 rounded-full bg-primary" />
 
-      {loading ? (
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 text-sm text-zinc-600 shadow-sm">
-          {t("loading")}
-        </div>
-      ) : coaches.length ===
-          0 &&
-        !statusMessage ? (
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 text-sm text-zinc-600 shadow-sm">
-          {t("empty")}
-        </div>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-3">
-          {coaches.map(
-            (coach) => (
-              <Link
-                key={coach.id}
-                href={`/coaches/${coach.id}`}
-                className="block rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <div className="mb-3 h-1.5 w-14 rounded-full bg-primary" />
+              <div className="mt-5 h-10 w-56 animate-pulse rounded-xl bg-zinc-200" />
 
-                {coach.photo_url ? (
-                  <img
-                    src={coach.photo_url}
-                    className="mb-4 h-24 w-24 shrink-0 rounded-full object-cover sm:h-28 sm:w-28"
-                    alt={coach.full_name}
-                  />
-                ) : (
-                  <div className="mb-4 flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-primary text-2xl font-bold text-white sm:h-28 sm:w-28">
-                    {coach.full_name
-                      .charAt(0)
-                      .toUpperCase()}
-                  </div>
-                )}
+              <div className="mt-4 h-5 w-full max-w-xl animate-pulse rounded bg-zinc-100" />
+            </div>
+          </div>
+        </section>
 
-                <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-semibold text-zinc-900">
-                    {
-                      coach.full_name
-                    }
-                  </h3>
-
-                  {coach.is_verified && (
-                    <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-700">
-                      ✔{" "}
-                      {t(
-                        "verified",
-                      )}
-                    </span>
-                  )}
-                </div>
-
-                <div className="mt-2 inline-block rounded bg-primary/10 px-3 py-1 text-sm text-primary">
-                  {coach.specialty_display ||
-                    coach.specialty}
-                </div>
-
-                <p className="mt-2 text-sm text-zinc-500">
-                  📍 {coach.city}
-                </p>
-
-                {coach.gym_name && (
-                  <p className="mt-2 text-sm text-zinc-600">
-                    {t(
-                      "worksAt",
-                    )}{" "}
-                    <span className="font-medium underline">
-                      {
-                        coach.gym_name
-                      }
-                    </span>
-                  </p>
-                )}
-
-                <p className="mt-2 font-semibold text-zinc-900">
-                  {coach.price_per_session
-                    ? t(
-                        "pricePerSession",
-                        {
-                          price:
-                            coach.price_per_session,
-                        },
-                      )
-                    : t(
-                        "contactForPrice",
-                      )}
-                </p>
-
-                <button
-                  type="button"
-                  onClick={(
-                    event,
-                  ) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    openRequestForm(
-                      coach,
-                    );
-                  }}
-                  className="mt-4 w-full rounded-lg bg-primary py-2 text-white transition hover:bg-primary-dark"
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-12">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({
+              length: 6,
+            }).map(
+              (_, index) => (
+                <div
+                  key={index}
+                  className="overflow-hidden rounded-[30px] border border-zinc-200 bg-white shadow-sm"
                 >
-                  {t(
-                    "requestCoaching",
-                  )}
-                </button>
-              </Link>
-            ),
-          )}
+                  <div className="aspect-[4/5] animate-pulse bg-zinc-200" />
+
+                  <div className="space-y-4 p-5">
+                    <div className="h-6 w-36 animate-pulse rounded bg-zinc-200" />
+
+                    <div className="h-4 w-24 animate-pulse rounded bg-zinc-100" />
+
+                    <div className="h-4 w-40 animate-pulse rounded bg-zinc-100" />
+
+                    <div className="h-11 animate-pulse rounded-xl bg-zinc-100" />
+                  </div>
+                </div>
+              ),
+            )}
+          </div>
         </div>
-      )}
+      </main>
+    );
+  }
+
+  return (
+    <main className="min-h-screen bg-zinc-50">
+      {/* =====================================================
+          HERO
+      ====================================================== */}
+
+      <section className="relative overflow-hidden border-b border-zinc-200 bg-white">
+        <div className="absolute -right-32 -top-32 h-72 w-72 rounded-full bg-primary/5 blur-3xl" />
+
+        <div className="absolute -left-24 bottom-0 h-56 w-56 rounded-full bg-primary/5 blur-3xl" />
+
+        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
+          <div className="max-w-3xl">
+            <div className="h-1.5 w-14 rounded-full bg-primary" />
+
+            <h1 className="mt-5 text-3xl font-black tracking-[-0.03em] text-zinc-950 sm:text-4xl lg:text-5xl">
+              {t("title")}
+            </h1>
+
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              {coaches.length > 0 && (
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm font-bold text-primary">
+                  <span className="h-2 w-2 rounded-full bg-primary" />
+
+                  <span>
+                    {coaches.length}{" "}
+                    {coaches.length === 1
+                      ? "coach"
+                      : "coaches"}
+                  </span>
+                </div>
+              )}
+
+              <div className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-500">
+                RwandaFitness
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          PAGE CONTENT
+      ====================================================== */}
+
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
+        {statusMessage && (
+          <div className="mb-7 rounded-2xl border border-primary/20 bg-primary/[0.05] px-5 py-4 text-sm font-medium text-zinc-700">
+            {statusMessage}
+          </div>
+        )}
+
+        {coaches.length === 0 &&
+        !statusMessage ? (
+          <div className="rounded-[30px] border border-zinc-200 bg-white p-8 text-center text-sm text-zinc-600 shadow-sm sm:p-12">
+            {t("empty")}
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {coaches.map(
+              (coach) => {
+                const specialty =
+                  coach.specialty_display ||
+                  coach.specialty;
+
+                const coachPhoto =
+                  coach.photo_url ||
+                  coach.photo;
+
+                return (
+                  <article
+                    key={coach.id}
+                    className="group relative overflow-hidden rounded-[30px] border border-zinc-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(0,0,0,0.10)]"
+                  >
+                    {/* ===========================
+                        CLICKABLE PROFILE AREA
+                    ============================ */}
+
+                    <Link
+                      href={`/coaches/${coach.id}`}
+                      className="block"
+                    >
+                      {/* ===========================
+                          PHOTO
+                      ============================ */}
+
+                      <div className="relative aspect-[4/5] overflow-hidden bg-zinc-100">
+                        {coachPhoto ? (
+                          <img
+                            src={
+                              coachPhoto
+                            }
+                            alt={
+                              coach.full_name
+                            }
+                            className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary to-primary-dark">
+                            <span className="text-7xl font-black text-white/90 sm:text-8xl">
+                              {coach.full_name
+                                .charAt(0)
+                                .toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Photo gradient */}
+
+                        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
+
+                        {/* Verified */}
+
+                        {coach.is_verified && (
+                          <div className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-white/40 bg-white/95 px-3 py-2 text-xs font-bold text-emerald-700 shadow-lg backdrop-blur">
+                            <span>
+                              ✓
+                            </span>
+
+                            <span>
+                              {t(
+                                "verified",
+                              )}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* City */}
+
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <div className="flex items-end justify-between gap-3">
+                            <span className="inline-flex items-center rounded-full bg-black/40 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md">
+                              📍{" "}
+                              {
+                                coach.city
+                              }
+                            </span>
+
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-lg font-bold text-primary shadow-lg transition duration-300 group-hover:translate-x-1">
+                              →
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* ===========================
+                          PROFILE INFO
+                      ============================ */}
+
+                      <div className="px-5 pb-4 pt-5 sm:px-6">
+                        <h2 className="text-xl font-black tracking-tight text-zinc-950 transition group-hover:text-primary sm:text-2xl">
+                          {
+                            coach.full_name
+                          }
+                        </h2>
+
+                        <div className="mt-2">
+                          <span className="inline-flex rounded-full bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary sm:text-sm">
+                            {
+                              specialty
+                            }
+                          </span>
+                        </div>
+
+                        {coach.gym_name && (
+                          <div className="mt-5 flex items-start gap-3 border-t border-zinc-100 pt-4">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-base">
+                              🏋️
+                            </div>
+
+                            <div className="min-w-0">
+                              <p className="text-xs font-medium text-zinc-400">
+                                {t(
+                                  "worksAt",
+                                )}
+                              </p>
+
+                              <p className="mt-0.5 truncate text-sm font-semibold text-zinc-700">
+                                {
+                                  coach.gym_name
+                                }
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="mt-5 flex items-end justify-between gap-4 border-t border-zinc-100 pt-4">
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+                              {coach.price_per_session
+                                ? t(
+                                    "pricePerSession",
+                                    {
+                                      price:
+                                        coach.price_per_session,
+                                    },
+                                  )
+                                : t(
+                                    "contactForPrice",
+                                  )}
+                            </p>
+                          </div>
+
+                          <span className="shrink-0 text-sm font-bold text-primary">
+                            →
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+
+                    {/* ===========================
+                        REQUEST BUTTON
+                    ============================ */}
+
+                    <div className="px-5 pb-5 sm:px-6 sm:pb-6">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openRequestForm(
+                            coach,
+                          )
+                        }
+                        className="group/button flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-primary/15 transition hover:bg-primary-dark active:scale-[0.99]"
+                      >
+                        <span>
+                          {t(
+                            "requestCoaching",
+                          )}
+                        </span>
+
+                        <span className="transition group-hover/button:translate-x-0.5">
+                          →
+                        </span>
+                      </button>
+                    </div>
+                  </article>
+                );
+              },
+            )}
+          </div>
+        )}
+      </section>
+
+      {/* =====================================================
+          REQUEST MODAL
+      ====================================================== */}
 
       {selectedCoach && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          className="fixed inset-0 z-[80] flex items-end justify-center bg-black/55 p-0 backdrop-blur-[2px] sm:items-center sm:p-4"
           onClick={
             closeRequestForm
           }
@@ -437,118 +635,193 @@ export default function CoachesPage() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="coaching-request-title"
-            className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+            className="max-h-[92vh] w-full overflow-y-auto rounded-t-[30px] bg-white shadow-2xl sm:max-w-lg sm:rounded-[30px]"
             onClick={(
               event,
             ) =>
               event.stopPropagation()
             }
           >
-            <h2
-              id="coaching-request-title"
-              className="mb-2 text-lg font-semibold text-zinc-900"
-            >
-              {t(
-                "form.title",
-                {
-                  name:
-                    selectedCoach.full_name,
-                },
-              )}
-            </h2>
+            {/* Modal header */}
 
-            <label
-              htmlFor="coaching-goal"
-              className="mt-4 block text-sm font-medium text-zinc-700"
-            >
-              {t(
-                "form.goalLabel",
-              )}
-            </label>
+            <div className="relative overflow-hidden border-b border-zinc-100 p-5 sm:p-6">
+              <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-primary/5 blur-3xl" />
 
-            <input
-              id="coaching-goal"
-              type="text"
-              placeholder={t(
-                "form.goalPlaceholder",
-              )}
-              value={goal}
-              onChange={(
-                event,
-              ) =>
-                setGoal(
-                  event.target
-                    .value,
-                )
-              }
-              className="mt-2 w-full rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-primary"
-            />
+              <div className="relative flex items-start gap-4">
+                {/* Coach image */}
 
-            <label
-              htmlFor="coaching-message"
-              className="mt-4 block text-sm font-medium text-zinc-700"
-            >
-              {t(
-                "form.messageLabel",
-              )}
-            </label>
+                {selectedCoach.photo_url ||
+                selectedCoach.photo ? (
+                  <img
+                    src={
+                      selectedCoach.photo_url ||
+                      selectedCoach.photo ||
+                      ""
+                    }
+                    alt={
+                      selectedCoach.full_name
+                    }
+                    className="h-16 w-16 shrink-0 rounded-2xl object-cover shadow-sm sm:h-20 sm:w-20"
+                  />
+                ) : (
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-primary text-2xl font-black text-white sm:h-20 sm:w-20">
+                    {selectedCoach.full_name
+                      .charAt(0)
+                      .toUpperCase()}
+                  </div>
+                )}
 
-            <textarea
-              id="coaching-message"
-              placeholder={t(
-                "form.messagePlaceholder",
-              )}
-              value={message}
-              onChange={(
-                event,
-              ) =>
-                setMessage(
-                  event.target
-                    .value,
-                )
-              }
-              rows={5}
-              className="mt-2 w-full rounded-lg border border-zinc-300 px-4 py-3 text-sm outline-none focus:border-primary"
-            />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-primary">
+                    {
+                      selectedCoach.specialty_display ||
+                      selectedCoach.specialty
+                    }
+                  </p>
 
-            <div className="mt-4 flex gap-3">
-              <button
-                type="button"
-                onClick={
-                  closeRequestForm
-                }
-                disabled={
-                  submitting
-                }
-                className="w-full rounded-lg border border-zinc-300 py-2 text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-60"
+                  <h2
+                    id="coaching-request-title"
+                    className="mt-1 text-xl font-black tracking-tight text-zinc-950 sm:text-2xl"
+                  >
+                    {t(
+                      "form.title",
+                      {
+                        name:
+                          selectedCoach.full_name,
+                      },
+                    )}
+                  </h2>
+
+                  <p className="mt-1 text-sm text-zinc-500">
+                    📍{" "}
+                    {
+                      selectedCoach.city
+                    }
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={
+                    closeRequestForm
+                  }
+                  disabled={
+                    submitting
+                  }
+                  aria-label="Close"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-xl text-zinc-600 transition hover:bg-zinc-200 disabled:opacity-50"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            {/* Form */}
+
+            <div className="p-5 sm:p-6">
+              {statusMessage && (
+                <div className="mb-5 rounded-2xl border border-primary/20 bg-primary/[0.05] px-4 py-3 text-sm font-medium text-zinc-700">
+                  {
+                    statusMessage
+                  }
+                </div>
+              )}
+
+              <label
+                htmlFor="coaching-goal"
+                className="block text-sm font-bold text-zinc-800"
               >
                 {t(
-                  "form.cancel",
+                  "form.goalLabel",
                 )}
-              </button>
+              </label>
 
-              <button
-                type="button"
-                onClick={
-                  handleSendRequest
+              <input
+                id="coaching-goal"
+                type="text"
+                placeholder={t(
+                  "form.goalPlaceholder",
+                )}
+                value={goal}
+                onChange={(
+                  event,
+                ) =>
+                  setGoal(
+                    event.target
+                      .value,
+                  )
                 }
-                disabled={
-                  submitting
-                }
-                className="w-full rounded-lg bg-primary py-2 text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-70"
+                className="mt-2 w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-primary focus:ring-4 focus:ring-primary/10"
+              />
+
+              <label
+                htmlFor="coaching-message"
+                className="mt-5 block text-sm font-bold text-zinc-800"
               >
-                {submitting
-                  ? t(
-                      "form.sending",
-                    )
-                  : t(
-                      "form.send",
-                    )}
-              </button>
+                {t(
+                  "form.messageLabel",
+                )}
+              </label>
+
+              <textarea
+                id="coaching-message"
+                placeholder={t(
+                  "form.messagePlaceholder",
+                )}
+                value={message}
+                onChange={(
+                  event,
+                ) =>
+                  setMessage(
+                    event.target
+                      .value,
+                  )
+                }
+                rows={5}
+                className="mt-2 w-full resize-none rounded-2xl border border-zinc-300 bg-white px-4 py-3.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-primary focus:ring-4 focus:ring-primary/10"
+              />
+
+              {/* Buttons */}
+
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={
+                    closeRequestForm
+                  }
+                  disabled={
+                    submitting
+                  }
+                  className="rounded-2xl border border-zinc-300 bg-white px-4 py-3.5 text-sm font-bold text-zinc-700 transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {t(
+                    "form.cancel",
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={
+                    handleSendRequest
+                  }
+                  disabled={
+                    submitting
+                  }
+                  className="rounded-2xl bg-primary px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-primary/20 transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {submitting
+                    ? t(
+                        "form.sending",
+                      )
+                    : t(
+                        "form.send",
+                      )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }
