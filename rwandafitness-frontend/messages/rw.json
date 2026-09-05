@@ -558,7 +558,8 @@
     "verified": "Yemejwe",
     "messages": {
       "loadFailed": "Kuzana urutonde rwa gym ntibyakunze."
-    }
+    },
+    "viewGym": "Reba gym"
   },
 
   "Login": {
