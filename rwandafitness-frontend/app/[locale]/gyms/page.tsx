@@ -189,7 +189,9 @@ export default function GymsPage() {
             </h1>
 
             <p className="mt-4 max-w-2xl text-sm leading-7 text-zinc-500 sm:text-base sm:leading-8">
-              {t("description")}
+              {t(
+                "description",
+              )}
             </p>
 
             {gyms.length > 0 && (
@@ -198,8 +200,11 @@ export default function GymsPage() {
                   <span className="h-2 w-2 rounded-full bg-primary" />
 
                   <span>
-                    {gyms.length}{" "}
-                    {gyms.length === 1
+                    {
+                      gyms.length
+                    }{" "}
+                    {gyms.length ===
+                    1
                       ? "gym"
                       : "gyms"}
                   </span>
@@ -236,7 +241,9 @@ export default function GymsPage() {
               </div>
 
               <p className="mt-5 text-sm text-zinc-600">
-                {t("empty")}
+                {t(
+                  "empty",
+                )}
               </p>
             </div>
           )}
@@ -248,158 +255,171 @@ export default function GymsPage() {
         {!error &&
           gyms.length > 0 && (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {gyms.map((gym) => {
-                const content = (
-                  <>
-                    {/* ===========================
-                        IMAGE
-                    ============================ */}
+              {gyms.map(
+                (gym) => {
+                  const content =
+                    (
+                      <>
+                        {/* ===========================
+                            IMAGE
+                        ============================ */}
 
-                    <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
-                      {gym.cover_image_url ? (
-                        <img
-                          src={
-                            gym.cover_image_url
-                          }
-                          alt={
-                            gym.name
-                          }
-                          className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200 px-6 text-center">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">
-                            🏋️
-                          </div>
+                        <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
+                          {gym.cover_image_url ? (
+                            <img
+                              src={
+                                gym.cover_image_url
+                              }
+                              alt={
+                                gym.name
+                              }
+                              className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200 px-6 text-center">
+                              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">
+                                🏋️
+                              </div>
 
-                          <p className="mt-4 text-sm font-medium text-zinc-500">
-                            {t(
-                              "noImage",
-                            )}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Image gradient */}
-
-                      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
-
-                      {/* VERIFIED */}
-
-                      {gym.is_verified && (
-                        <div className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-white/40 bg-white/95 px-3 py-2 text-xs font-bold text-emerald-700 shadow-lg backdrop-blur">
-                          <span>
-                            ✓
-                          </span>
-
-                          <span>
-                            {t(
-                              "verified",
-                            )}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* CITY */}
-
-                      <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
-                        <span className="inline-flex rounded-full bg-black/40 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md">
-                          📍{" "}
-                          {
-                            gym.city
-                          }
-                        </span>
-
-                        {gym.slug && (
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-lg font-bold text-primary shadow-lg transition duration-300 group-hover:translate-x-1">
-                            →
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* ===========================
-                        INFORMATION
-                    ============================ */}
-
-                    <div className="flex flex-1 flex-col p-5 sm:p-6">
-                      <h2 className="text-xl font-black tracking-tight text-zinc-950 transition group-hover:text-primary sm:text-2xl">
-                        {
-                          gym.name
-                        }
-                      </h2>
-
-                      <div className="mt-3 flex items-center gap-2 text-sm font-medium text-zinc-500">
-                        <span>
-                          📍
-                        </span>
-
-                        <span>
-                          {
-                            gym.city
-                          }
-                        </span>
-                      </div>
-
-                      {/* DESCRIPTION */}
-
-                      <p className="mt-4 line-clamp-3 text-sm leading-7 text-zinc-600">
-                        {gym.description ||
-                          t(
-                            "noDescription",
+                              <p className="mt-4 text-sm font-medium text-zinc-500">
+                                {t(
+                                  "noImage",
+                                )}
+                              </p>
+                            </div>
                           )}
-                      </p>
 
-                      {/* BOTTOM */}
+                          {/* Image gradient */}
 
-                      {gym.slug && (
-                        <div className="mt-6 flex items-center justify-between border-t border-zinc-100 pt-4">
-                          <span className="text-sm font-bold text-primary">
-                            {gym.name}
-                          </span>
+                          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
 
-                          <span className="text-lg font-bold text-primary transition duration-300 group-hover:translate-x-1">
-                            →
-                          </span>
+                          {/* VERIFIED */}
+
+                          {gym.is_verified && (
+                            <div className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-white/40 bg-white/95 px-3 py-2 text-xs font-bold text-emerald-700 shadow-lg backdrop-blur">
+                              <span>
+                                ✓
+                              </span>
+
+                              <span>
+                                {t(
+                                  "verified",
+                                )}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* CITY + ARROW */}
+
+                          <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
+                            <span className="inline-flex rounded-full bg-black/40 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md">
+                              📍{" "}
+                              {
+                                gym.city
+                              }
+                            </span>
+
+                            {gym.slug && (
+                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-lg font-bold text-primary shadow-lg transition duration-300 group-hover:translate-x-1">
+                                →
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  </>
-                );
 
-                // =============================================
-                // CLICKABLE GYM
-                // =============================================
+                        {/* ===========================
+                            INFORMATION
+                        ============================ */}
 
-                if (gym.slug) {
+                        <div className="flex flex-1 flex-col p-5 sm:p-6">
+                          <h2 className="text-xl font-black tracking-tight text-zinc-950 transition group-hover:text-primary sm:text-2xl">
+                            {
+                              gym.name
+                            }
+                          </h2>
+
+                          <div className="mt-3 flex items-center gap-2 text-sm font-medium text-zinc-500">
+                            <span>
+                              📍
+                            </span>
+
+                            <span>
+                              {
+                                gym.city
+                              }
+                            </span>
+                          </div>
+
+                          {/* DESCRIPTION */}
+
+                          <p className="mt-4 line-clamp-3 text-sm leading-7 text-zinc-600">
+                            {gym.description ||
+                              t(
+                                "noDescription",
+                              )}
+                          </p>
+
+                          {/* BOTTOM CTA */}
+
+                          {gym.slug && (
+                            <div className="mt-auto pt-6">
+                              <div className="flex items-center justify-between border-t border-zinc-100 pt-4">
+                                <span className="text-sm font-bold text-primary">
+                                  {t(
+                                    "viewGym",
+                                  )}
+                                </span>
+
+                                <span className="text-lg font-bold text-primary transition duration-300 group-hover:translate-x-1">
+                                  →
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    );
+
+                  // =============================================
+                  // CLICKABLE GYM
+                  // =============================================
+
+                  if (
+                    gym.slug
+                  ) {
+                    return (
+                      <Link
+                        key={
+                          gym.id
+                        }
+                        href={`/gyms/${gym.slug}`}
+                        className="group flex flex-col overflow-hidden rounded-[30px] border border-zinc-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(0,0,0,0.10)]"
+                      >
+                        {
+                          content
+                        }
+                      </Link>
+                    );
+                  }
+
+                  // =============================================
+                  // GYM WITHOUT SLUG
+                  // =============================================
+
                   return (
-                    <Link
+                    <article
                       key={
                         gym.id
                       }
-                      href={`/gyms/${gym.slug}`}
-                      className="group flex overflow-hidden rounded-[30px] border border-zinc-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(0,0,0,0.10)] sm:flex-col"
+                      className="group flex flex-col overflow-hidden rounded-[30px] border border-zinc-200 bg-white shadow-sm"
                     >
-                      {content}
-                    </Link>
+                      {
+                        content
+                      }
+                    </article>
                   );
-                }
-
-                // =============================================
-                // GYM WITHOUT SLUG
-                // =============================================
-
-                return (
-                  <article
-                    key={
-                      gym.id
-                    }
-                    className="group flex overflow-hidden rounded-[30px] border border-zinc-200 bg-white shadow-sm sm:flex-col"
-                  >
-                    {content}
-                  </article>
-                );
-              })}
+                },
+              )}
             </div>
           )}
       </section>

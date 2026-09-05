@@ -557,7 +557,8 @@
     "verified": "Verified",
     "messages": {
       "loadFailed": "Failed to load gyms."
-    }
+    },
+    "viewGym": "View gym"
   },
 
   "Login": {
