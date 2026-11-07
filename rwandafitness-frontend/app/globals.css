@@ -1,34 +1,276 @@
+
 @import "tailwindcss";
 
-/* =========================
-   THEME RWANDAFITNESS
-========================= */
+/* ==========================================
+   RWANDAFITNESS — BRAND THEME 2026
+   Emerald Green • Cyan Blue • Golden Yellow
+========================================== */
 
 @theme inline {
-  --color-primary: #078db2;
-  --color-primary-dark: #067795;
-  --color-accent: #f19f4d;
+  /* Primary brand colors */
+  --color-primary: #007d36;
+  --color-primary-dark: #003d24;
+  --color-primary-light: #e5f6ec;
 
-  --color-background: #f8fafc;
-  --color-foreground: #171717;
+  /* Secondary brand colors */
+  --color-secondary: #00cfff;
+  --color-secondary-dark: #078db2;
 
+  /* Accent */
+  --color-accent: #ffd21a;
+  --color-accent-dark: #c99b00;
+
+  /* Background and text */
+  --color-background: #f3faf6;
+  --color-foreground: #17251e;
+
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-/* =========================
+/* ==========================================
+   CSS VARIABLES
+========================================== */
+
+:root {
+  --rf-green-dark: #003d24;
+  --rf-green: #007d36;
+  --rf-green-light: #e5f6ec;
+
+  --rf-cyan: #00cfff;
+  --rf-blue: #078db2;
+
+  --rf-gold: #ffd21a;
+  --rf-gold-dark: #c99b00;
+
+  --rf-background: #f3faf6;
+  --rf-white: #ffffff;
+
+  --rf-gradient-green: linear-gradient(
+    135deg,
+    #003d24 0%,
+    #007d36 55%,
+    #003d24 100%
+  );
+}
+
+/* ==========================================
    BASE
-========================= */
+========================================== */
 
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-sans), Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* =========================
+/* ==========================================
+   BRAND GRADIENTS
+========================================== */
+
+.rf-gradient-green {
+  background: var(--rf-gradient-green);
+}
+
+.rf-gradient-premium {
+  background:
+    radial-gradient(
+      ellipse at 50% 40%,
+      rgba(0, 207, 255, 0.12),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 50% 45%,
+      #008a3b 0%,
+      #00552e 48%,
+      #00301b 100%
+    );
+}
+
+.rf-gradient-gold {
+  background: linear-gradient(
+    135deg,
+    #ffe76a 0%,
+    #ffd21a 45%,
+    #e6ad00 100%
+  );
+}
+
+/* ==========================================
+   NAVBAR
+========================================== */
+
+.rf-navbar {
+  background: rgba(0, 61, 36, 0.97);
+  border-bottom: 1px solid rgba(0, 207, 255, 0.18);
+  color: #ffffff;
+}
+
+.rf-navbar-link {
+  color: #e7f8ee;
+  transition: color 0.2s ease;
+}
+
+.rf-navbar-link:hover,
+.rf-navbar-link-active {
+  color: var(--rf-gold);
+}
+
+/* ==========================================
+   HERO
+========================================== */
+
+.rf-hero {
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(0, 207, 255, 0.12),
+      transparent 55%
+    ),
+    linear-gradient(
+      120deg,
+      #00301b 0%,
+      #007d36 52%,
+      #003d24 100%
+    );
+
+  color: #ffffff;
+}
+
+.rf-hero-title {
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.rf-text-cyan {
+  color: var(--rf-cyan);
+}
+
+.rf-text-gold {
+  color: var(--rf-gold);
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.rf-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  background: var(--rf-gold);
+  color: var(--rf-green-dark);
+
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+
+  font-weight: 700;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rf-btn-primary:hover {
+  background: #ffe15c;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(255, 210, 26, 0.2);
+}
+
+.rf-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  color: #ffffff;
+
+  border: 1px solid var(--rf-cyan);
+  border-radius: 0.75rem;
+
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rf-btn-secondary:hover {
+  background: rgba(0, 207, 255, 0.12);
+}
+
+/* ==========================================
+   CARDS
+========================================== */
+
+.rf-card {
+  background: #ffffff;
+  border: 1px solid #dceee3;
+  border-radius: 1rem;
+
+  box-shadow: 0 4px 18px rgba(0, 61, 36, 0.05);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rf-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 125, 54, 0.35);
+  box-shadow: 0 12px 30px rgba(0, 61, 36, 0.1);
+}
+
+/* ==========================================
+   SECTIONS
+========================================== */
+
+.rf-section-light {
+  background: #f3faf6;
+}
+
+.rf-section-white {
+  background: #ffffff;
+}
+
+.rf-section-green {
+  background: var(--rf-green-dark);
+  color: #ffffff;
+}
+
+.rf-section-title {
+  color: var(--rf-green-dark);
+  font-weight: 800;
+}
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.rf-footer {
+  background: #00301b;
+  color: #e0f5e8;
+  border-top: 2px solid var(--rf-gold);
+}
+
+.rf-footer a {
+  transition: color 0.2s ease;
+}
+
+.rf-footer a:hover {
+  color: var(--rf-gold);
+}
+
+/* ==========================================
    ARTICLE CONTENT
-========================= */
+========================================== */
 
 .article-content {
   color: #3f3f46;
@@ -71,11 +313,23 @@ body {
   text-underline-offset: 3px;
 }
 
+.article-content a:hover {
+  color: var(--color-primary-dark);
+}
+
 .article-content ul,
 .article-content ol {
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
   padding-left: 1.5rem;
+}
+
+.article-content ul {
+  list-style-type: disc;
+}
+
+.article-content ol {
+  list-style-type: decimal;
 }
 
 .article-content li {
@@ -86,11 +340,14 @@ body {
 .article-content blockquote {
   margin-top: 2rem;
   margin-bottom: 2rem;
+
   border-left: 4px solid var(--color-primary);
   border-radius: 0 0.75rem 0.75rem 0;
-  background: #f4f4f5;
+
+  background: #eaf6ee;
   padding: 1rem 1.5rem;
-  color: #52525b;
+
+  color: #365244;
   font-style: italic;
 }
 
@@ -105,8 +362,10 @@ body {
 .article-content iframe {
   width: 100%;
   aspect-ratio: 16 / 9;
+
   margin-top: 2rem;
   margin-bottom: 2rem;
+
   border: 0;
   border-radius: 1rem;
 }
@@ -115,5 +374,29 @@ body {
   margin-top: 2.5rem;
   margin-bottom: 2.5rem;
   border: 0;
-  border-top: 1px solid #e4e4e7;
+  border-top: 1px solid #dceee3;
+}
+
+/* ==========================================
+   ACCESSIBILITY
+========================================== */
+
+:focus-visible {
+  outline: 3px solid var(--rf-cyan);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-btn-primary,
+  .rf-btn-secondary,
+  .rf-card,
+  .rf-navbar-link,
+  .rf-footer a {
+    transition: none;
+  }
+
+  .rf-btn-primary:hover,
+  .rf-card:hover {
+    transform: none;
+  }
 }

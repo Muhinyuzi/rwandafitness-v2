@@ -1,3 +1,4 @@
+
 import type {Metadata} from "next";
 import type {ReactNode} from "react";
 import Image from "next/image";
@@ -119,10 +120,18 @@ export default async function LocaleLayout({
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <body className="min-h-screen bg-zinc-50 text-zinc-900">
+      <body className="min-h-screen bg-[#F3FAF6] text-[#17251E]">
         <NextIntlClientProvider messages={messages}>
           <div className="flex min-h-screen flex-col">
+            {/* ==========================================
+                NAVBAR
+            ========================================== */}
+
             <Navbar />
+
+            {/* ==========================================
+                MAIN CONTENT
+            ========================================== */}
 
             <main className="flex-1">
               <div className="mx-auto w-full max-w-6xl px-6 py-6">
@@ -130,75 +139,84 @@ export default async function LocaleLayout({
               </div>
             </main>
 
-            <footer className="border-t border-zinc-200 bg-white">
-              <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-8 text-sm text-zinc-600 md:flex-row">
-                <div className="text-center md:text-left">
-                  <div className="flex items-center justify-center gap-3 md:justify-start">
-                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-white shadow-sm">
-                      <Image
-                        src="/rwandafitness-icon.png"
-                        alt="RwandaFitness"
-                        fill
-                        sizes="48px"
-                        className="object-contain"
-                      />
-                    </div>
+            {/* ==========================================
+                FOOTER
+            ========================================== */}
 
-                    <div>
-                      <h3 className="text-lg font-bold text-primary">
-                        RwandaFitness
-                      </h3>
+            <footer className="border-t border-[#00CFFF]/20 bg-[#075C38] text-white">
+              <div className="mx-auto grid w-full max-w-7xl gap-10 px-6 py-12 sm:px-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:px-12">
+                {/* BRAND */}
 
-                      <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500">
-                        Stronger • Better • Life
-                      </p>
-                    </div>
-                  </div>
+                <div className="max-w-xl">
+                  <Link
+                    href="/"
+                    aria-label="RwandaFitness"
+                    className="inline-flex flex-col items-center transition duration-300 hover:opacity-90 sm:items-start"
+                  >
+                    <Image
+                      src="/rwandafitness-logo.png"
+                      alt="RwandaFitness"
+                      width={320}
+                      height={100}
+                      sizes="(max-width: 640px) 220px, 280px"
+                      className="h-auto w-[220px] object-contain sm:w-[280px]"
+                    />
 
-                  <p className="mt-4 font-semibold text-zinc-800">
+                    <span className="mt-[-6px] text-center text-[8px] font-bold uppercase tracking-[0.24em] text-white/80 sm:ml-8 sm:text-[9px]">
+                      STRONGER • BETTER • LIFE
+                    </span>
+                  </Link>
+
+                  <p className="mt-6 font-serif text-lg font-bold italic text-[#FFD21A]">
                     Q.E.D. — {t("footer.qed")}
                   </p>
 
-                  <p className="mt-1">
+                  <p className="mt-3 max-w-md text-sm leading-7 text-white/80">
                     {t("footer.description")}
                   </p>
                 </div>
 
+                {/* FOOTER NAVIGATION */}
+
                 <nav
                   aria-label={t("footer.navigationLabel")}
-                  className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
+                  className="flex flex-wrap items-center gap-x-7 gap-y-4 lg:justify-end"
                 >
                   <Link
                     href="/articles"
-                    className="transition hover:text-primary"
+                    className="font-serif text-base font-bold italic text-white transition duration-300 hover:text-[#FFD21A]"
                   >
                     {t("footer.links.articles")}
                   </Link>
 
                   <Link
                     href="/coaches"
-                    className="transition hover:text-primary"
+                    className="font-serif text-base font-bold italic text-white transition duration-300 hover:text-[#FFD21A]"
                   >
                     {t("footer.links.coaches")}
                   </Link>
 
                   <Link
                     href="/gyms"
-                    className="transition hover:text-primary"
+                    className="font-serif text-base font-bold italic text-white transition duration-300 hover:text-[#FFD21A]"
                   >
                     {t("footer.links.gyms")}
                   </Link>
 
                   <Link
                     href="/about"
-                    className="transition hover:text-primary"
+                    className="font-serif text-base font-bold italic text-white transition duration-300 hover:text-[#FFD21A]"
                   >
                     {t("footer.links.about")}
                   </Link>
                 </nav>
               </div>
 
-              <div className="border-t border-zinc-100 px-6 py-4 text-center text-xs text-zinc-500">
+              {/* ======================================
+                  COPYRIGHT
+              ====================================== */}
+
+              <div className="border-t border-white/15 bg-[#064D30] px-6 py-4 text-center text-xs tracking-wide text-white/75">
                 {t("footer.copyright", {
                   startYear: 2019,
                   currentYear,

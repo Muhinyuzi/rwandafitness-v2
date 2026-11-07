@@ -1,18 +1,8 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-} from "react";
-import {
-  useLocale,
-  useTranslations,
-} from "next-intl";
-
-import {
-  Link,
-  useRouter,
-} from "@/i18n/navigation";
+import {useCallback, useEffect, useState} from "react";
+import {useLocale, useTranslations} from "next-intl";
+import {Link, useRouter} from "@/i18n/navigation";
 import {API_URL} from "@/lib/api";
 
 type Notification = {
@@ -32,734 +22,269 @@ type Notification = {
   read_at: string | null;
 };
 
-type PaginatedNotifications = {
-  results: Notification[];
-};
+type PaginatedNotifications = {results: Notification[]};
 
-function isPaginatedNotifications(
-  data: unknown,
-): data is PaginatedNotifications {
-  if (
-    !data ||
-    typeof data !== "object"
-  ) {
-    return false;
-  }
+function isPaginatedNotifications(data: unknown): data is PaginatedNotifications {
+  return !!data && typeof data === "object" && "results" in data &&
+    Array.isArray((data as PaginatedNotifications).results);
+}
 
-  const value =
-    data as Record<
-      string,
-      unknown
-    >;
-
-  return Array.isArray(
-    value.results,
+function BellIcon({className = "h-6 w-6"}: {className?: string}) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+      strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4" />
+    </svg>
   );
 }
 
 export default function NotificationsPage() {
   const locale = useLocale();
-  const t =
-    useTranslations(
-      "NotificationsPage",
-    );
+  const t = useTranslations("NotificationsPage");
+  const router = useRouter();
 
-  const router =
-    useRouter();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [markingAll, setMarkingAll] = useState(false);
+  const [openingId, setOpeningId] = useState<number | null>(null);
 
-  const [
-    notifications,
-    setNotifications,
-  ] = useState<
-    Notification[]
-  >([]);
-
-  const [
-    loading,
-    setLoading,
-  ] = useState(true);
-
-  const [
-    errorMessage,
-    setErrorMessage,
-  ] = useState("");
-
-  const [
-    markingAll,
-    setMarkingAll,
-  ] = useState(false);
-
-  // =========================================================
-  // LOAD NOTIFICATIONS
-  // =========================================================
+  const handleAuthError = useCallback(() => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    window.dispatchEvent(new Event("auth-changed"));
+    router.replace("/login");
+  }, [router]);
 
   useEffect(() => {
-    const token =
-      localStorage.getItem(
-        "token",
-      );
-
+    const token = localStorage.getItem("token");
     if (!token) {
-      router.replace(
-        "/login",
-      );
-
+      handleAuthError();
       return;
     }
 
-    const controller =
-      new AbortController();
+    const controller = new AbortController();
+    const loadNotifications = async () => {
+      try {
+        setLoading(true);
+        setErrorMessage("");
+        const response = await fetch(`${API_URL}/api/notifications/`, {
+          headers: {Authorization: `Token ${token}`},
+          signal: controller.signal,
+          cache: "no-store",
+        });
 
-    const loadNotifications =
-      async () => {
-        try {
-          setLoading(true);
-          setErrorMessage("");
-
-          const response =
-            await fetch(
-              `${API_URL}/api/notifications/`,
-              {
-                headers: {
-                  Authorization:
-                    `Token ${token}`,
-                },
-                signal:
-                  controller.signal,
-                cache:
-                  "no-store",
-              },
-            );
-
-          if (
-            response.status ===
-              401 ||
-            response.status ===
-              403
-          ) {
-            localStorage.removeItem(
-              "token",
-            );
-
-            sessionStorage.removeItem(
-              "token",
-            );
-
-            router.replace(
-              "/login",
-            );
-
-            return;
-          }
-
-          if (!response.ok) {
-            throw new Error(
-              "Unable to load notifications.",
-            );
-          }
-
-          const data: unknown =
-            await response.json();
-
-          if (
-            controller.signal
-              .aborted
-          ) {
-            return;
-          }
-
-          if (
-            Array.isArray(data)
-          ) {
-            setNotifications(
-              data as Notification[],
-            );
-
-            return;
-          }
-
-          if (
-            isPaginatedNotifications(
-              data,
-            )
-          ) {
-            setNotifications(
-              data.results,
-            );
-
-            return;
-          }
-
-          setNotifications(
-            [],
-          );
-        } catch (error) {
-          if (
-            error instanceof
-              Error &&
-            error.name ===
-              "AbortError"
-          ) {
-            return;
-          }
-
-          setNotifications(
-            [],
-          );
-
-          setErrorMessage(
-            t(
-              "messages.loadFailed",
-            ),
-          );
-        } finally {
-          if (
-            !controller.signal
-              .aborted
-          ) {
-            setLoading(
-              false,
-            );
-          }
+        if (response.status === 401 || response.status === 403) {
+          handleAuthError();
+          return;
         }
-      };
+        if (!response.ok) throw new Error("Unable to load notifications.");
+
+        const data: unknown = await response.json();
+        if (controller.signal.aborted) return;
+        setNotifications(
+          Array.isArray(data)
+            ? (data as Notification[])
+            : isPaginatedNotifications(data) ? data.results : []
+        );
+      } catch (error) {
+        if (controller.signal.aborted ||
+          (error instanceof Error && error.name === "AbortError")) return;
+        setNotifications([]);
+        setErrorMessage(t("messages.loadFailed"));
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    };
 
     void loadNotifications();
+    return () => controller.abort();
+  }, [handleAuthError, t]);
 
-    return () => {
-      controller.abort();
-    };
-  }, [router, t]);
-
-  // =========================================================
-  // FORMAT DATE
-  // =========================================================
-
-  const formatDate = (
-    value: string,
-  ) => {
-    const date =
-      new Date(value);
-
-    if (
-      Number.isNaN(
-        date.getTime(),
-      )
-    ) {
-      return "";
-    }
-
-    return new Intl.DateTimeFormat(
-      locale,
-      {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      },
-    ).format(date);
+  const formatDate = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return new Intl.DateTimeFormat(locale, {
+      year: "numeric", month: "short", day: "numeric",
+      hour: "2-digit", minute: "2-digit",
+    }).format(date);
   };
 
-  // =========================================================
-  // MARK ONE AS READ
-  // =========================================================
+  const markAsRead = async (notification: Notification): Promise<boolean> => {
+    if (notification.is_read) return true;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      handleAuthError();
+      return false;
+    }
 
-  const markAsRead =
-    async (
-      notification:
-        Notification,
-    ) => {
-      if (
-        notification.is_read
-      ) {
-        return true;
-      }
-
-      const token =
-        localStorage.getItem(
-          "token",
-        );
-
-      if (!token) {
-        router.replace(
-          "/login",
-        );
-
-        return false;
-      }
-
-      try {
-        const response =
-          await fetch(
-            `${API_URL}/api/notifications/${notification.id}/read/`,
-            {
-              method:
-                "POST",
-              headers: {
-                Authorization:
-                  `Token ${token}`,
-              },
-            },
-          );
-
-        if (
-          response.status ===
-            401 ||
-          response.status ===
-            403
-        ) {
-          localStorage.removeItem(
-            "token",
-          );
-
-          sessionStorage.removeItem(
-            "token",
-          );
-
-          router.replace(
-            "/login",
-          );
-
-          return false;
-        }
-
-        if (!response.ok) {
-          return false;
-        }
-
-        setNotifications(
-          (current) =>
-            current.map(
-              (item) =>
-                item.id ===
-                notification.id
-                  ? {
-                      ...item,
-                      is_read:
-                        true,
-                      read_at:
-                        new Date().toISOString(),
-                    }
-                  : item,
-            ),
-        );
-
-        window.dispatchEvent(
-          new Event(
-            "notifications-changed",
-          ),
-        );
-
-        return true;
-      } catch {
-        return false;
-      }
-    };
-
-  // =========================================================
-  // OPEN NOTIFICATION
-  // =========================================================
-
-  const handleNotificationClick =
-    async (
-      notification:
-        Notification,
-    ) => {
-      const success =
-        await markAsRead(
-          notification,
-        );
-
-      if (!success) {
-        return;
-      }
-
-      if (
-        notification.link
-      ) {
-        router.push(
-          notification.link,
-        );
-
-        return;
-      }
-
-      router.push(
-        "/dashboard",
+    try {
+      const response = await fetch(
+        `${API_URL}/api/notifications/${notification.id}/read/`,
+        {method: "POST", headers: {Authorization: `Token ${token}`}}
       );
-    };
+      if (response.status === 401 || response.status === 403) {
+        handleAuthError();
+        return false;
+      }
+      if (!response.ok) return false;
 
-  // =========================================================
-  // MARK ALL AS READ
-  // =========================================================
+      setNotifications(current => current.map(item =>
+        item.id === notification.id
+          ? {...item, is_read: true, read_at: new Date().toISOString()}
+          : item
+      ));
+      window.dispatchEvent(new Event("notifications-changed"));
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
-  const handleMarkAllRead =
-    async () => {
-      const token =
-        localStorage.getItem(
-          "token",
-        );
+  const handleNotificationClick = async (notification: Notification) => {
+    if (openingId !== null) return;
+    setOpeningId(notification.id);
+    try {
+      const success = await markAsRead(notification);
+      if (!success) return;
+      router.push(notification.link || "/dashboard");
+    } finally {
+      setOpeningId(null);
+    }
+  };
 
-      if (!token) {
-        router.replace(
-          "/login",
-        );
+  const handleMarkAllRead = async () => {
+    if (markingAll) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      handleAuthError();
+      return;
+    }
 
+    try {
+      setMarkingAll(true);
+      const response = await fetch(`${API_URL}/api/notifications/read-all/`, {
+        method: "POST",
+        headers: {Authorization: `Token ${token}`},
+      });
+      if (response.status === 401 || response.status === 403) {
+        handleAuthError();
         return;
       }
+      if (!response.ok) return;
 
-      try {
-        setMarkingAll(
-          true,
-        );
+      const now = new Date().toISOString();
+      setNotifications(current => current.map(item => ({
+        ...item, is_read: true, read_at: item.read_at ?? now,
+      })));
+      window.dispatchEvent(new Event("notifications-changed"));
+    } catch {
+      // Preserve current notifications if the request fails.
+    } finally {
+      setMarkingAll(false);
+    }
+  };
 
-        const response =
-          await fetch(
-            `${API_URL}/api/notifications/read-all/`,
-            {
-              method:
-                "POST",
-              headers: {
-                Authorization:
-                  `Token ${token}`,
-              },
-            },
-          );
-
-        if (
-          response.status ===
-            401 ||
-          response.status ===
-            403
-        ) {
-          localStorage.removeItem(
-            "token",
-          );
-
-          sessionStorage.removeItem(
-            "token",
-          );
-
-          router.replace(
-            "/login",
-          );
-
-          return;
-        }
-
-        if (!response.ok) {
-          return;
-        }
-
-        const now =
-          new Date().toISOString();
-
-        setNotifications(
-          (current) =>
-            current.map(
-              (item) => ({
-                ...item,
-                is_read: true,
-                read_at:
-                  item.read_at ??
-                  now,
-              }),
-            ),
-        );
-
-        window.dispatchEvent(
-          new Event(
-            "notifications-changed",
-          ),
-        );
-      } finally {
-        setMarkingAll(
-          false,
-        );
-      }
-    };
-
-  const unreadCount =
-    notifications.filter(
-      (notification) =>
-        !notification.is_read,
-    ).length;
-
-  // =========================================================
-  // LOADING
-  // =========================================================
-
-  if (loading) {
-    return (
-      <div className="mx-auto max-w-5xl px-6 py-10">
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 text-sm text-zinc-600 shadow-sm">
-          {t(
-            "loading",
-          )}
-        </div>
-      </div>
-    );
-  }
+  const unreadCount = notifications.filter(item => !item.is_read).length;
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <main className="mx-auto w-full max-w-5xl px-6 py-10 sm:py-14">
-        {/* =====================================================
-            HEADER
-        ===================================================== */}
-
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+    <div className="min-h-screen bg-[#F3FAF6] text-[#17251E]">
+      <div className="relative overflow-hidden bg-[#003D24] text-white">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-28 h-80 w-80 rounded-full border border-[#00CFFF]/25" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-4 -top-12 h-64 w-64 rounded-full border border-[#FFD21A]/20" />
+        <div className="relative mx-auto flex w-full max-w-5xl flex-col gap-6 px-5 py-12 sm:flex-row sm:items-end sm:justify-between sm:px-6 sm:py-16">
           <div>
-            <span className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
-              RwandaFitness
-            </span>
-
-            <h1 className="mt-2 text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-              {t(
-                "title",
-              )}
-            </h1>
-
-            <p className="mt-2 text-sm leading-6 text-zinc-500 sm:text-base">
-              {unreadCount >
-              0
-                ? t(
-                    "unreadCount",
-                    {
-                      count:
-                        unreadCount,
-                    },
-                  )
-                : t(
-                    "allRead",
-                  )}
-            </p>
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#00CFFF]">
+              <BellIcon className="h-4 w-4" /> RwandaFitness
+            </div>
+            <h1 className="text-3xl font-black tracking-tight sm:text-5xl">{t("title")}</h1>
+            {!loading && (
+              <p className="mt-4 text-sm leading-7 text-white/75 sm:text-base">
+                {unreadCount > 0 ? t("unreadCount", {count: unreadCount}) : t("allRead")}
+              </p>
+            )}
           </div>
-
-          {unreadCount >
-            0 && (
-            <button
-              type="button"
-              onClick={
-                handleMarkAllRead
-              }
-              disabled={
-                markingAll
-              }
-              className="inline-flex items-center justify-center rounded-xl border border-zinc-300 bg-white px-5 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {markingAll
-                ? t(
-                    "markingAll",
-                  )
-                : t(
-                    "markAllRead",
-                  )}
+          {!loading && unreadCount > 0 && (
+            <button type="button" onClick={() => void handleMarkAllRead()}
+              disabled={markingAll}
+              className="inline-flex shrink-0 items-center justify-center rounded-2xl bg-[#FFD21A] px-5 py-3 text-sm font-bold text-[#003D24] shadow-lg shadow-black/10 transition hover:bg-[#ffe15e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00CFFF] disabled:cursor-not-allowed disabled:opacity-60">
+              {markingAll ? t("markingAll") : t("markAllRead")}
             </button>
           )}
         </div>
+      </div>
 
-        {/* =====================================================
-            ERROR
-        ===================================================== */}
-
+      <main className="mx-auto w-full max-w-5xl px-5 py-8 sm:px-6 sm:py-12">
         {errorMessage && (
-          <div
-            role="alert"
-            className="mt-8 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
-          >
-            {
-              errorMessage
-            }
+          <div role="alert" className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+            {errorMessage}
           </div>
         )}
 
-        {/* =====================================================
-            EMPTY
-        ===================================================== */}
+        {loading && (
+          <div role="status" className="rounded-3xl border border-[#DCEDE2] bg-white p-7 text-sm text-[#52675B] shadow-sm">
+            <div className="mb-4 h-2 w-16 rounded-full bg-[#00CFFF]" />
+            {t("loading")}
+          </div>
+        )}
 
-        {!errorMessage &&
-          notifications.length ===
-            0 && (
-            <div className="mt-8 rounded-3xl border border-zinc-200 bg-white px-6 py-14 text-center shadow-sm">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  className="h-7 w-7"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9a6 6 0 0 0-12 0v.75a8.967 8.967 0 0 1-2.312 6.022 23.848 23.848 0 0 0 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-                  />
-                </svg>
-              </div>
-
-              <h2 className="mt-5 text-xl font-semibold text-zinc-900">
-                {t(
-                  "empty.title",
-                )}
-              </h2>
-
-              <p className="mx-auto mt-2 max-w-lg text-sm leading-7 text-zinc-500">
-                {t(
-                  "empty.description",
-                )}
-              </p>
-
-              <Link
-                href="/dashboard"
-                className="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
-              >
-                {t(
-                  "empty.dashboard",
-                )}
-              </Link>
+        {!loading && !errorMessage && notifications.length === 0 && (
+          <div className="rounded-[32px] border border-[#DCEDE2] bg-white px-6 py-14 text-center shadow-[0_16px_50px_rgba(0,61,36,0.05)]">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#E5F6EC] text-[#007D36]">
+              <BellIcon className="h-8 w-8" />
             </div>
-          )}
+            <h2 className="mt-6 text-xl font-bold sm:text-2xl">{t("empty.title")}</h2>
+            <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-[#52675B]">{t("empty.description")}</p>
+            <Link href="/dashboard" className="mt-7 inline-flex rounded-xl bg-[#007D36] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#075C38]">
+              {t("empty.dashboard")}
+            </Link>
+          </div>
+        )}
 
-        {/* =====================================================
-            NOTIFICATIONS LIST
-        ===================================================== */}
-
-        {notifications.length >
-          0 && (
-          <div className="mt-8 overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
-            {notifications.map(
-              (
-                notification,
-                index,
-              ) => (
-                <button
-                  key={
-                    notification.id
-                  }
-                  type="button"
-                  onClick={() =>
-                    void handleNotificationClick(
-                      notification,
-                    )
-                  }
-                  className={`relative flex w-full gap-4 px-5 py-5 text-left transition hover:bg-zinc-50 sm:px-6 ${
-                    index !==
-                    notifications.length -
-                      1
-                      ? "border-b border-zinc-200"
-                      : ""
-                  } ${
-                    notification.is_read
-                      ? "bg-white"
-                      : "bg-primary/[0.04]"
-                  }`}
-                >
-                  {/* ICON */}
-
-                  <div
-                    className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${
-                      notification.is_read
-                        ? "bg-zinc-100 text-zinc-500"
-                        : "bg-primary/10 text-primary"
-                    }`}
-                  >
-                    {notification.notification_type ===
-                    "coaching_request" ? (
-                      <span
-                        className="text-lg"
-                        aria-hidden="true"
-                      >
-                        💪
-                      </span>
-                    ) : notification.notification_type ===
-                      "review" ? (
-                      <span
-                        className="text-lg"
-                        aria-hidden="true"
-                      >
-                        ★
-                      </span>
-                    ) : (
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        className="h-5 w-5"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9a6 6 0 0 0-12 0v.75a8.967 8.967 0 0 1-2.312 6.022 23.848 23.848 0 0 0 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-                        />
-                      </svg>
-                    )}
-                  </div>
-
-                  {/* CONTENT */}
-
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-start justify-between gap-2">
-                      <h2
-                        className={`text-sm leading-6 ${
-                          notification.is_read
-                            ? "font-semibold text-zinc-800"
-                            : "font-bold text-zinc-900"
-                        }`}
-                      >
-                        {
-                          notification.title
-                        }
-                      </h2>
-
-                      <time className="shrink-0 text-xs text-zinc-400">
-                        {formatDate(
-                          notification.created_at,
-                        )}
-                      </time>
-                    </div>
-
-                    {notification.message && (
-                      <p className="mt-1 text-sm leading-6 text-zinc-600">
-                        {
-                          notification.message
-                        }
-                      </p>
-                    )}
-
-                    <div className="mt-3 flex items-center gap-3">
-                      {!notification.is_read && (
-                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary">
-                          <span className="h-2 w-2 rounded-full bg-primary" />
-
-                          {t(
-                            "unread",
-                          )}
-                        </span>
-                      )}
-
-                      <span className="text-xs font-semibold text-zinc-500">
-                        {t(
-                          "open",
-                        )}{" "}
-                        →
-                      </span>
-                    </div>
-                  </div>
-
-                  {!notification.is_read && (
-                    <span
-                      className="absolute right-3 top-3 h-2.5 w-2.5 rounded-full bg-accent"
-                      aria-hidden="true"
-                    />
+        {!loading && notifications.length > 0 && (
+          <div className="overflow-hidden rounded-[32px] border border-[#DCEDE2] bg-white shadow-[0_16px_50px_rgba(0,61,36,0.06)]">
+            {notifications.map((notification, index) => (
+              <button key={notification.id} type="button"
+                onClick={() => void handleNotificationClick(notification)}
+                disabled={openingId !== null}
+                className={`group relative flex w-full gap-4 px-5 py-6 text-left transition hover:bg-[#F3FAF6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#00CFFF] disabled:cursor-wait sm:px-7 ${index !== notifications.length - 1 ? "border-b border-[#E2EFE7]" : ""} ${notification.is_read ? "bg-white" : "bg-[#EAF8F0]"}`}>
+                <div className={`mt-0.5 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${notification.is_read ? "bg-[#F0F4F1] text-[#52675B]" : "bg-[#D5F2E2] text-[#007D36]"}`}>
+                  {notification.notification_type === "coaching_request" ? (
+                    <span className="text-xl" aria-hidden="true">💪</span>
+                  ) : notification.notification_type === "review" ? (
+                    <span className="text-2xl text-[#D49C00]" aria-hidden="true">★</span>
+                  ) : (
+                    <BellIcon />
                   )}
-                </button>
-              ),
-            )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-1">
+                    <h2 className={`text-sm leading-6 sm:text-base ${notification.is_read ? "font-semibold text-[#304A3B]" : "font-extrabold text-[#003D24]"}`}>
+                      {notification.title}
+                    </h2>
+                    <time dateTime={notification.created_at} className="shrink-0 text-xs text-[#66796D]">
+                      {formatDate(notification.created_at)}
+                    </time>
+                  </div>
+                  {notification.message && (
+                    <p className="mt-2 whitespace-pre-line text-sm leading-7 text-[#52675B]">{notification.message}</p>
+                  )}
+                  <div className="mt-3 flex flex-wrap items-center gap-4">
+                    {!notification.is_read && (
+                      <span className="inline-flex items-center gap-2 text-xs font-bold text-[#007D36]">
+                        <span className="h-2 w-2 rounded-full bg-[#007D36]" />{t("unread")}
+                      </span>
+                    )}
+                    <span className="text-xs font-bold text-[#075C38] transition group-hover:underline">
+                      {t("open")} <span aria-hidden="true">→</span>
+                    </span>
+                  </div>
+                </div>
+                {!notification.is_read && (
+                  <span className="absolute right-3 top-3 h-2.5 w-2.5 rounded-full bg-[#FFD21A]" aria-hidden="true" />
+                )}
+              </button>
+            ))}
           </div>
         )}
       </main>

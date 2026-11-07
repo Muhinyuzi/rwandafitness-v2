@@ -1,12 +1,8 @@
 "use client";
 
-import {useEffect, useState} from "react";
-import {
-  useLocale,
-  useTranslations,
-} from "next-intl";
+import {useEffect, useMemo, useState} from "react";
+import {useLocale, useTranslations} from "next-intl";
 import {useParams} from "next/navigation";
-
 import {Link} from "@/i18n/navigation";
 import {API_URL} from "@/lib/api";
 
@@ -32,814 +28,286 @@ type ArticleVideo = {
   thumbnail: string | null;
 };
 
-type PaginatedVideos = {
-  results: ArticleVideo[];
-};
+type PaginatedVideos = {results: ArticleVideo[]};
 
-function isPaginatedVideos(
-  data: unknown,
-): data is PaginatedVideos {
-  if (
-    !data ||
-    typeof data !== "object"
-  ) {
-    return false;
-  }
-
-  const value =
-    data as Record<
-      string,
-      unknown
-    >;
-
-  return Array.isArray(
-    value.results,
-  );
+function isPaginatedVideos(value: unknown): value is PaginatedVideos {
+  return Boolean(value && typeof value === "object" &&
+    Array.isArray((value as Record<string, unknown>).results));
 }
 
-function getYouTubeId(
-  url: string,
-) {
+function getYouTubeId(url: string): string | null {
   try {
-    const parsed =
-      new URL(url);
-
-    if (
-      parsed.hostname ===
-        "youtu.be" ||
-      parsed.hostname.endsWith(
-        ".youtu.be",
-      )
-    ) {
-      return (
-        parsed.pathname
-          .replace(/^\/+/, "")
-          .split("/")[0] ||
-        null
-      );
+    const parsed = new URL(url);
+    const host = parsed.hostname.toLowerCase();
+    if (host === "youtu.be" || host === "www.youtu.be") {
+      return parsed.pathname.replace(/^\/+/, "").split("/")[0] || null;
     }
-
-    if (
-      parsed.hostname ===
-        "youtube.com" ||
-      parsed.hostname ===
-        "www.youtube.com" ||
-      parsed.hostname ===
-        "m.youtube.com"
-    ) {
-      if (
-        parsed.pathname ===
-        "/watch"
-      ) {
-        return parsed.searchParams.get(
-          "v",
-        );
-      }
-
-      if (
-        parsed.pathname.startsWith(
-          "/embed/",
-        )
-      ) {
-        return (
-          parsed.pathname.split(
-            "/",
-          )[2] || null
-        );
-      }
-
-      if (
-        parsed.pathname.startsWith(
-          "/shorts/",
-        )
-      ) {
-        return (
-          parsed.pathname.split(
-            "/",
-          )[2] || null
-        );
+    if (["youtube.com", "www.youtube.com", "m.youtube.com"].includes(host)) {
+      if (parsed.pathname === "/watch") return parsed.searchParams.get("v");
+      if (parsed.pathname.startsWith("/embed/") || parsed.pathname.startsWith("/shorts/")) {
+        return parsed.pathname.split("/")[2] || null;
       }
     }
-
     return null;
   } catch {
     return null;
   }
 }
 
-function getYouTubeThumbnail(
-  url: string,
-) {
-  const videoId =
-    getYouTubeId(url);
-
-  if (!videoId) {
-    return null;
-  }
-
-  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+function getYouTubeThumbnail(url: string): string | null {
+  const id = getYouTubeId(url);
+  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
 }
 
-function normalizeArticleContent(
-  html: string,
-) {
-  const backendUrl =
-    API_URL.replace(
-      /\/+$/,
-      "",
-    );
-
+// Keep Django's rich-text images working when the API returns relative paths.
+// As with the original page, HTML must be sanitized on the backend before rendering.
+function normalizeArticleContent(html: string): string {
+  const backendUrl = API_URL.replace(/\/+$/, "");
   return html
-    .replace(
-      /(<img\b[^>]*\bsrc=["'])\/media\//gi,
-      `$1${backendUrl}/media/`,
-    )
-    .replace(
-      /(<img\b[^>]*\bsrc=["'])(?!https?:\/\/|\/\/|\/|data:|blob:)/gi,
-      `$1${backendUrl}/`,
-    );
+    .replace(/(<img\b[^>]*\bsrc=["'])\/?media\//gi, `$1${backendUrl}/media/`)
+    .replace(/(<img\b[^>]*\bsrc=["'])(?!https?:\/\/|\/\/|\/|data:|blob:|#)/gi, `$1${backendUrl}/`);
 }
 
 export default function ArticleDetailPage() {
-  const params =
-    useParams<{
-      slug: string;
-    }>();
-
-  const slug =
-    params.slug;
-
-  const t =
-    useTranslations(
-      "ArticleDetailPage",
-    );
-
-  const locale =
-    useLocale();
-
-  const [
-    article,
-    setArticle,
-  ] = useState<Article | null>(
-    null,
-  );
-
-  const [
-    videos,
-    setVideos,
-  ] = useState<ArticleVideo[]>(
-    [],
-  );
-
-  const [
-    error,
-    setError,
-  ] = useState("");
-
-  const [
-    loading,
-    setLoading,
-  ] = useState(true);
-
-  const [
-    videosLoading,
-    setVideosLoading,
-  ] = useState(true);
-
-  // =========================================================
-  // LOAD ARTICLE
-  // =========================================================
+  const params = useParams<{slug: string}>();
+  const slug = params.slug;
+  const t = useTranslations("ArticleDetailPage");
+  const locale = useLocale();
+  const [article, setArticle] = useState<Article | null>(null);
+  const [videos, setVideos] = useState<ArticleVideo[]>([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [videosLoading, setVideosLoading] = useState(false);
 
   useEffect(() => {
-    const controller =
-      new AbortController();
-
+    const controller = new AbortController();
     async function loadArticle() {
       try {
         setLoading(true);
         setError("");
         setArticle(null);
-
-        const response =
-          await fetch(
-            `${API_URL}/api/articles/${encodeURIComponent(
-              slug,
-            )}/?lang=${locale}`,
-            {
-              signal:
-                controller.signal,
-              cache:
-                "no-store",
-            },
-          );
-
+        const response = await fetch(
+          `${API_URL}/api/articles/${encodeURIComponent(slug)}/?lang=${locale}`,
+          {signal: controller.signal, cache: "no-store"},
+        );
         if (!response.ok) {
-          if (
-            response.status ===
-            404
-          ) {
-            throw new Error(
-              "ARTICLE_NOT_FOUND",
-            );
-          }
-
-          throw new Error(
-            "ARTICLE_LOAD_FAILED",
-          );
+          throw new Error(response.status === 404 ? "ARTICLE_NOT_FOUND" : "ARTICLE_LOAD_FAILED");
         }
-
-        const data: Article =
-          await response.json();
-
-        if (
-          !controller.signal
-            .aborted
-        ) {
-          setArticle(data);
-        }
-      } catch (error) {
-        if (
-          error instanceof Error &&
-          error.name ===
-            "AbortError"
-        ) {
-          return;
-        }
-
-        if (
-          error instanceof Error &&
-          error.message ===
-            "ARTICLE_NOT_FOUND"
-        ) {
-          setError(
-            t(
-              "states.notFound",
-            ),
-          );
-        } else {
-          setError(
-            t(
-              "states.error",
-            ),
-          );
+        const data: Article = await response.json();
+        if (!controller.signal.aborted) setArticle(data);
+      } catch (caught) {
+        if (caught instanceof Error && caught.name === "AbortError") return;
+        if (!controller.signal.aborted) {
+          setError(t(caught instanceof Error && caught.message === "ARTICLE_NOT_FOUND"
+            ? "states.notFound" : "states.error"));
         }
       } finally {
-        if (
-          !controller.signal
-            .aborted
-        ) {
-          setLoading(false);
-        }
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
-
     void loadArticle();
-
-    return () => {
-      controller.abort();
-    };
-  }, [
-    slug,
-    locale,
-    t,
-  ]);
-
-  // =========================================================
-  // LOAD ARTICLE VIDEOS
-  // =========================================================
+    return () => controller.abort();
+  }, [slug, locale, t]);
 
   useEffect(() => {
-    const articleId =
-      article?.id;
-
+    const articleId = article?.id;
     if (!articleId) {
       setVideos([]);
-      setVideosLoading(
-        false,
-      );
+      setVideosLoading(false);
       return;
     }
-
-    const controller =
-      new AbortController();
-
+    const controller = new AbortController();
     async function loadVideos() {
       try {
-        setVideosLoading(
-          true,
+        setVideosLoading(true);
+        setVideos([]);
+        const response = await fetch(
+          `${API_URL}/api/videos/?lang=${locale}&article=${articleId}`,
+          {signal: controller.signal, cache: "no-store"},
         );
-
-        setVideos([]);
-
-        const response =
-          await fetch(
-            `${API_URL}/api/videos/?lang=${locale}&article=${articleId}`,
-            {
-              signal:
-                controller.signal,
-              cache:
-                "no-store",
-            },
-          );
-
-        if (!response.ok) {
-          throw new Error(
-            "Unable to load article videos.",
-          );
+        if (!response.ok) throw new Error("Unable to load article videos");
+        const data: unknown = await response.json();
+        if (!controller.signal.aborted) {
+          setVideos(Array.isArray(data) ? data as ArticleVideo[]
+            : isPaginatedVideos(data) ? data.results : []);
         }
-
-        const data: unknown =
-          await response.json();
-
-        if (
-          Array.isArray(
-            data,
-          )
-        ) {
-          setVideos(
-            data as ArticleVideo[],
-          );
-
-          return;
-        }
-
-        if (
-          isPaginatedVideos(
-            data,
-          )
-        ) {
-          setVideos(
-            data.results,
-          );
-
-          return;
-        }
-
-        setVideos([]);
-      } catch (error) {
-        if (
-          error instanceof Error &&
-          error.name ===
-            "AbortError"
-        ) {
-          return;
-        }
-
-        setVideos([]);
+      } catch (caught) {
+        if (caught instanceof Error && caught.name === "AbortError") return;
+        if (!controller.signal.aborted) setVideos([]);
       } finally {
-        if (
-          !controller.signal
-            .aborted
-        ) {
-          setVideosLoading(
-            false,
-          );
-        }
+        if (!controller.signal.aborted) setVideosLoading(false);
       }
     }
-
     void loadVideos();
+    return () => controller.abort();
+  }, [article?.id, locale]);
 
-    return () => {
-      controller.abort();
-    };
-  }, [
-    article?.id,
-    locale,
-  ]);
+  const publishedDate = useMemo(() => {
+    if (!article?.published_at) return "";
+    const date = new Date(article.published_at);
+    return Number.isNaN(date.getTime()) ? "" : new Intl.DateTimeFormat(locale, {
+      year: "numeric", month: "long", day: "numeric",
+    }).format(date);
+  }, [article?.published_at, locale]);
 
-  // =========================================================
-  // DATE
-  // =========================================================
-
-  function formatPublishedDate(
-    date: string | null,
-  ) {
-    if (!date) {
-      return "";
-    }
-
-    const parsedDate =
-      new Date(date);
-
-    if (
-      Number.isNaN(
-        parsedDate.getTime(),
-      )
-    ) {
-      return "";
-    }
-
-    return new Intl.DateTimeFormat(
-      locale,
-      {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      },
-    ).format(parsedDate);
-  }
-
-  // =========================================================
-  // LOADING
-  // =========================================================
+  const normalizedContent = useMemo(() =>
+    normalizeArticleContent(article?.content || ""), [article?.content]);
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-zinc-50">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10">
-          <div className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm">
-            <div className="h-[320px] animate-pulse bg-zinc-200 sm:h-[460px]" />
-
-            <div className="mx-auto max-w-4xl p-6 sm:p-10">
-              <div className="h-5 w-24 animate-pulse rounded bg-zinc-100" />
-
-              <div className="mt-5 h-10 w-full animate-pulse rounded-lg bg-zinc-200" />
-
-              <div className="mt-3 h-10 w-3/4 animate-pulse rounded-lg bg-zinc-200" />
-
-              <div className="mt-6 h-5 w-52 animate-pulse rounded bg-zinc-100" />
-
-              <div className="mt-8 space-y-3">
-                <div className="h-4 w-full animate-pulse rounded bg-zinc-100" />
-
-                <div className="h-4 w-full animate-pulse rounded bg-zinc-100" />
-
-                <div className="h-4 w-5/6 animate-pulse rounded bg-zinc-100" />
-              </div>
-            </div>
+      <main className="min-h-screen bg-[#F3FAF6] px-4 py-10 sm:px-6">
+        <div className="mx-auto max-w-6xl animate-pulse overflow-hidden rounded-[32px] bg-white shadow-sm">
+          <div className="h-[340px] bg-emerald-100 sm:h-[490px]" />
+          <div className="mx-auto max-w-3xl space-y-5 px-6 py-12 sm:px-10">
+            <div className="h-4 w-32 rounded bg-emerald-100" />
+            <div className="h-12 w-full rounded bg-emerald-100" />
+            <div className="h-7 w-3/4 rounded bg-emerald-50" />
+            <div className="mt-10 h-40 rounded bg-emerald-50" />
           </div>
         </div>
       </main>
     );
   }
 
-  // =========================================================
-  // ERROR
-  // =========================================================
-
-  if (
-    error ||
-    !article
-  ) {
+  if (error || !article) {
     return (
-      <main className="min-h-screen bg-zinc-50">
-        <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-          <div
-            role="alert"
-            className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700"
-          >
-            {error ||
-              t(
-                "states.notFound",
-              )}
-          </div>
-
-          <Link
-            href="/articles"
-            className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-primary transition hover:gap-3"
-          >
-            <span>
-              ←
-            </span>
-
-            <span>
-              {t(
-                "navigation.back",
-              )}
-            </span>
+      <main className="min-h-screen bg-[#F3FAF6] px-4 py-16 sm:px-6">
+        <div className="mx-auto max-w-2xl rounded-[32px] border border-emerald-100 bg-white p-8 text-center shadow-sm sm:p-12">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-3xl text-[#075C38]">✦</div>
+          <p role="alert" className="mt-6 text-lg font-semibold text-[#17251E]">
+            {error || t("states.notFound")}
+          </p>
+          <Link href="/articles" className="mt-7 inline-flex rounded-full bg-[#075C38] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#003D24]">
+            ← {t("navigation.back")}
           </Link>
         </div>
       </main>
     );
   }
 
-  const publishedDate =
-    formatPublishedDate(
-      article.published_at,
-    );
-
-  const normalizedContent =
-    normalizeArticleContent(
-      article.content,
-    );
-
   return (
-    <main className="min-h-screen bg-zinc-50 pb-16">
-      {/* =====================================================
-          TOP NAVIGATION
-      ====================================================== */}
-
-      <div className="mx-auto max-w-7xl px-4 pb-4 pt-5 sm:px-6 sm:pb-6 sm:pt-8">
-        <Link
-          href="/articles"
-          className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-primary shadow-sm ring-1 ring-zinc-200 transition hover:-translate-x-0.5 hover:shadow-md"
-        >
-          <span>
-            ←
-          </span>
-
-          <span>
-            {t(
-              "navigation.back",
-            )}
-          </span>
+    <main className="min-h-screen overflow-hidden bg-[#F3FAF6] pb-20 text-[#17251E]">
+      <div className="mx-auto max-w-6xl px-4 pb-5 pt-7 sm:px-6 sm:pt-10">
+        <Link href="/articles" className="inline-flex items-center gap-2 text-sm font-bold text-[#075C38] transition hover:-translate-x-1">
+          <span aria-hidden="true">←</span> {t("navigation.back")}
         </Link>
       </div>
 
-      {/* =====================================================
-          ARTICLE
-      ====================================================== */}
-
       <article>
-        {/* ===================================================
-            HERO
-        ==================================================== */}
-
-        <section className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="relative overflow-hidden rounded-[30px] bg-zinc-950 shadow-xl sm:rounded-[38px]">
-            <div className="relative min-h-[430px] sm:min-h-[540px] lg:min-h-[620px]">
+        <section className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="relative isolate overflow-hidden rounded-[30px] bg-[#003D24] shadow-[0_24px_65px_rgba(0,61,36,0.16)] sm:rounded-[42px]">
+            <div className="relative flex min-h-[440px] items-end sm:min-h-[530px] lg:min-h-[610px]">
               {article.cover_image_url ? (
-                <img
-                  src={
-                    article.cover_image_url
-                  }
-                  alt={
-                    article.title
-                  }
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
+                <img src={article.cover_image_url} alt={article.title} className="absolute inset-0 -z-20 h-full w-full object-cover" />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-800 via-zinc-900 to-black px-6 text-center text-sm text-white/50">
-                  {t(
-                    "article.noCoverImage",
-                  )}
+                <div className="absolute inset-0 -z-20 flex items-center justify-center bg-gradient-to-br from-[#075C38] via-[#003D24] to-[#001F13] text-white/60">
+                  <span className="font-serif text-8xl italic text-[#FFD21A]/60">RF.</span>
                 </div>
               )}
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/10" />
-
-              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 lg:p-12">
-                <div className="max-w-5xl">
-                  {article.category && (
-                    <span className="inline-flex rounded-full bg-white/95 px-3 py-1.5 text-xs font-black uppercase tracking-[0.08em] text-primary shadow-lg backdrop-blur">
-                      {
-                        article.category
-                      }
-                    </span>
-                  )}
-
-                  <h1 className="mt-4 max-w-5xl text-3xl font-black leading-[1.08] tracking-[-0.04em] text-white sm:text-5xl lg:text-6xl">
-                    {
-                      article.title
-                    }
-                  </h1>
-
-                  {(article.author_name ||
-                    publishedDate) && (
-                    <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-medium text-white/75">
-                      {article.author_name && (
-                        <span>
-                          {t(
-                            "article.by",
-                            {
-                              author:
-                                article.author_name,
-                            },
-                          )}
-                        </span>
-                      )}
-
-                      {article.author_name &&
-                        publishedDate && (
-                        <span
-                          aria-hidden="true"
-                        >
-                          •
-                        </span>
-                      )}
-
-                      {publishedDate && (
-                        <time
-                          dateTime={
-                            article.published_at ??
-                            undefined
-                          }
-                        >
-                          {
-                            publishedDate
-                          }
-                        </time>
-                      )}
-                    </div>
-                  )}
-                </div>
+              <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#001A10]/95 via-[#002F1C]/60 to-[#003D24]/10" />
+              <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full border-[45px] border-[#00CFFF]/15" />
+              <div className="relative w-full p-6 sm:p-10 lg:p-14">
+                {article.category && (
+                  <span className="inline-flex rounded-full border border-white/25 bg-white/95 px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#075C38]">
+                    {article.category}
+                  </span>
+                )}
+                <h1 className="mt-5 max-w-5xl font-serif text-4xl font-bold italic leading-[1.12] tracking-tight text-white sm:text-5xl lg:text-[68px]">
+                  {article.title}
+                </h1>
+                {(article.author_name || publishedDate) && (
+                  <div className="mt-7 flex flex-wrap items-center gap-3 border-t border-white/20 pt-5 text-sm font-medium text-white/85">
+                    {article.author_name && <span>{t("article.by", {author: article.author_name})}</span>}
+                    {article.author_name && publishedDate && <span aria-hidden="true" className="text-[#FFD21A]">✦</span>}
+                    {publishedDate && <time dateTime={article.published_at ?? undefined}>{publishedDate}</time>}
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </section>
 
-        {/* ===================================================
-            ARTICLE BODY
-        ==================================================== */}
-
-        <section className="mx-auto max-w-5xl px-4 sm:px-6">
-          <div className="relative -mt-1 rounded-b-[30px] border-x border-b border-zinc-200 bg-white px-5 pb-8 pt-8 shadow-sm sm:px-10 sm:pb-12 sm:pt-10 lg:px-14">
+        <section className="relative mx-auto max-w-5xl px-4 sm:px-6">
+          <div className="rounded-b-[34px] border-x border-b border-[#DDEBE1] bg-white px-6 pb-12 pt-10 shadow-[0_15px_45px_rgba(0,61,36,0.05)] sm:px-10 sm:pt-14 lg:px-16">
             {article.excerpt && (
-              <div className="mx-auto max-w-3xl">
-                <p className="border-l-4 border-primary pl-5 text-lg font-semibold leading-8 text-zinc-700 sm:pl-6 sm:text-xl sm:leading-9">
-                  {
-                    article.excerpt
-                  }
-                </p>
-              </div>
+              <p className="mx-auto max-w-3xl border-l-[5px] border-[#FFD21A] pl-5 font-serif text-xl font-semibold italic leading-relaxed text-[#075C38] sm:pl-7 sm:text-2xl">
+                {article.excerpt}
+              </p>
             )}
-
-            <div
-              className={`mx-auto max-w-3xl ${
-                article.excerpt
-                  ? "mt-9 border-t border-zinc-200 pt-9"
-                  : ""
-              }`}
-            >
-              <div
-                className="article-content"
-                dangerouslySetInnerHTML={{
-                  __html:
-                    normalizedContent,
-                }}
-              />
+            <div className={`mx-auto max-w-3xl ${article.excerpt ? "mt-10 border-t border-emerald-100 pt-10" : ""}`}>
+              <div className="article-content text-[#26382D]" dangerouslySetInnerHTML={{__html: normalizedContent}} />
+            </div>
+            <div className="mx-auto mt-12 max-w-3xl border-t border-emerald-100 pt-6">
+              <Link href="/articles" className="inline-flex items-center gap-2 text-sm font-bold text-[#075C38] hover:underline">
+                ← {t("navigation.back")}
+              </Link>
             </div>
           </div>
         </section>
       </article>
 
-      {/* =====================================================
-          VIDEOS
-      ====================================================== */}
-
-      {(videosLoading ||
-        videos.length >
-          0) && (
-        <section className="mx-auto mt-10 max-w-5xl px-4 sm:px-6">
-          <div className="rounded-[30px] border border-zinc-200 bg-white p-5 shadow-sm sm:p-8">
+      {(videosLoading || videos.length > 0) && (
+        <section className="mx-auto mt-14 max-w-5xl px-4 sm:px-6">
+          <div className="rounded-[32px] border border-emerald-100 bg-white p-6 shadow-sm sm:p-10">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-black tracking-tight text-zinc-950">
-                  {t(
-                    "videos.title",
-                  )}
-                </h2>
-
-                <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-500">
-                  {t(
-                    "videos.description",
-                  )}
-                </p>
+                <span className="text-xs font-black uppercase tracking-[0.22em] text-[#007D36]">RwandaFitness / Video</span>
+                <h2 className="mt-3 font-serif text-3xl font-bold italic text-[#003D24] sm:text-4xl">{t("videos.title")}</h2>
+                <p className="mt-3 max-w-xl text-sm leading-7 text-[#5C6E62]">{t("videos.description")}</p>
               </div>
-
-              {videos.length >
-                0 && (
-                <span className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary">
-                  {t(
-                    "videos.count",
-                    {
-                      count:
-                        videos.length,
-                    },
-                  )}
+              {videos.length > 0 && (
+                <span className="rounded-full bg-[#F3FAF6] px-4 py-2 text-xs font-bold text-[#075C38]">
+                  {t("videos.count", {count: videos.length})}
                 </span>
               )}
             </div>
-
             {videosLoading ? (
-              <div className="mt-6 rounded-2xl bg-zinc-50 p-5 text-sm text-zinc-500">
-                {t(
-                  "videos.loading",
-                )}
-              </div>
+              <div className="mt-8 animate-pulse rounded-2xl bg-[#F3FAF6] p-6 text-sm text-[#5C6E62]">{t("videos.loading")}</div>
             ) : (
-              <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                {videos.map(
-                  (video) => {
-                    const thumbnail =
-                      video.thumbnail ||
-                      getYouTubeThumbnail(
-                        video.video_url,
-                      );
-
-                    return (
-                      <Link
-                        key={
-                          video.id
-                        }
-                        href={`/videos/${video.slug}`}
-                        className="group overflow-hidden rounded-[24px] border border-zinc-200 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-lg"
-                      >
-                        <div className="relative aspect-video overflow-hidden bg-zinc-100">
-                          {thumbnail ? (
-                            <img
-                              src={
-                                thumbnail
-                              }
-                              alt={
-                                video.title
-                              }
-                              className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
-                            />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center px-4 text-center text-sm text-zinc-400">
-                              {t(
-                                "videos.noThumbnail",
-                              )}
-                            </div>
-                          )}
-
-                          <div className="absolute inset-0 bg-black/10 transition group-hover:bg-black/25" />
-
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/95 text-xl text-primary shadow-xl transition duration-300 group-hover:scale-110">
-                              ▶
-                            </div>
-                          </div>
+              <div className="mt-8 grid gap-6 sm:grid-cols-2">
+                {videos.map((video) => {
+                  const thumbnail = video.thumbnail || getYouTubeThumbnail(video.video_url);
+                  return (
+                    <Link key={video.id} href={`/videos/${video.slug}`} className="group overflow-hidden rounded-[26px] border border-emerald-100 bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                      <div className="relative aspect-video overflow-hidden bg-[#E6F2EB]">
+                        {thumbnail ? (
+                          <img src={thumbnail} alt={video.title} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center px-5 text-center text-sm text-[#5C6E62]">{t("videos.noThumbnail")}</div>
+                        )}
+                        <div className="absolute inset-0 bg-[#003D24]/20 transition group-hover:bg-[#003D24]/35" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFD21A] text-xl text-[#003D24] shadow-xl transition group-hover:scale-110" aria-hidden="true">▶</span>
                         </div>
-
-                        <div className="p-5">
-                          <h3 className="font-black text-zinc-950">
-                            {
-                              video.title
-                            }
-                          </h3>
-
-                          {video.description && (
-                            <p className="mt-2 line-clamp-2 text-sm leading-6 text-zinc-600">
-                              {
-                                video.description
-                              }
-                            </p>
-                          )}
-
-                          <p className="mt-4 text-sm font-bold text-primary">
-                            {t(
-                              "videos.watch",
-                            )}{" "}
-                            →
-                          </p>
-                        </div>
-                      </Link>
-                    );
-                  },
-                )}
+                      </div>
+                      <div className="p-6">
+                        <h3 className="text-lg font-extrabold text-[#003D24]">{video.title}</h3>
+                        {video.description && <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#5C6E62]">{video.description}</p>}
+                        <p className="mt-5 text-sm font-bold text-[#007D36]">{t("videos.watch")} →</p>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>
         </section>
       )}
 
-      {/* =====================================================
-          CTA
-      ====================================================== */}
-
-      <section className="mx-auto mt-10 max-w-5xl px-4 sm:px-6">
-        <div className="relative overflow-hidden rounded-[30px] bg-primary px-6 py-10 text-center text-white shadow-lg sm:px-10 sm:py-12">
-          <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-white/10 blur-3xl" />
-
-          <div className="pointer-events-none absolute -bottom-24 -left-20 h-56 w-56 rounded-full bg-black/10 blur-3xl" />
-
+      <section className="mx-auto mt-14 max-w-5xl px-4 sm:px-6">
+        <div className="relative overflow-hidden rounded-[34px] bg-gradient-to-br from-[#075C38] to-[#003D24] px-6 py-12 text-center text-white shadow-xl sm:px-12 sm:py-16">
+          <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full border-[35px] border-[#00CFFF]/15" />
+          <div className="pointer-events-none absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-[#00CFFF]/10 blur-3xl" />
           <div className="relative">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-white/70">
-              RwandaFitness
-            </p>
-
-            <h2 className="mx-auto mt-3 max-w-2xl text-2xl font-black tracking-tight sm:text-3xl">
-              {t(
-                "cta.title",
-              )}
-            </h2>
-
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/85 sm:text-base">
-              {t(
-                "cta.description",
-              )}
-            </p>
-
-            <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link
-                href="/coaches"
-                className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-white px-6 py-3 text-sm font-black text-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-zinc-50"
-              >
-                {t(
-                  "cta.exploreCoaches",
-                )}
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-[#FFD21A]">RwandaFitness</p>
+            <h2 className="mx-auto mt-4 max-w-2xl font-serif text-3xl font-bold italic leading-tight sm:text-4xl">{t("cta.title")}</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/80 sm:text-base">{t("cta.description")}</p>
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <Link href="/coaches" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#FFD21A] px-7 py-3 text-sm font-extrabold text-[#003D24] transition hover:-translate-y-0.5 hover:bg-[#FFE26A]">
+                {t("cta.exploreCoaches")} →
               </Link>
-
-              <Link
-                href="/gyms"
-                className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-black text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15"
-              >
-                {t(
-                  "cta.discoverGyms",
-                )}
+              <Link href="/gyms" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/35 bg-white/10 px-7 py-3 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:bg-white/20">
+                {t("cta.discoverGyms")}
               </Link>
             </div>
           </div>

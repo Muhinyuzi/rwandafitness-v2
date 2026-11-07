@@ -13,7 +13,6 @@ type ResetPasswordResponse = {
 
 export default function ResetPasswordPage() {
   const t = useTranslations("ResetPassword");
-
   const params = useParams<{token: string}>();
   const token = params.token;
 
@@ -24,9 +23,7 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
 
   const handleReset = async () => {
-    if (loading) {
-      return;
-    }
+    if (loading || isSuccess) return;
 
     setMessage("");
     setIsSuccess(false);
@@ -55,12 +52,10 @@ export default function ResetPasswordPage() {
       setLoading(true);
 
       const response = await fetch(
-        `${API_URL}/api/auth/reset-password/${token}/`,
+        `${API_URL}/api/auth/reset-password/${encodeURIComponent(token)}/`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
             password,
             password_confirm: passwordConfirm,
@@ -69,7 +64,6 @@ export default function ResetPasswordPage() {
       );
 
       let data: ResetPasswordResponse = {};
-
       try {
         data = await response.json();
       } catch {
@@ -92,92 +86,129 @@ export default function ResetPasswordPage() {
     }
   };
 
-  const handleSubmit = async (
-    event: FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await handleReset();
   };
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center bg-zinc-50 px-6 py-12">
-      <div className="w-full max-w-md rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm">
-        <div className="mb-4 h-1.5 w-14 rounded-full bg-primary" />
+    <main className="relative flex min-h-[80vh] flex-1 items-center justify-center overflow-hidden bg-[#F3FAF6] px-4 py-12 sm:px-6 lg:py-20">
+      <div aria-hidden="true" className="pointer-events-none absolute -left-28 top-10 h-80 w-80 rounded-full bg-[#00CFFF]/10 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-[#007D36]/10 blur-3xl" />
 
-        <h1 className="text-3xl font-bold text-zinc-900">
-          {t("title")}
-        </h1>
-
-        <p className="mt-2 text-sm leading-6 text-zinc-600">
-          {t("description")}
-        </p>
-
-        {message && (
-          <div
-            role="alert"
-            className={`mt-6 rounded-xl border p-3 text-sm ${
-              isSuccess
-                ? "border-green-200 bg-green-50 text-green-700"
-                : "border-red-200 bg-red-50 text-red-600"
-            }`}
-          >
-            {message}
+      <div className="relative grid w-full max-w-5xl overflow-hidden rounded-[32px] border border-[#DCEDE2] bg-white shadow-[0_24px_80px_rgba(0,61,36,0.10)] lg:grid-cols-[0.85fr_1.15fr]">
+        <aside className="relative hidden min-h-[540px] flex-col justify-between overflow-hidden bg-[#003D24] p-10 text-white lg:flex">
+          <div aria-hidden="true" className="absolute -right-28 top-20 h-72 w-72 rounded-full border-[45px] border-[#00CFFF]/15" />
+          <div aria-hidden="true" className="absolute -bottom-36 -left-20 h-80 w-80 rounded-full border-[55px] border-[#FFD21A]/15" />
+          <div className="relative">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[#FFD21A]">
+              <span className="h-2 w-2 rounded-full bg-[#00CFFF]" />
+              RwandaFitness
+            </span>
           </div>
-        )}
+          <div className="relative space-y-5">
+            <div className="h-1.5 w-16 rounded-full bg-[#FFD21A]" />
+            <div className="text-5xl font-black leading-tight tracking-[-0.05em]">
+              Rwanda<span className="text-[#00CFFF]">Fitness</span>
+            </div>
+            <div className="h-px w-24 bg-white/30" />
+            <div className="flex gap-2" aria-hidden="true">
+              <span className="h-2 w-10 rounded-full bg-[#FFD21A]" />
+              <span className="h-2 w-6 rounded-full bg-[#00CFFF]" />
+              <span className="h-2 w-4 rounded-full bg-white/40" />
+            </div>
+          </div>
+          <div className="relative text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
+            RwandaFitness
+          </div>
+        </aside>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            type="password"
-            name="password"
-            autoComplete="new-password"
-            placeholder={t("fields.newPassword")}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            disabled={loading || isSuccess}
-            minLength={8}
-            required
-            className="mt-6 w-full rounded-xl border border-zinc-300 px-4 py-3 outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:bg-zinc-100"
-          />
-
-          <p className="mt-2 text-xs text-zinc-500">
-            {t("passwordHelp")}
+        <section className="px-6 py-10 sm:px-10 sm:py-14 lg:px-14">
+          <div className="mb-7 h-1.5 w-16 rounded-full bg-[#00CFFF]" />
+          <h1 className="text-3xl font-black tracking-[-0.04em] text-[#003D24] sm:text-4xl">
+            {t("title")}
+          </h1>
+          <p className="mt-3 text-sm leading-7 text-[#52675B]">
+            {t("description")}
           </p>
 
-          <input
-            type="password"
-            name="password_confirm"
-            autoComplete="new-password"
-            placeholder={t("fields.confirmPassword")}
-            value={passwordConfirm}
-            onChange={(event) =>
-              setPasswordConfirm(event.target.value)
-            }
-            disabled={loading || isSuccess}
-            minLength={8}
-            required
-            className="mt-4 w-full rounded-xl border border-zinc-300 px-4 py-3 outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:bg-zinc-100"
-          />
+          {message && (
+            <div
+              role="alert"
+              aria-live="polite"
+              className={`mt-7 rounded-2xl border px-4 py-4 text-sm leading-6 ${
+                isSuccess
+                  ? "border-[#BDE8CE] bg-[#EAF8F0] text-[#075C38]"
+                  : "border-red-200 bg-red-50 text-red-700"
+              }`}
+            >
+              {message}
+            </div>
+          )}
 
-          <button
-            type="submit"
-            disabled={loading || isSuccess}
-            className="mt-6 w-full rounded-xl bg-primary py-3 font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {loading ? t("saving") : t("savePassword")}
-          </button>
-        </form>
+          {!isSuccess && (
+            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+              <div>
+                <label htmlFor="new-password" className="mb-2 block text-sm font-semibold text-[#17251E]">
+                  {t("fields.newPassword")}
+                </label>
+                <input
+                  id="new-password"
+                  type="password"
+                  name="password"
+                  autoComplete="new-password"
+                  placeholder={t("fields.newPassword")}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  disabled={loading}
+                  minLength={8}
+                  required
+                  className="w-full rounded-2xl border border-[#DCEDE2] bg-[#F9FCFA] px-4 py-3.5 text-sm text-[#17251E] outline-none transition placeholder:text-[#84988B] focus:border-[#007D36] focus:ring-4 focus:ring-[#00CFFF]/15 disabled:cursor-not-allowed disabled:opacity-60"
+                />
+                <p className="mt-2 text-xs leading-5 text-[#52675B]">
+                  {t("passwordHelp")}
+                </p>
+              </div>
 
-        {isSuccess && (
-          <div className="mt-6 text-center">
+              <div>
+                <label htmlFor="confirm-password" className="mb-2 block text-sm font-semibold text-[#17251E]">
+                  {t("fields.confirmPassword")}
+                </label>
+                <input
+                  id="confirm-password"
+                  type="password"
+                  name="password_confirm"
+                  autoComplete="new-password"
+                  placeholder={t("fields.confirmPassword")}
+                  value={passwordConfirm}
+                  onChange={(event) => setPasswordConfirm(event.target.value)}
+                  disabled={loading}
+                  minLength={8}
+                  required
+                  className="w-full rounded-2xl border border-[#DCEDE2] bg-[#F9FCFA] px-4 py-3.5 text-sm text-[#17251E] outline-none transition placeholder:text-[#84988B] focus:border-[#007D36] focus:ring-4 focus:ring-[#00CFFF]/15 disabled:cursor-not-allowed disabled:opacity-60"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-2xl bg-[#FFD21A] px-5 py-3.5 text-sm font-extrabold text-[#003D24] shadow-[0_8px_24px_rgba(255,210,26,0.22)] transition hover:bg-[#F5C700] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#00CFFF]/40 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading ? t("saving") : t("savePassword")}
+              </button>
+            </form>
+          )}
+
+          {isSuccess && (
             <Link
               href="/login"
-              className="text-sm font-semibold text-primary transition hover:underline"
+              className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-[#FFD21A] px-5 py-3.5 text-sm font-extrabold text-[#003D24] transition hover:bg-[#F5C700] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#00CFFF]/40"
             >
               {t("login")}
             </Link>
-          </div>
-        )}
+          )}
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
