@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   useLocale,
   useTranslations,
@@ -16,6 +15,7 @@ import {
   useRouter,
 } from "@/i18n/navigation";
 import {API_URL} from "@/lib/api";
+import RwandaFitnessLogo from "@/components/RwandaFitnessLogo";
 
 
 type User = {
@@ -604,17 +604,14 @@ export default function Navbar() {
   const mobileLinkClasses =
     "block rounded-lg px-4 py-3 text-sm font-semibold uppercase text-white transition hover:bg-white/10 hover:text-accent";
 
-  const languageButtonClasses =
-    (
-      buttonLocale:
-        SupportedLocale,
-    ) =>
-      `rounded-md px-2 py-1 text-xs font-bold transition ${
-        locale ===
-        buttonLocale
-          ? "bg-white text-primary"
-          : "text-white hover:bg-white/10"
-      }`;
+  const languageButtonClasses = (
+    buttonLocale: SupportedLocale,
+  ) =>
+    `rounded-md px-2 py-1 font-serif text-sm font-bold italic transition ${
+      locale === buttonLocale
+        ? "bg-[#ffd21a] text-[#003d24]"
+        : "text-white hover:bg-white/10 hover:text-[#ffd21a]"
+    }`;
 
   const mobileLanguageButtonClasses =
     (
@@ -624,7 +621,7 @@ export default function Navbar() {
       `rounded-lg px-4 py-3 text-sm font-semibold transition ${
         locale ===
         buttonLocale
-          ? "bg-white text-primary"
+          ? "bg-[#ffd21a] text-[#003d24]"
           : "border border-white/30 text-white hover:bg-white/10"
       }`;
 
@@ -633,53 +630,22 @@ export default function Navbar() {
   // =========================================================
 
   return (
-    <nav className="sticky top-0 z-50 bg-primary text-white shadow-sm">
-      <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-3 px-4 py-3 sm:px-6">
+    <nav className="sticky top-0 z-50 border-b border-[#00cfff]/20 bg-[#075C38] text-white shadow-[0_4px_22px_rgba(0,35,18,0.25)]">
+      <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-3 px-4 py-1.5 sm:px-6">
         {/* =====================================================
             BRAND
         ===================================================== */}
 
-        <Link
-          href="/"
-          onClick={
-            closeMobileMenu
-          }
-          className="group flex min-w-0 flex-1 items-center gap-2 sm:gap-3 xl:flex-none"
-        >
-          <div className="rf-logo-shell relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white shadow-md sm:h-12 sm:w-12">
-            <div className="rf-logo-runner absolute inset-0">
-              <Image
-                src="/rwandafitness-icon.png"
-                alt="RwandaFitness"
-                fill
-                priority
-                sizes="48px"
-                className="object-contain"
-              />
-            </div>
-          </div>
-
-          <div className="flex min-w-0 flex-col leading-none">
-            <span className="truncate text-lg font-extrabold tracking-tight text-white transition-colors duration-300 group-hover:text-white/95 sm:text-2xl">
-              RwandaFitness
-            </span>
-
-            <span className="mt-1 truncate text-[7px] uppercase tracking-[0.18em] text-white/75 min-[380px]:text-[8px] min-[380px]:tracking-[0.22em] sm:text-[10px] sm:tracking-[0.25em]">
-              {t(
-                "tagline",
-              )}
-            </span>
-          </div>
-        </Link>
+        <RwandaFitnessLogo onClick={closeMobileMenu} />
 
         {/* =====================================================
             DESKTOP NAVIGATION
         ===================================================== */}
 
-        <div className="hidden items-center gap-4 text-sm font-semibold uppercase xl:flex">
+        <div className="hidden min-w-0 items-center gap-2.5 whitespace-nowrap font-serif text-[14px] font-bold italic normal-case tracking-tight xl:flex 2xl:gap-3 2xl:text-[15px]">
           <Link
             href="/articles"
-            className="transition hover:text-accent"
+            className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#FFD21A] focus-visible:text-[#FFD21A]"
           >
             {t(
               "articles",
@@ -688,7 +654,7 @@ export default function Navbar() {
 
           <Link
             href="/videos"
-            className="transition hover:text-accent"
+            className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#FFD21A] focus-visible:text-[#FFD21A]"
           >
             {t(
               "videos",
@@ -697,7 +663,7 @@ export default function Navbar() {
 
           <Link
             href="/coaches"
-            className="transition hover:text-accent"
+            className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#FFD21A] focus-visible:text-[#FFD21A]"
           >
             {t(
               "coaches",
@@ -706,7 +672,7 @@ export default function Navbar() {
 
           <Link
             href="/gyms"
-            className="transition hover:text-accent"
+            className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#FFD21A] focus-visible:text-[#FFD21A]"
           >
             {t(
               "gyms",
@@ -715,7 +681,7 @@ export default function Navbar() {
 
           <Link
             href="/about"
-            className="transition hover:text-accent"
+            className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#FFD21A] focus-visible:text-[#FFD21A]"
           >
             {t(
               "about",
@@ -724,7 +690,7 @@ export default function Navbar() {
 
           <Link
             href="/contact"
-            className="transition hover:text-accent"
+            className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#FFD21A] focus-visible:text-[#FFD21A]"
           >
             {t(
               "contact",
@@ -735,7 +701,7 @@ export default function Navbar() {
             "client" && (
             <Link
               href="/my-requests"
-              className="transition hover:text-accent"
+              className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#FFD21A] focus-visible:text-[#FFD21A]"
             >
               {t(
                 "myRequests",
@@ -747,7 +713,7 @@ export default function Navbar() {
             "coach" && (
             <Link
               href="/my-requests"
-              className="transition hover:text-accent"
+              className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#FFD21A] focus-visible:text-[#FFD21A]"
             >
               {t(
                 "clientRequests",
@@ -758,7 +724,7 @@ export default function Navbar() {
           {token && (
             <Link
               href="/dashboard"
-              className="transition hover:text-accent"
+              className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#FFD21A] focus-visible:text-[#FFD21A]"
             >
               {t(
                 "dashboard",
@@ -821,7 +787,7 @@ export default function Navbar() {
             <div className="hidden items-center gap-3 xl:flex">
               <Link
                 href="/login"
-                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#003d24] transition hover:opacity-90"
               >
                 {t(
                   "login",
@@ -872,7 +838,7 @@ export default function Navbar() {
 
                     {unreadNotifications >
                       0 && (
-                      <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold leading-none text-white shadow-sm">
+                      <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold leading-none text-[#003d24] shadow-sm">
                         {unreadNotifications >
                         99
                           ? "99+"
@@ -893,12 +859,12 @@ export default function Navbar() {
                     }
                     className="flex max-w-56 min-w-0 items-center gap-2 rounded-xl bg-white/10 px-3 py-2 transition hover:bg-white/15"
                   >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-primary">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#e5f6ec] text-sm font-bold text-[#003d24]">
                       {getInitials()}
                     </div>
 
                     <div className="min-w-0 leading-tight">
-                      <p className="truncate text-sm font-semibold normal-case text-white">
+                      <p className="truncate font-serif text-base font-bold italic normal-case text-white">
                         {getDisplayName()}
                       </p>
 
@@ -923,7 +889,7 @@ export default function Navbar() {
                 disabled={
                   loggingOut
                 }
-                className="rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-lg bg-[#FFD21A] px-4 py-2.5 font-serif text-base font-bold italic normal-case tracking-tight text-[#003D24] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#FFE45C] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loggingOut
                   ? t(
@@ -1011,7 +977,7 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div
           id="mobile-navigation"
-          className="border-t border-white/10 bg-primary px-4 pb-5 pt-3 shadow-lg xl:hidden"
+          className="border-t border-[#00cfff]/15 bg-[#075C38] px-4 pb-5 pt-3 shadow-lg xl:hidden"
         >
           <div className="mx-auto max-w-6xl">
             {token &&
@@ -1033,7 +999,7 @@ export default function Navbar() {
                   }
                   className="mb-3 flex items-center gap-3 rounded-xl bg-white/10 p-3 transition hover:bg-white/15"
                 >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-primary">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#e5f6ec] text-sm font-bold text-[#003d24]">
                     {getInitials()}
                   </div>
 
@@ -1213,7 +1179,7 @@ export default function Navbar() {
 
                   {unreadNotifications >
                     0 && (
-                    <span className="flex min-h-6 min-w-6 items-center justify-center rounded-full bg-accent px-1.5 text-[10px] font-bold text-white">
+                    <span className="flex min-h-6 min-w-6 items-center justify-center rounded-full bg-accent px-1.5 text-[10px] font-bold text-[#003d24]">
                       {unreadNotifications >
                       99
                         ? "99+"
@@ -1286,7 +1252,7 @@ export default function Navbar() {
                     onClick={
                       closeMobileMenu
                     }
-                    className="rounded-lg bg-accent px-4 py-3 text-center text-sm font-semibold text-white transition hover:opacity-90"
+                    className="rounded-lg bg-accent px-4 py-3 text-center text-sm font-semibold text-[#003d24] transition hover:opacity-90"
                   >
                     {t(
                       "login",
@@ -1314,7 +1280,7 @@ export default function Navbar() {
                   disabled={
                     loggingOut
                   }
-                  className="w-full rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg bg-[#FFD21A] px-4 py-2.5 font-serif text-[16px] font-bold italic normal-case tracking-tight text-[#003D24] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#FFE45C] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loggingOut
                     ? t(
@@ -1330,126 +1296,6 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* =====================================================
-          RWANDAFITNESS LOGO ANIMATION
-      ===================================================== */}
-
-      <style jsx>{`
-        /*
-         * The white container stays mostly stable.
-         */
-        .rf-logo-shell {
-          transition:
-            transform 300ms ease,
-            box-shadow 300ms ease;
-        }
-
-        /*
-         * The RF symbol performs a short movement,
-         * rests, and repeats every 6 seconds.
-         */
-        .rf-logo-runner {
-          transform-origin: 50% 70%;
-          animation: rfRunnerMove 6s ease-in-out infinite;
-          will-change: transform;
-        }
-
-        @keyframes rfRunnerMove {
-          /*
-           * REST
-           */
-          0%,
-          68% {
-            transform:
-              translate3d(0, 0, 0)
-              rotate(0deg)
-              scale(1);
-          }
-
-          /*
-           * PREPARE / LEAN FORWARD
-           */
-          73% {
-            transform:
-              translate3d(1px, 0, 0)
-              rotate(3deg)
-              scale(1.02);
-          }
-
-          /*
-           * FIRST IMPULSE
-           */
-          77% {
-            transform:
-              translate3d(3px, -3px, 0)
-              rotate(-3deg)
-              scale(1.06);
-          }
-
-          /*
-           * REBOUND
-           */
-          81% {
-            transform:
-              translate3d(-1px, 1px, 0)
-              rotate(2deg)
-              scale(0.99);
-          }
-
-          /*
-           * SECOND SMALL IMPULSE
-           */
-          85% {
-            transform:
-              translate3d(2px, -2px, 0)
-              rotate(-1deg)
-              scale(1.035);
-          }
-
-          /*
-           * LAND
-           */
-          90% {
-            transform:
-              translate3d(0, 1px, 0)
-              rotate(0deg)
-              scale(0.995);
-          }
-
-          /*
-           * BACK TO REST
-           */
-          94%,
-          100% {
-            transform:
-              translate3d(0, 0, 0)
-              rotate(0deg)
-              scale(1);
-          }
-        }
-
-        /*
-         * Mouse interaction.
-         */
-        .group:hover .rf-logo-shell {
-          transform: translateY(-1px) scale(1.04);
-          box-shadow:
-            0 8px 20px rgb(0 0 0 / 0.16);
-        }
-
-        /*
-         * Accessibility.
-         */
-        @media (prefers-reduced-motion: reduce) {
-          .rf-logo-runner {
-            animation: none;
-          }
-
-          .rf-logo-shell {
-            transition: none;
-          }
-        }
-      `}</style>
     </nav>
   );
 }
